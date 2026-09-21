@@ -1,0 +1,2 @@
+[functions.trial-enquiry]
+verify_jwt = false
