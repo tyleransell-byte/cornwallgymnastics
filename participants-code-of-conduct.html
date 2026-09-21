@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="description"
+    content="Cornwall Gymnastics Centre Participants Code of Conduct."
+  />
+
+  <title>Participants Code of Conduct | Cornwall Gymnastics Centre</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&family=Unbounded:wght@600;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --orange: #ff9f5b;
+      --teal: #5fa4b4;
+      --cream: #fdf9d8;
+      --ink: #000;
+      --muted: #4b4a3c;
+      --line: #d6cf9c;
+      --display: "Unbounded", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "Figtree", system-ui, sans-serif;
+      font-size: 1.0625rem;
+      line-height: 1.65;
+    }
+
+    .wrap {
+      width: min(960px, calc(100% - 40px));
+      margin: auto;
+    }
+
+    /* HEADER */
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(253, 249, 216, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      min-height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      display: block;
+      width: 210px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .back-link {
+      display: inline-block;
+      text-decoration: none;
+      background: var(--orange);
+      color: #000;
+      border: 2px solid var(--orange);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 700;
+    }
+
+    .back-link:hover {
+      opacity: 0.85;
+    }
+
+    /* TITLE */
+
+    .policy-hero {
+      padding: 75px 0 55px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #a54606;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+
+    h1,
+    h2 {
+      font-family: var(--display);
+      letter-spacing: -0.04em;
+    }
+
+    h1 {
+      max-width: 800px;
+      margin: 0;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      line-height: 1;
+    }
+
+    h1 span {
+      color: #b8500a;
+    }
+
+    .intro {
+      max-width: 800px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 1.15rem;
+    }
+
+    /* POLICY */
+
+    .policy-section {
+      padding: 20px 0 90px;
+    }
+
+    .policy-card {
+      background: #fffdf0;
+      border: 2px solid var(--line);
+      border-radius: 28px;
+      padding: 42px;
+    }
+
+    .policy-card h2 {
+      margin: 0 0 25px;
+      font-size: clamp(1.5rem, 4vw, 2.3rem);
+      line-height: 1.1;
+    }
+
+    .policy-list {
+      margin: 0;
+      padding-left: 24px;
+    }
+
+    .policy-list > li {
+      margin-bottom: 17px;
+      padding-left: 8px;
+    }
+
+    .policy-list > li::marker {
+      color: #b8500a;
+      font-weight: 700;
+    }
+
+    .sub-list {
+      margin-top: 14px;
+      padding-left: 22px;
+    }
+
+    .sub-list li {
+      margin-bottom: 10px;
+    }
+
+    .important {
+      margin-top: 35px;
+      padding: 25px;
+      background: var(--teal);
+      border-radius: 20px;
+    }
+
+    .important strong {
+      font-family: var(--display);
+    }
+
+    /* FOOTER */
+
+    footer {
+      background: var(--teal);
+      padding: 35px 0;
+    }
+
+    footer p {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    footer a {
+      color: #000;
+      font-weight: 700;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 760px) {
+      .wrap {
+        width: min(100% - 28px, 960px);
+      }
+
+      .nav {
+        min-height: 78px;
+      }
+
+      .brand-logo {
+        width: 140px;
+      }
+
+      .back-link {
+        padding: 8px 13px;
+        font-size: 0.85rem;
+      }
+
+      .policy-hero {
+        padding: 50px 0 35px;
+      }
+
+      .policy-card {
+        padding: 26px 20px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="wrap nav">
+
+      <a
+        class="brand"
+        href="/"
+        aria-label="Cornwall Gymnastics Centre home"
+      >
+        <img
+          class="brand-logo"
+          src="/cgg-logo.png"
+          alt="Cornwall Gymnastics Centre"
+        />
+      </a>
+
+      <a class="back-link" href="/">
+        ← Back to website
+      </a>
+
+    </div>
+  </header>
+
+  <main>
+
+    <section class="policy-hero">
+      <div class="wrap">
+
+        <p class="eyebrow">Club policies</p>
+
+        <h1>
+          Participants<br />
+          <span>Code of Conduct.</span>
+        </h1>
+
+        <p class="intro">
+          Cornwall Gymnastics Centre is fully committed to safeguarding
+          and promoting the well-being of all its members and ensuring
+          that the gym club is a place where everyone can enjoy
+          themselves and reach their full potential.
+        </p>
+
+        <p class="intro">
+          We have a Code of Conduct to ensure that all gymnasts,
+          coaches, administrators and parents know what is expected of
+          them in order to ensure the safety and welfare of everyone.
+        </p>
+
+      </div>
+    </section>
+
+    <section class="policy-section">
+      <div class="wrap">
+
+        <div class="policy-card">
+
+          <p class="eyebrow">Participant responsibilities</p>
+
+          <h2>
+            As a member of CGC, all gymnasts are expected to:
+          </h2>
+
+          <ul class="policy-list">
+
+            <li>
+              Participate within the rules and respect coaches, judges
+              and their decisions.
+            </li>
+
+            <li>
+              Train with a positive attitude and always be kind towards
+              others.
+            </li>
+
+            <li>
+              Listen to their coach and concentrate in lessons.
+            </li>
+
+            <li>
+              Respect, support and encourage their opponents and fellow
+              club members. Bullying of any kind will NOT be tolerated.
+            </li>
+
+            <li>
+              Arrive 10 minutes before the session begins ready for a
+              prompt start.
+            </li>
+
+            <li>
+              Register at reception before entering the gym.
+            </li>
+
+            <li>
+              Keep to agreed timings for training and competitions and
+              inform their coach in advance if they are expecting to be
+              late.
+            </li>
+
+            <li>
+              Refrain from smoking, consuming alcohol, taking drugs or
+              chewing gum whilst on club premises or when representing
+              the club at competitions or other events.
+            </li>
+
+            <li>
+              Treat all equipment with respect and ensure that any
+              rubbish is taken home or placed in the bins provided.
+            </li>
+
+            <li>
+              Inform their coach of any injuries or illness they may
+              have before the warm-up begins.
+            </li>
+
+            <li>
+              Remain with their parent/guardian until class begins.
+              Children are only in CGC's care once they have registered
+              for their class and been permitted entry to the gym.
+            </li>
+
+            <li>
+              Remain with coaches at the end of a session until
+              collected by their parent/guardian and never leave a
+              session without informing the coach.
+            </li>
+
+            <li>
+              Be open at all times and share any concerns or complaints
+              that they may have about any aspect of the club to ensure
+              that all members are safe, happy and well.
+            </li>
+
+            <li>
+              Ensure that they are dressed and prepared appropriately
+              for exercising safely:
+
+              <ul class="sub-list">
+
+                <li>
+                  Neat hair with long fringes clipped back, out of the
+                  eyes, and long hair tied up in a bun to avoid injury.
+                </li>
+
+                <li>
+                  All jewellery must be removed before entering the gym.
+                </li>
+
+                <li>
+                  Wear a CGC T-shirt or leotard with fitted leggings or
+                  shorts in black, grey, white or CGC colours.
+                </li>
+
+                <li>
+                  In cold weather, wear a warm jumper to warm up in.
+                </li>
+
+                <li>
+                  Do not wear baggy joggers, jeans or T-shirts with
+                  zips, buttons, pockets or crop tops, as they are not
+                  appropriate or safe for training.
+                </li>
+
+              </ul>
+            </li>
+
+          </ul>
+
+          <div class="important">
+            <strong>Thank you for helping us keep CGC safe.</strong>
+            <br />
+            Following the Code of Conduct helps create a positive,
+            supportive and safe environment for everyone at Cornwall
+            Gymnastics Centre.
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>
+        Cornwall Gymnastics Centre ·
+        <a href="/">Return to homepage</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
