@@ -143,7 +143,7 @@
     .timetable h2 { margin-bottom: 0.5rem; }
     .tt-intro { color: #4B4A3C; margin: 0 auto 2rem; max-width: 50ch; }
     .tt-day { display: grid; grid-template-columns: 1fr; gap: 0.75rem; background: #fff; border-radius: 1.5rem; padding: 1.5rem; margin: 0 auto 1rem; max-width: 40rem; }
-    .tt-day h3 { color: var(--day); font-size: 1.5rem; }
+    .tt-day h3 { color: var(--day); font-size: clamp(2.25rem, 6vw, 3rem); margin-bottom: 0.5rem; }
     .tt-day ul { list-style: none; padding: 0; display: grid; }
     .tt-day li + li { border-top: 1px solid rgba(0,0,0,0.1); }
     .tt-day li { padding: 0.9rem 0; }
@@ -196,6 +196,17 @@
       border-width: 2px; text-align: center; text-decoration: none;
     }
 
+    .registration-banner {
+      display: block; width: 100%; padding: 1rem 1.25rem;
+      background: var(--orange); color: var(--black); border: 0;
+      border-bottom: 3px solid var(--black); font: inherit;
+      font-family: "Baloo 2", system-ui, sans-serif;
+      font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 800;
+      line-height: 1.25; text-align: center; cursor: pointer;
+    }
+    .registration-banner:hover { background: #ffb37c; }
+    .registration-banner:focus-visible { outline: 3px solid var(--black); outline-offset: -6px; }
+
     /* Registration form */
     .tt-register { margin: 0 0 1.25rem; }
     .text-link { background: none; border: 0; padding: 0; font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; color: var(--black); }
@@ -226,6 +237,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
+  <button class="registration-banner" type="button" data-open-reg>Register your child now!</button>
 
   <header>
     <div class="wrap">
