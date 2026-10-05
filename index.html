@@ -177,6 +177,7 @@
     .field .optional { font-weight: 400; color: #4B4A3C; }
     #contact-form .button { width: 100%; margin-top: 0.5rem; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -309,6 +310,23 @@
     const WEB3FORMS_KEY = "855610a3-fd9a-4c40-9b29-09b26c2f1735";
     const CENTRE_EMAIL = "hello@cornwallgymnastics.uk";
 
+    // EmailJS sends parents a branded confirmation after they book a trial.
+    // Paste the three values from your EmailJS account between the quotes.
+    const EMAILJS_PUBLIC_KEY = "KCO0AhsmAs4-P9kf-";
+    const EMAILJS_SERVICE_ID = "service_h48a9uw";
+    const EMAILJS_TEMPLATE_ID = "template_zlo0vvr";
+
+    function sendTrialConfirmation(data) {
+      if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !window.emailjs) return;
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: data["Parent's email"],
+        parent_name: data["Parent's name"],
+        child_name: data["Child's full name"],
+        child_age: data["Child's age"],
+        parent_phone: data["Parent's contact number"]
+      }, { publicKey: EMAILJS_PUBLIC_KEY }).catch(err => console.error("Confirmation email failed", err));
+    }
+
 
     // Booking links: paste a Stripe Payment Link between the quotes for each class.
     // Until a link is added, the button opens an email to the centre instead.
@@ -409,13 +427,14 @@
           body: JSON.stringify({
             access_key: WEB3FORMS_KEY,
             subject: `Trial request: ${data["Child's full name"]}`,
-            from_name: "Cornwall Gymnastics website",
+            from_name: "Cornwall Gymnastics Centre",
             replyto: data["Parent's email"],
             ...data
           })
         });
         const result = await res.json();
         if (!result.success) throw new Error(result.message);
+        sendTrialConfirmation(data);
         formView.hidden = true;
         thanks.hidden = false;
       } catch (err) {
@@ -519,7 +538,7 @@
           const res = await fetch("https://api.web3forms.com/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: "Cornwall Gymnastics website", replyto: data.Email, ...data })
+            body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: "Cornwall Gymnastics Centre", replyto: data.Email, ...data })
           });
           const result = await res.json();
           if (!result.success) throw new Error(result.message);
