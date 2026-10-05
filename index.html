@@ -195,6 +195,33 @@
       width: 8.5rem; padding: 0.45rem 0.5rem; font-size: 0.95rem;
       border-width: 2px; text-align: center; text-decoration: none;
     }
+
+    /* Registration form */
+    .tt-register { margin: 0 0 1.25rem; }
+    .text-link { background: none; border: 0; padding: 0; font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; color: var(--black); }
+    .hint { color: #4B4A3C; font-size: 0.95rem; margin: 0 0 0.4rem; }
+    fieldset.choice { border: 0; padding: 0; margin: 0 0 1.1rem; }
+    fieldset.choice legend { font-weight: 700; margin-bottom: 0.5rem; padding: 0; }
+    .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .pill input, .tick input { position: absolute; opacity: 0; pointer-events: none; }
+    .pill span { display: inline-block; min-width: 5rem; text-align: center; padding: 0.5rem 1.1rem; border: 2px solid var(--black); border-radius: 999px; background: #fff; font-weight: 700; cursor: pointer; }
+    .pill input:checked + span { background: var(--orange); }
+    .ticks { display: grid; gap: 0.4rem; }
+    .tick span { display: block; padding: 0.55rem 0.9rem 0.55rem 2.4rem; border: 2px solid var(--black); border-radius: 0.75rem; background: #fff; cursor: pointer; position: relative; }
+    .tick span::before { content: ""; position: absolute; left: 0.8rem; top: 50%; width: 1rem; height: 1rem; margin-top: -0.5rem; border: 2px solid var(--black); border-radius: 0.25rem; background: #fff; }
+    .tick input:checked + span { background: var(--sky); }
+    .tick input:checked + span::before { background: var(--orange); }
+    .pill input:focus-visible + span, .tick input:focus-visible + span { outline: 3px solid var(--teal); outline-offset: 2px; }
+    .reg-submit { width: 100%; margin-top: 1rem; }
+    #reg-dialog .field input, #reg-dialog .field textarea { background: #fff; }
+    #trial-dialog { overflow-y: auto; }
+    .trial-note { margin: -0.5rem 0 1rem; }
+    .field select {
+      width: 100%; font: inherit; padding: 0.7rem 0.9rem; border: 2px solid var(--black);
+      border-radius: 0.75rem; background: #fff; color: var(--black); appearance: auto;
+    }
+    .field select:focus { outline: 3px solid var(--teal); outline-offset: 1px; }
+    #trial-form fieldset.choice { margin-bottom: 1rem; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -253,6 +280,8 @@
   <section class="timetable" id="timetable">
     <div class="wrap">
       <h2>Class timetable</h2>
+      <p class="tt-intro">New to CGC? Please register your child before booking their first class.</p>
+      <p class="tt-register"><button class="button" type="button" data-open-reg>Register your child</button></p>
       <p class="tt-intro">Invite-only classes are for gymnasts our coaches have invited to join.</p>
       <div class="tt-day"><h3>Tuesday</h3><ul><li><div><b>Stay and Play</b><span>9:30–10:15am · Ages 0–4 · £6.50 a session</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-stay-and-play-one" data-label="Stay and Play (Tuesday 9:30–10:15am), one session">Book one session</a><a class="button alt" href="#" data-book="tue-stay-and-play-many" data-label="Stay and Play (Tuesday 9:30–10:15am), several sessions">Book several sessions</a></div></li><li><div><b>Adult Child Structured</b><span>10:30–11:15am · Ages 2–4 · £7.50 a session</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-adult-child-structured-one" data-label="Adult Child Structured (Tuesday 10:30–11:15am), one session">Book one session</a><a class="button alt" href="#" data-book="tue-adult-child-structured-many" data-label="Adult Child Structured (Tuesday 10:30–11:15am), several sessions">Book several sessions</a></div></li><li><div><b>Home Education</b><span>11:30am–12:30pm · Any age under 16 · £10 a session</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-home-education-one" data-label="Home Education (Tuesday 11:30am–12:30pm), one session">Book one session</a><a class="button alt" href="#" data-book="tue-home-education-many" data-label="Home Education (Tuesday 11:30am–12:30pm), several sessions">Book several sessions</a></div></li><li><div><b>Recreational Plus</b><span>4–6pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-recreational-plus" data-label="Recreational Plus (Tuesday 4–6pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Development WAG</b><span>4–6:30pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-development-wag" data-label="Development WAG (Tuesday 4–6:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>4:15–5:15pm · Ages 4–7</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-recreational-4-7" data-label="Recreational Gymnastics (Tuesday 4:15–5:15pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>5:30–6:30pm · Ages 7–12</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-recreational-7-12" data-label="Recreational Gymnastics (Tuesday 5:30–6:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Novice WAG Junior</b><span>6:30–8:30pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-novice-wag-junior" data-label="Novice WAG Junior (Tuesday 6:30–8:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Novice WAG Senior</b><span>6:30–8:30pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="tue-novice-wag-senior" data-label="Novice WAG Senior (Tuesday 6:30–8:30pm), monthly membership">Book monthly membership</a></div></li></ul></div><div class="tt-day"><h3>Wednesday</h3><ul><li><div><b>WAG 1</b><span>4–8:30pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="wed-wag-1" data-label="WAG 1 (Wednesday 4–8:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>WAG 2</b><span>4–8pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="wed-wag-2" data-label="WAG 2 (Wednesday 4–8pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>4:15–5:15pm · Ages 4–7</span></div><div class="row-actions"><a class="button" href="#" data-book="wed-recreational-4-7" data-label="Recreational Gymnastics (Wednesday 4:15–5:15pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>5:30–6:30pm · Ages 6–8</span></div><div class="row-actions"><a class="button" href="#" data-book="wed-recreational-6-8" data-label="Recreational Gymnastics (Wednesday 5:30–6:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>5:30–6:30pm · Ages 7–12</span></div><div class="row-actions"><a class="button" href="#" data-book="wed-recreational-7-12" data-label="Recreational Gymnastics (Wednesday 5:30–6:30pm), monthly membership">Book monthly membership</a></div></li></ul></div><div class="tt-day"><h3>Thursday</h3><ul><li><div><b>Development WAG</b><span>4–6:30pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="thu-development-wag" data-label="Development WAG (Thursday 4–6:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>4:15–5:15pm · Ages 4–7</span></div><div class="row-actions"><a class="button" href="#" data-book="thu-recreational-4-7" data-label="Recreational Gymnastics (Thursday 4:15–5:15pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Plus</b><span>5–7pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="thu-recreational-plus" data-label="Recreational Plus (Thursday 5–7pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>5:30–6:30pm · Ages 7–12</span></div><div class="row-actions"><a class="button" href="#" data-book="thu-recreational-7-12" data-label="Recreational Gymnastics (Thursday 5:30–6:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Novice WAG Senior</b><span>6:30–8:30pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="thu-novice-wag-senior" data-label="Novice WAG Senior (Thursday 6:30–8:30pm), monthly membership">Book monthly membership</a></div></li></ul></div><div class="tt-day"><h3>Friday</h3><ul><li><div><b>WAG 1</b><span>4–8:30pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="fri-wag-1" data-label="WAG 1 (Friday 4–8:30pm), monthly membership">Book monthly membership</a></div></li><li><div><b>WAG 2</b><span>4–8pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="fri-wag-2" data-label="WAG 2 (Friday 4–8pm), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>5:30–6:30pm · Ages 7–12</span></div><div class="row-actions"><a class="button" href="#" data-book="fri-recreational-7-12" data-label="Recreational Gymnastics (Friday 5:30–6:30pm), monthly membership">Book monthly membership</a></div></li></ul></div><div class="tt-day"><h3>Saturday</h3><ul><li><div><b>Recreational Gymnastics</b><span>9–10am · Ages 4–7</span></div><div class="row-actions"><a class="button" href="#" data-book="sat-recreational-4-7" data-label="Recreational Gymnastics (Saturday 9–10am), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>9–10am · Ages 7–12</span></div><div class="row-actions"><a class="button" href="#" data-book="sat-recreational-7-12" data-label="Recreational Gymnastics (Saturday 9–10am), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Plus</b><span>9–10am · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="sat-recreational-plus" data-label="Recreational Plus (Saturday 9–10am), monthly membership">Book monthly membership</a></div></li><li><div><b>Recreational Gymnastics</b><span>10–11am · Ages 6–12</span></div><div class="row-actions"><a class="button" href="#" data-book="sat-recreational-6-12" data-label="Recreational Gymnastics (Saturday 10–11am), monthly membership">Book monthly membership</a></div></li><li><div><b>WAG 2</b><span>10am–1pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="sat-wag-2" data-label="WAG 2 (Saturday 10am–1pm), monthly membership">Book monthly membership</a></div></li><li><div><b>WAG 1</b><span>12–4pm · Invite only</span></div><div class="row-actions"><a class="button" href="#" data-book="sat-wag-1" data-label="WAG 1 (Saturday 12–4pm), monthly membership">Book monthly membership</a></div></li></ul></div>
     </div>
@@ -293,25 +322,41 @@
           <h2 id="trial-title">Book a trial</h2>
           <button class="close" type="button" data-close aria-label="Close">&times;</button>
         </div>
+        <p class="trial-note">Your first session is a <strong>free trial</strong>.</p>
         <form id="trial-form" novalidate>
           <div class="field">
             <label for="child-name">Child's full name</label>
             <input id="child-name" name="Child's full name" required autocomplete="off">
           </div>
           <div class="field">
-            <label for="child-age">Child's age</label>
-            <input id="child-age" name="Child's age" type="number" min="0" max="18" inputmode="numeric" required>
+            <label for="child-dob">Child's date of birth</label>
+            <input id="child-dob" name="Child's date of birth" type="date" required>
           </div>
           <div class="field">
-            <label for="parent-name">Parent's name</label>
+            <label for="trial-class">Which class would you like to try?</label>
+            <select id="trial-class" name="Class" required><option value="" selected disabled>Choose a class</option><option disabled>Tuesday 5:30–6:30pm (ages 7–12) – full</option><option>Wednesday 4:15–5:15pm (ages 4–7)</option><option>Wednesday 5:30–6:30pm (ages 8–12)</option><option>Thursday 4:15–5:15pm (ages 4–7)</option><option>Thursday 5:30–6:30pm (ages 8–12)</option><option>Friday 4:15–5:15pm (ages 4–6)</option><option>Friday 5:30–6:30pm (ages 9–12)</option><option>Saturday 10–11am (ages 8–12)</option><option>Saturday 11am–12pm (ages 4–7)</option><option value="Other">Other (tell us below)</option></select>
+          </div>
+          <div class="field" id="trial-other-wrap" hidden>
+            <label for="trial-other">Which class?</label>
+            <input id="trial-other" name="Other class">
+          </div>
+          <fieldset class="choice">
+            <legend>Is your child a current CGC member?</legend>
+            <div class="pills">
+              <label class="pill"><input type="radio" name="Current CGC member" value="Yes" required><span>Yes</span></label>
+              <label class="pill"><input type="radio" name="Current CGC member" value="No" required><span>No</span></label>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="parent-name">Parent or guardian's name</label>
             <input id="parent-name" name="Parent's name" required autocomplete="name">
           </div>
           <div class="field">
-            <label for="parent-email">Parent's email</label>
+            <label for="parent-email">Parent or guardian's email</label>
             <input id="parent-email" name="Parent's email" type="email" required autocomplete="email">
           </div>
           <div class="field">
-            <label for="parent-phone">Parent's contact number</label>
+            <label for="parent-phone">Contact number</label>
             <input id="parent-phone" name="Parent's contact number" type="tel" required autocomplete="tel">
           </div>
           <button class="button" type="submit">Send trial request</button>
@@ -345,7 +390,8 @@
         parent_name: data["Parent's name"],
         child_name: data["Child's full name"],
         child_age: data["Child's age"],
-        parent_phone: data["Parent's contact number"]
+        parent_phone: data["Parent's contact number"],
+        class_name: data["Class"]
       }, { publicKey: EMAILJS_PUBLIC_KEY }).catch(err => console.error("Confirmation email failed", err));
     }
 
@@ -404,6 +450,7 @@
     document.querySelectorAll("[data-open-trial]").forEach(btn =>
       btn.addEventListener("click", () => {
         form.reset();
+        document.getElementById("trial-other-wrap").hidden = true;
         message.textContent = "";
         formView.hidden = false;
         thanks.hidden = true;
@@ -415,6 +462,12 @@
     );
     dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); });
 
+    document.getElementById("trial-class").addEventListener("change", e => {
+      const other = e.target.value === "Other";
+      document.getElementById("trial-other-wrap").hidden = !other;
+      document.getElementById("trial-other").required = other;
+    });
+
     // Links like timetable.html's "Book a trial" go to index.html#trial: open the form straight away
     if (location.hash === "#trial") document.querySelector("[data-open-trial]").click();
 
@@ -423,16 +476,31 @@
       message.className = "form-message";
       if (!form.checkValidity()) {
         const first = form.querySelector(":invalid");
-        const label = form.querySelector(`label[for="${first.id}"]`).textContent;
-        message.textContent = first.type === "email" && first.value
-          ? "Enter a valid email address, like name@example.com."
-          : `Fill in ${label.toLowerCase()} to send your request.`;
+        if (first.type === "radio") {
+          message.textContent = "Tell us whether your child is a current CGC member.";
+        } else if (first.tagName === "SELECT") {
+          message.textContent = "Choose the class you'd like to try.";
+        } else {
+          const label = form.querySelector(`label[for="${first.id}"]`).textContent;
+          message.textContent = first.type === "email" && first.value
+            ? "Enter a valid email address, like name@example.com."
+            : `Fill in ${label.toLowerCase()} to send your request.`;
+        }
         message.classList.add("error");
         first.focus();
         return;
       }
 
       const data = Object.fromEntries(new FormData(form));
+      if (data["Class"] === "Other") data["Class"] = "Other: " + (data["Other class"] || "not specified");
+      delete data["Other class"];
+      const dob = new Date(data["Child's date of birth"]);
+      if (!isNaN(dob)) {
+        const now = new Date();
+        let age = now.getFullYear() - dob.getFullYear();
+        if (now < new Date(now.getFullYear(), dob.getMonth(), dob.getDate())) age--;
+        data["Child's age"] = String(age);
+      }
 
       if (!WEB3FORMS_KEY) {
         const body = Object.entries(data).map(([k, v]) => `${k}: ${v}`).join("\n");
@@ -742,6 +810,158 @@
       d.querySelector("[data-close-policy]").addEventListener("click", () => d.close());
       d.addEventListener("click", e => { if (e.target === d) d.close(); });
     });
+  </script>
+
+  <dialog class="policy" id="reg-dialog" aria-labelledby="reg-title">
+    <div class="policy-top">
+      <h2 id="reg-title">Registration &amp; consent</h2>
+      <button class="close" type="button" data-close-reg aria-label="Close">&times;</button>
+    </div>
+    <div class="policy-body">
+      <div id="reg-form-view">
+        <p>Please fill this in once for each child before their first class. Your information is held securely and only shared with coaches or others who need it to meet your child's needs and adjust their training.</p>
+        <p><button type="button" class="text-link" data-open-policy-menu-inline>Read our policies</button></p>
+        <form id="reg-form" novalidate>
+          <h3>Gymnast</h3>
+          <div class="field"><label for="r-name">Participant's full name</label><input id="r-name" name="Participant's full name" type="text" required></div>
+          <div class="field"><label for="r-dob">Date of birth</label><input id="r-dob" name="Date of birth" type="date" required></div>
+          <fieldset class="choice" data-label="Gender"><legend>Gender</legend><div class="pills"><label class="pill"><input type="radio" name="Gender" value="Male" required><span>Male</span></label><label class="pill"><input type="radio" name="Gender" value="Female" required><span>Female</span></label></div></fieldset>
+          <div class="field"><label for="r-bg">British Gymnastics number <span class="optional">(optional)</span></label><input id="r-bg" name="British Gymnastics number" type="text"></div>
+          <div class="field"><label for="r-address">Home address</label><textarea id="r-address" name="Home address" required></textarea></div>
+
+          <h3>Parent or guardian</h3>
+          <div class="field"><label for="r-pname">Parent or guardian's name</label><input id="r-pname" name="Parent or guardian's name" type="text" required autocomplete="name"></div>
+          <div class="field"><label for="r-pemail">Email</label><input id="r-pemail" name="Email" type="email" required autocomplete="email"></div>
+          <div class="field"><label for="r-pmobile">Mobile number</label><input id="r-pmobile" name="Mobile number" type="tel" required autocomplete="tel"></div>
+
+          <h3>Emergency contacts</h3>
+          <div class="field"><label for="r-e1">Emergency contact number 1</label><input id="r-e1" name="Emergency contact number 1" type="tel" required></div>
+          <div class="field"><label for="r-e2">Emergency contact number 2</label><input id="r-e2" name="Emergency contact number 2" type="tel" required></div>
+          <div class="field"><label for="r-e3">Emergency contact number 3</label><input id="r-e3" name="Emergency contact number 3" type="tel" required></div>
+
+          <h3>Medical</h3>
+          <div class="field"><label for="r-doctor">Doctor's name</label><input id="r-doctor" name="Doctor's name" type="text" required></div>
+          <div class="field"><label for="r-doctornum">Doctor's phone number</label><input id="r-doctornum" name="Doctor's phone number" type="tel" required></div>
+          <fieldset class="choice" data-label="Does your child have a long-term illness, medical condition or impairment that limits their daily activities?"><legend>Does your child have a long-term illness, medical condition or impairment that limits their daily activities?</legend><div class="pills"><label class="pill"><input type="radio" name="Long-term illness or condition" value="Yes" required><span>Yes</span></label><label class="pill"><input type="radio" name="Long-term illness or condition" value="No" required><span>No</span></label></div></fieldset>
+          <div class="field" id="r-ltdetails-wrap" hidden><label for="r-ltdetails">Please give details</label><textarea id="r-ltdetails" name="Long-term condition details"></textarea></div>
+          <fieldset class="choice" id="r-conditions" data-label="Medical conditions"><legend>Does your child have any of these medical conditions?</legend>
+            <div class="ticks"><label class="tick"><input type="checkbox" name="Medical conditions" value="Downs Syndrome"><span>Downs Syndrome</span></label><label class="tick"><input type="checkbox" name="Medical conditions" value="Detaching Retina"><span>Detaching Retina</span></label><label class="tick"><input type="checkbox" name="Medical conditions" value="Restricted Growth"><span>Restricted Growth</span></label><label class="tick"><input type="checkbox" name="Medical conditions" value="Rodded Back"><span>Rodded Back</span></label><label class="tick"><input type="checkbox" name="Medical conditions" value="Pregnancy"><span>Pregnancy</span></label><label class="tick"><input type="checkbox" name="Medical conditions" value="Brittle Bones"><span>Brittle Bones</span></label><label class="tick"><input type="checkbox" name="Medical conditions" value="None of the above"><span>None of the above</span></label></div>
+            <div class="field" style="margin-top:0.5rem"><label for="r-cond-other">Other <span class="optional">(optional)</span></label><input id="r-cond-other" name="Other medical condition"></div>
+          </fieldset>
+          <p class="hint">We may need to ask for more details or medical advice to confirm gymnastics won't affect your child's health. Any medical screening must happen before they take part.</p>
+          <fieldset class="choice" data-label="I confirm my child is physically fit to take part, and I've told the club about any medical information it needs to consider."><legend>I confirm my child is physically fit to take part, and I've told the club about any medical information it needs to consider.</legend><div class="pills"><label class="pill"><input type="radio" name="Physically fit to participate" value="Yes" required><span>Yes</span></label></div></fieldset>
+          <fieldset class="choice" data-label="I consent to emergency medical treatment or first aid that a qualified medical practitioner or first aider considers necessary."><legend>I consent to emergency medical treatment or first aid that a qualified medical practitioner or first aider considers necessary.</legend><div class="pills"><label class="pill"><input type="radio" name="Emergency treatment consent" value="Yes" required><span>Yes</span></label><label class="pill"><input type="radio" name="Emergency treatment consent" value="No" required><span>No</span></label></div></fieldset>
+
+          <h3>Your child's needs</h3>
+          <div class="field"><label for="r-allergies">Allergies or dietary needs</label><p class="hint">Write "None" if there aren&#39;t any.</p><textarea id="r-allergies" name="Allergies or dietary needs" required></textarea></div>
+          <div class="field"><label for="r-religious">Religious or cultural needs</label><p class="hint">Write "None" if there aren&#39;t any.</p><textarea id="r-religious" name="Religious or cultural needs" required></textarea></div>
+          <div class="field"><label for="r-other">Any other needs we should know about to support your child</label><p class="hint">Write "None" if there aren&#39;t any.</p><textarea id="r-other" name="Any other needs we should know about to support your child" required></textarea></div>
+
+          <h3>Photography and video</h3>
+          <fieldset class="choice" data-label="I consent to my child being photographed or videoed during sessions for coaching purposes."><legend>I consent to my child being photographed or videoed during sessions for coaching purposes.</legend><div class="pills"><label class="pill"><input type="radio" name="Photo consent: coaching" value="Yes" required><span>Yes</span></label><label class="pill"><input type="radio" name="Photo consent: coaching" value="No" required><span>No</span></label></div></fieldset>
+          <fieldset class="choice" data-label="I consent to my child being photographed or videoed at club activities or events, and to the images being used on our website, social media, newsletters or other publications."><legend>I consent to my child being photographed or videoed at club activities or events, and to the images being used on our website, social media, newsletters or other publications.</legend><div class="pills"><label class="pill"><input type="radio" name="Photo consent: publicity" value="Yes" required><span>Yes</span></label><label class="pill"><input type="radio" name="Photo consent: publicity" value="No" required><span>No</span></label></div></fieldset>
+
+          <h3>Agreements</h3>
+          <fieldset class="choice" data-label="I have read Cornwall Gymnastics Centre CIC's regulations and policies and agree to follow them."><legend>I have read Cornwall Gymnastics Centre CIC's regulations and policies and agree to follow them.</legend><div class="pills"><label class="pill"><input type="radio" name="Agrees to club regulations and policies" value="Yes" required><span>Yes</span></label><label class="pill"><input type="radio" name="Agrees to club regulations and policies" value="No" required><span>No</span></label></div></fieldset>
+          <fieldset class="choice" data-label="I agree to the club's code of conduct and anti-bullying policy, and understand the expectations and responsibilities that come with them."><legend>I agree to the club's code of conduct and anti-bullying policy, and understand the expectations and responsibilities that come with them.</legend><div class="pills"><label class="pill"><input type="radio" name="Agrees to code of conduct and anti-bullying policy" value="Yes" required><span>Yes</span></label><label class="pill"><input type="radio" name="Agrees to code of conduct and anti-bullying policy" value="No" required><span>No</span></label></div></fieldset>
+          <fieldset class="choice" data-label="I consent to the club sharing information with British Gymnastics and its subsidiaries, Gymnastics Enterprise Limited (GEL) and British Gymnastics Foundation (BGF), to provide membership, insurance and information about gymnastics products and services. I understand I can opt out of sharing with GEL or BGF. More at british-gymnastics.org."><legend>I consent to the club sharing information with British Gymnastics and its subsidiaries, Gymnastics Enterprise Limited (GEL) and British Gymnastics Foundation (BGF), to provide membership, insurance and information about gymnastics products and services. I understand I can opt out of sharing with GEL or BGF. More at british-gymnastics.org.</legend><div class="pills"><label class="pill"><input type="radio" name="British Gymnastics data sharing" value="Yes" required><span>Yes</span></label><label class="pill"><input type="radio" name="British Gymnastics data sharing" value="No" required><span>No</span></label></div></fieldset>
+
+          <h3>Declaration</h3>
+          <fieldset class="choice" data-label="I confirm that, to the best of my knowledge, all the information on this form is accurate, and I'll tell the club straight away if anything changes."><legend>I confirm that, to the best of my knowledge, all the information on this form is accurate, and I'll tell the club straight away if anything changes.</legend><div class="pills"><label class="pill"><input type="radio" name="Information is accurate" value="Yes" required><span>Yes</span></label></div></fieldset>
+          <div class="field"><label for="r-sign">Signature (type your full name)</label><input id="r-sign" name="Signature (type your full name)" type="text" required></div>
+          <div class="field"><label for="r-date">Date</label><input id="r-date" name="Date" type="date" required></div>
+
+          <button class="button reg-submit" type="submit">Send registration</button>
+          <p class="form-message" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+      <div id="reg-thanks" class="thanks" hidden>
+        <h2>Registration sent</h2>
+        <p>Thank you! We've received your child's registration. If anything changes, just let us know using the Contact button.</p>
+        <button class="button" type="button" data-close-reg>Close</button>
+      </div>
+    </div>
+  </dialog>
+  <script>
+    (() => {
+      const dlg = document.getElementById("reg-dialog");
+      const form = document.getElementById("reg-form");
+      const view = document.getElementById("reg-form-view");
+      const thanks = document.getElementById("reg-thanks");
+      const msg = form.querySelector(".form-message");
+      const btn = form.querySelector('button[type="submit"]');
+      const ltWrap = document.getElementById("r-ltdetails-wrap");
+      const ltText = document.getElementById("r-ltdetails");
+
+      const open = () => {
+        form.reset(); msg.textContent = ""; view.hidden = false; thanks.hidden = true;
+        ltWrap.hidden = true; ltText.required = false;
+        document.getElementById("r-date").valueAsDate = new Date();
+        dlg.showModal(); dlg.scrollTop = 0;
+      };
+      document.querySelectorAll("[data-open-reg]").forEach(b => b.addEventListener("click", open));
+      dlg.querySelectorAll("[data-close-reg]").forEach(b => b.addEventListener("click", () => dlg.close()));
+      dlg.querySelector("[data-open-policy-menu-inline]").addEventListener("click", () =>
+        document.getElementById("policy-menu").showModal());
+
+      form.querySelectorAll('input[name="Long-term illness or condition"]').forEach(r =>
+        r.addEventListener("change", () => {
+          const yes = r.value === "Yes" && r.checked;
+          ltWrap.hidden = !yes; ltText.required = yes;
+        }));
+
+      const fail = (text, el) => {
+        msg.textContent = text; msg.classList.add("error");
+        el.scrollIntoView({ block: "center" }); el.focus({ preventScroll: true });
+      };
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        msg.className = "form-message";
+        for (const el of form.querySelectorAll("input, textarea, fieldset.choice")) {
+          if (el.closest("[hidden]")) continue;
+          if (el.matches("fieldset.choice")) {
+            if (el.id === "r-conditions") {
+              const any = el.querySelector("input:checked") || document.getElementById("r-cond-other").value.trim();
+              if (!any) return fail("Tick any medical conditions that apply, or tick None of the above.", el.querySelector("input"));
+            } else if (!el.querySelector("input:checked")) {
+              return fail("Answer every question marked in the form before sending.", el.querySelector("input"));
+            }
+            continue;
+          }
+          if (el.type === "radio" || el.type === "checkbox") continue;
+          if (!el.checkValidity()) {
+            const label = form.querySelector(`label[for="${el.id}"]`).childNodes[0].textContent.trim().toLowerCase();
+            return fail(el.type === "email" && el.value ? "Enter a valid email address, like name@example.com." : `Fill in ${label} to send the form.`, el);
+          }
+        }
+
+        const fd = new FormData(form);
+        const data = {};
+        for (const [k, v] of fd.entries()) data[k] = data[k] ? data[k] + ", " + v : v;
+        btn.disabled = true; btn.textContent = "Sending…";
+        try {
+          const res = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({
+              access_key: WEB3FORMS_KEY,
+              subject: `Registration: ${data["Participant's full name"]}`,
+              from_name: "Cornwall Gymnastics Centre",
+              replyto: data["Email"],
+              ...data
+            })
+          });
+          const result = await res.json();
+          if (!result.success) throw new Error(result.message);
+          view.hidden = true; thanks.hidden = false; dlg.scrollTop = 0;
+        } catch {
+          fail(`The registration didn't send. Check your connection and try again, or email ${CENTRE_EMAIL}.`, btn);
+        } finally {
+          btn.disabled = false; btn.textContent = "Send registration";
+        }
+      });
+    })();
   </script>
 </body>
 </html>
