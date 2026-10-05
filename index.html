@@ -176,6 +176,25 @@
     .field textarea:focus { outline: 3px solid var(--teal); outline-offset: 1px; }
     .field .optional { font-weight: 400; color: #4B4A3C; }
     #contact-form .button { width: 100%; margin-top: 0.5rem; }
+
+    /* Policies */
+    .policy-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.25rem; margin-bottom: 1rem; }
+    .policy-links button { background: none; border: 0; padding: 0.25rem 0; font: inherit; font-weight: 700; color: var(--black); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+    dialog.policy { width: min(94vw, 42rem); max-height: 88vh; overflow-y: auto; padding: 0; }
+    .policy-top { position: sticky; top: 0; background: var(--cream); display: flex; justify-content: space-between; align-items: start; gap: 1rem; padding: 1.25rem 1.5rem 0.75rem; border-bottom: 2px solid rgba(0,0,0,0.1); }
+    .policy-top h2 { font-size: 1.75rem; margin: 0; }
+    .policy-body { padding: 1rem 1.5rem 1.75rem; text-align: left; }
+    .policy-body h3 { font-size: 1.25rem; color: var(--day); margin: 1.5rem 0 0.5rem; }
+    .policy-body p { margin: 0 0 0.75rem; max-width: 65ch; }
+    .policy-body ul { margin: 0 0 0.75rem; padding-left: 1.25rem; }
+    .policy-body li { margin-bottom: 0.4rem; }
+    .policy-body a { color: var(--black); }
+    .policy-menu-list { display: grid; gap: 0.6rem; }
+    .policy-menu-list .button { width: 100%; }
+    .header-actions .button {
+      width: 8.5rem; padding: 0.45rem 0.5rem; font-size: 0.95rem;
+      border-width: 2px; text-align: center; text-decoration: none;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -188,6 +207,7 @@
         <a class="button" href="#timetable">Timetable</a>
         <button class="button" type="button" data-open-trial>Book a trial</button>
         <button class="button" type="button" data-open-contact>Contact</button>
+        <button class="button" type="button" data-open-policy-menu>Policies</button>
       </div>
     </div>
   </header>
@@ -259,6 +279,8 @@
         <a href="mailto:hello@cornwallgymnastics.uk">hello@cornwallgymnastics.uk</a>
       </p>
       <hr>
+
+      <nav class="policy-links" aria-label="Policies"><button type="button" data-open-policy="privacy">Privacy policy</button><button type="button" data-open-policy="safeguarding">Safeguarding &amp; welfare</button><button type="button" data-open-policy="conduct">Code of conduct</button><button type="button" data-open-policy="terms">Terms, payments &amp; cancellations</button></nav>
       <small>Cornwall Gymnastics Centre is a Community Interest Company (CIC). Company number 11984901.</small>
     </div>
   </footer>
@@ -551,6 +573,175 @@
         }
       });
     })();
+  </script>
+
+  <dialog id="policy-menu" aria-labelledby="policy-menu-title">
+    <div class="dialog-inner">
+      <div class="dialog-top">
+        <h2 id="policy-menu-title">Policies</h2>
+        <button class="close" type="button" data-close-menu aria-label="Close">&times;</button>
+      </div>
+      <div class="policy-menu-list">
+        <button class="button" type="button" data-open-policy="privacy">Privacy policy</button>
+        <button class="button" type="button" data-open-policy="safeguarding">Safeguarding &amp; welfare</button>
+        <button class="button" type="button" data-open-policy="conduct">Code of conduct</button>
+        <button class="button" type="button" data-open-policy="terms">Terms, payments &amp; cancellations</button>
+      </div>
+    </div>
+  </dialog>
+  <script>
+    (() => {
+      const menu = document.getElementById("policy-menu");
+      document.querySelector("[data-open-policy-menu]").addEventListener("click", () => menu.showModal());
+      menu.querySelector("[data-close-menu]").addEventListener("click", () => menu.close());
+      menu.addEventListener("click", e => { if (e.target === menu) menu.close(); });
+      menu.querySelectorAll("[data-open-policy]").forEach(b => b.addEventListener("click", () => menu.close()));
+    })();
+  </script>
+
+  <dialog class="policy" id="policy-privacy" aria-labelledby="policy-privacy-title">
+    <div class="policy-top">
+      <h2 id="policy-privacy-title">Privacy policy</h2>
+      <button class="close" type="button" data-close-policy aria-label="Close">&times;</button>
+    </div>
+    <div class="policy-body">
+<p>At CGC we take your privacy seriously and will make sure your personal information is kept secure. We provide gymnastics activities and are registered with CAGA, SWAGA and British Gymnastics, who govern the sport and offer competitions and events in which we may take part.</p>
+<h3>Why we use your information</h3>
+<p>We need to process information about you or your child for these reasons:</p>
+<ul>
+<li><strong>Risk assessments.</strong> Some people have a medical condition that may be a risk when taking part in gymnastics or trampolining, so it's vital to share any relevant medical information. Where this applies, we'll ask for your agreement before carrying out any appropriate assessments.</li>
+<li>To provide the gymnastics activity you've asked for, to talk to you about it and about changes to our terms and conditions, and to process payments where relevant.</li>
+<li>To meet the aims of the club and make sure your child is well supported and safe while taking part in gymnastics.</li>
+<li>To respond to any questions or complaints you send us.</li>
+<li>To keep class attendance records and contact details for emergencies.</li>
+<li>To film and take photos for coaching, and to promote the club on our website, social media and in our communications. Film and photos of children are only ever published in line with our safeguarding policy.</li>
+<li><strong>Legal reasons.</strong> To comply with the law and protect the club's interests and legal rights, including legal claims, compliance and regulatory activity.</li>
+<li><strong>Marketing.</strong> With your consent, we may email you or use social media to tell you about club news, activities, products and opportunities we think you'll be interested in. You can ask us to stop at any time.</li>
+</ul>
+<p>You have the right to object to any of these uses of your information by contacting us. In some cases this may affect our ability to do the things needed for you or your child to take part in gymnastics.</p>
+<h3>Why we share your information</h3>
+<p>We won't share your information with any other organisation except with your consent, or in exceptional or emergency circumstances where we believe sharing it is vital to protect you, your child or another person.</p>
+<p>If you or your child want to enter a competition run by an external organisation, we'll share the information needed to enter, usually name, date of birth and gender, with your agreement. Most competitions are large events, and there are likely to be photographers and people filming.</p>
+<h3>Your rights</h3>
+<p>You have the right to see the personal information we keep about you. This is called a subject access request. To make one, contact the Centre's Data Protection Officer at <a href="mailto:hello@cornwallgymnastics.uk">hello@cornwallgymnastics.uk</a>. You'll need to provide two forms of identification, such as a driving licence, utility bill or passport.</p>
+<p>If we hold other information about you, you can ask us to delete it or correct anything inaccurate. We'll either make the changes or explain why we aren't.</p>
+<h3>How long we keep information</h3>
+<p>If you leave the club, you can update your British Gymnastics registration by logging in to 'My Account'. The information you provided will then be archived for 60 days, during which you can transfer it to another club. After that it will be deleted, unless there's a legitimate and lawful reason to keep it.</p>
+<p>Without a legitimate and lawful reason, information is deleted after 12 months unless you re-join the club within that time.</p>
+<h3>Changes to this notice</h3>
+<p>We keep our privacy notice under regular review. It was last updated on 18 May 2022.</p>
+</div>
+  </dialog>
+  <dialog class="policy" id="policy-safeguarding" aria-labelledby="policy-safeguarding-title">
+    <div class="policy-top">
+      <h2 id="policy-safeguarding-title">Safeguarding &amp; welfare</h2>
+      <button class="close" type="button" data-close-policy aria-label="Close">&times;</button>
+    </div>
+    <div class="policy-body">
+<p>Cornwall Gymnastics Centre is fully committed to safeguarding and promoting the wellbeing of all its members, and to making sure the gym club is a place where everyone can enjoy themselves and reach their full potential.</p>
+<h3>Club Welfare Officer</h3>
+<p>Our Club Welfare Officer is <strong>Zoe Keeble</strong>. If you have any concern about a child's safety or wellbeing, please contact her by emailing <a href="mailto:welfare@cornwallgymnasticscentre.com">welfare@cornwallgymnasticscentre.com</a>.</p>
+<h3>Dropping off and collecting</h3>
+<ul>
+<li>Children are only in CGC's care once they've registered for their class and been allowed into the gym.</li>
+<li>Always bring your child into the building and collect them from inside at the end of their session. Children should not be left in, or collected from, the car park alone.</li>
+<li>Tell reception if someone else is collecting your child, and leave an emergency contact.</li>
+<li>Gymnasts stay with their coaches at the end of a session until a parent or guardian collects them, and must never leave a session without telling the coach.</li>
+<li>If you're delayed, please call us on <a href="tel:01208814698">01208 814698</a>.</li>
+</ul>
+<h3>Photography and filming</h3>
+<p>Taking photos or videos inside the gym is not allowed at any time, for child safeguarding reasons.</p>
+<h3>Raising a concern</h3>
+<p>We want every member to feel safe, happy and well. Gymnasts and parents are encouraged to be open and share any concerns or complaints about any part of the club. Complaints and important concerns should be raised with the Manager in writing by email, so they can be logged and dealt with professionally and promptly.</p>
+<p>Cornwall Gymnastics Centre has the right to ask anyone not following our code of conduct to leave a session or, for ongoing problems, to leave the club.</p>
+</div>
+  </dialog>
+  <dialog class="policy" id="policy-conduct" aria-labelledby="policy-conduct-title">
+    <div class="policy-top">
+      <h2 id="policy-conduct-title">Code of conduct</h2>
+      <button class="close" type="button" data-close-policy aria-label="Close">&times;</button>
+    </div>
+    <div class="policy-body">
+<p>We have a code of conduct so that all gymnasts, coaches, administrators and parents know what's expected of them, to keep everyone safe and well.</p>
+<h3>Gymnasts</h3>
+<p>As a member of CGC, all gymnasts are expected to:</p>
+<ul>
+<li>Take part within the rules and respect coaches, judges and their decisions.</li>
+<li>Train with a positive attitude and always be kind to others.</li>
+<li>Listen to their coach and concentrate in lessons.</li>
+<li>Respect, support and encourage opponents and fellow club members. Bullying of any kind will not be tolerated.</li>
+<li>Arrive 10 minutes before the session starts, ready for a prompt start, and register at reception before entering the gym.</li>
+<li>Keep to agreed times for training and competitions, and tell their coach in advance if they expect to be late.</li>
+<li>Not smoke, drink alcohol, take drugs or chew gum on club premises or when representing the club at competitions or other events.</li>
+<li>Treat all equipment with respect, and take rubbish home or put it in the bins provided.</li>
+<li>Tell their coach about any injuries or illness before the warm-up begins.</li>
+<li>Stay with their parent or guardian until class begins, and stay with coaches at the end of a session until collected.</li>
+<li>Be open and share any concerns or complaints about any part of the club.</li>
+</ul>
+<h3>What to wear</h3>
+<ul>
+<li>Hair neat, with long fringes clipped back out of the eyes and long hair tied up in a bun.</li>
+<li>All jewellery removed before entering the gym. New ear piercings should be taped for the 6-week healing period, after which earrings must be removed before sessions.</li>
+<li>A CGC t-shirt or leotard with fitted leggings or shorts in black, grey, white or CGC colours. In cold weather, a warm jumper to warm up in.</li>
+<li>No baggy joggers, jeans, crop tops, or t-shirts with zips, buttons or pockets, as these aren't safe to train in.</li>
+</ul>
+<h3>Parents</h3>
+<p>As a parent of a CGC member, you're expected to:</p>
+<ul>
+<li>Encourage your child to learn the rules and take part within them.</li>
+<li>Make sure your child arrives 5 minutes before their class, with a bottle of water. No other drinks are allowed in the gym.</li>
+<li>Give us the correct contact details and tell us about any changes.</li>
+<li>Tell us if your child has an illness or injury that may stop them attending or performing as usual. Absences should be authorised by email or phone.</li>
+<li>Make sure your child has any medication with them at each session, such as an inhaler or EpiPen, and tell us about any medical needs well before they attend.</li>
+<li>Set a good example with appropriate language, good sportsmanship and applause for everyone's performances.</li>
+<li>Help your child recognise good performance by encouraging effort as well as progress and results.</li>
+<li>Keep good communication with coaches and officials. Coaches are happy to discuss feedback or questions at an agreed time outside training sessions.</li>
+<li>Avoid talking to your child during the session where possible, unless it's an emergency.</li>
+<li>Make sure your child waits seated in the waiting room until the coach calls them in.</li>
+<li>When watching from the waiting and viewing area, keep any other children with you supervised, quiet and seated. If a class is disrupted, you'll politely be asked to leave.</li>
+<li>Stay in the building during sessions if your child needs help going to the toilet.</li>
+<li>Not enter the gym at any time unless a coach asks you to.</li>
+<li>Make sure children arrive in clean clothes, with clean feet and hands, so no equipment is marked or damaged.</li>
+<li>Follow the parking guidance in the Welcome Pack, to keep all children safe entering and leaving.</li>
+</ul>
+<p>Parents who don't follow the code of conduct will be reminded of the behaviour CGC expects. In some circumstances, or after repeated breaches, members may be asked to leave the club, and fees paid will not be refunded.</p>
+</div>
+  </dialog>
+  <dialog class="policy" id="policy-terms" aria-labelledby="policy-terms-title">
+    <div class="policy-top">
+      <h2 id="policy-terms-title">Terms, payments &amp; cancellations</h2>
+      <button class="close" type="button" data-close-policy aria-label="Close">&times;</button>
+    </div>
+    <div class="policy-body">
+<h3>Paying fees</h3>
+<ul>
+<li>Monthly fees are paid in advance and must be paid by the 1st of each month.</li>
+</ul>
+<h3>Leaving the club</h3>
+<ul>
+<li>Please give 1 month's paid notice when leaving the club. Your child is welcome to keep attending during the notice period.</li>
+</ul>
+<h3>Absences</h3>
+<ul>
+<li>Let us know by email or phone if your child will be absent. Repeated absences without telling us may mean your child loses their place in a session.</li>
+</ul>
+<h3>Code of conduct</h3>
+<ul>
+<li>Members who repeatedly break the code of conduct may be asked to leave the club, and fees already paid will not be refunded.</li>
+</ul>
+<p>Questions about payments? Use the <strong>Contact</strong> button at the top of the page and choose <strong>Payments</strong>.</p>
+</div>
+  </dialog>
+  <script>
+    document.querySelectorAll("[data-open-policy]").forEach(b =>
+      b.addEventListener("click", () => {
+        const d = document.getElementById("policy-" + b.dataset.openPolicy);
+        d.showModal(); d.scrollTop = 0;
+      }));
+    document.querySelectorAll("dialog.policy").forEach(d => {
+      d.querySelector("[data-close-policy]").addEventListener("click", () => d.close());
+      d.addEventListener("click", e => { if (e.target === d) d.close(); });
+    });
   </script>
 </body>
 </html>
