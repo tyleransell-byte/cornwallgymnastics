@@ -213,6 +213,8 @@
     .registration-banner:focus-visible { outline: 3px solid var(--black); outline-offset: -6px; }
 
     #session-preview { width: min(94vw, 42rem); overflow-y: auto; }
+    .basket-day { margin-top: 1.5rem; }
+    .basket-day h3 { background: var(--orange); color: var(--black); font-size: 1.75rem; padding: 0.75rem 1rem; border-radius: 0.75rem; margin-bottom: 0.25rem; }
     .basket-row { padding: 1rem 0; border-bottom: 1px solid rgba(0,0,0,0.15); }
     .basket-row > label:first-child { display: flex; align-items: start; gap: 0.65rem; font-weight: 700; }
     .basket-row input[type="checkbox"] { margin-top: 0.35rem; width: 1.2rem; height: 1.2rem; flex-shrink: 0; accent-color: var(--day); }
@@ -509,18 +511,32 @@
 
     const CHECKOUT_URL = "https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/create-checkout";
     const sessionRows = new Map();
+    const sessionDayGroups = new Map();
     document.querySelectorAll(".tt-day li").forEach(item => {
       const booking = item.querySelector("[data-book]");
       if (!booking) return;
       const key = booking.dataset.book.replace(/-(one|many)$/, "");
       const title = booking.dataset.label.replace(/, (one session|several sessions|session booking)$/, "");
+      const day = item.closest(".tt-day").querySelector("h3").textContent.trim();
+      if (!sessionDayGroups.has(day)) {
+        const group = document.createElement("div");
+        group.className = "basket-day";
+        const heading = document.createElement("h3");
+        heading.id = "basket-day-" + day.toLowerCase();
+        heading.textContent = day;
+        group.setAttribute("role", "group");
+        group.setAttribute("aria-labelledby", heading.id);
+        group.append(heading);
+        document.getElementById("session-classes").append(group);
+        sessionDayGroups.set(day, group);
+      }
       const row = document.createElement("div");
       row.className = "basket-row";
       const label = document.createElement("label");
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       const text = document.createElement("span");
-      text.textContent = title;
+      text.textContent = title.replace("(" + day + " ", "(");
       label.append(checkbox, text);
       const quantityLabel = document.createElement("label");
       quantityLabel.textContent = "Sessions ";
@@ -530,7 +546,7 @@
       quantity.setAttribute("aria-label", "Number of sessions for " + title);
       quantityLabel.append(quantity);
       row.append(label, quantityLabel);
-      document.getElementById("session-classes").append(row);
+      sessionDayGroups.get(day).append(row);
       sessionRows.set(key, { checkbox, quantity });
       checkbox.addEventListener("change", () => { quantity.disabled = !checkbox.checked; updateSessionTotal(); });
       quantity.addEventListener("input", updateSessionTotal);
