@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parent portal · Cornwall Gymnastics Centre</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--cream:#FDF9D7;--orange:#FE9F59;--teal:#5FA4B3;--ink:#171717;--sky:#DDEFF2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.5 system-ui,sans-serif}
+header{padding:18px 24px;background:var(--orange);display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+header a{color:inherit;font-weight:700;text-decoration:none}
+main{max-width:960px;margin:auto;padding:25px 20px 45px}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.15;margin:15px 0}
+h2{font-size:23px;margin:0 0 14px}
+h3{font-size:19px;margin:0 0 8px}
+p{margin:0 0 15px}
+button,.button{display:inline-block;border:2px solid #171717;border-radius:99px;background:var(--orange);padding:11px 18px;color:var(--ink);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;min-height:46px}
+button:disabled{opacity:.55;cursor:wait}
+.secondary{background:#fff}
+input,select{display:block;width:100%;padding:12px;font:inherit;border:2px solid #171717;border-radius:10px;margin-top:6px;background:#fff}
+label{display:block;font-weight:650;margin:0 0 16px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.panel{padding:23px;background:#fff;border-radius:20px;margin:0 0 20px;border:1px solid #dedac1}
+.auth{max-width:500px;margin:25px auto}
+.switches{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.switches [aria-pressed=true]{background:var(--orange)}
+.switches [aria-pressed=false]{background:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.muted{font-size:14px;color:#4b4a3c}
+.row{padding:14px 0;border-bottom:1px solid #ddd;overflow-wrap:anywhere}
+.row:last-child{border:0}
+.price{font-size:28px;font-weight:800}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.badge{background:var(--sky);border-radius:20px;padding:5px 10px;font-size:13px;display:inline-block}
+#message:empty{display:none}
+#message{padding:14px;background:var(--sky);border-radius:12px;margin:16px 0}
+#reset-panel{max-width:500px;margin:auto}
+small{display:block}
+footer{text-align:center;padding:20px;font-size:14px}
+details{margin-top:12px}
+summary{cursor:pointer;font-weight:700}
+[hidden]{display:none!important}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.panel{padding:19px}header{padding:16px 20px}}
+</style>
+</head>
+<body>
+<header>
+  <a href="/">Cornwall Gymnastics Centre</a>
+  <span>Parent portal</span>
+  <button id="logout" class="secondary" hidden>Sign out</button>
+</header>
+<main>
+<div id="message" role="status" aria-live="polite"></div>
+
+<section id="auth-panel" class="auth panel">
+<h1>Your family’s gymnastics home.</h1>
+<p>Manage your children’s profiles, class bookings and payments in one place.</p>
+<div class="switches">
+  <button data-mode="login" aria-pressed="true">Sign in</button>
+  <button data-mode="signup" aria-pressed="false">Create account</button>
+</div>
+<form id="login-form">
+  <label>Username<input name="username" autocomplete="username" required pattern="[A-Za-z0-9_]{3,30}"></label>
+  <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+  <button>Sign in</button>
+</form>
+<form id="signup-form" hidden>
+  <label>Your name<input name="name" autocomplete="name" required maxlength="120"></label>
+  <label>Email for confirmations and password resets<input name="email" type="email" autocomplete="email" required></label>
+  <label>Choose a username<input name="username" autocomplete="username" pattern="[A-Za-z0-9_]{3,30}" required><small class="muted">3–30 letters, numbers or underscores.</small></label>
+  <label>Choose a password<input name="password" type="password" autocomplete="new-password" minlength="10" required><small class="muted">At least 10 characters.</small></label>
+  <p class="muted">We’ll email you once to verify your account. After that, sign in with your username and password.</p>
+  <button>Create account</button>
+</form>
+<details>
+  <summary>Forgot your password?</summary>
+  <form id="forgot-form">
+    <label>Account email<input name="email" type="email" autocomplete="email" required></label>
+    <button class="secondary">Send reset link</button>
+  </form>
+</details>
+<p class="muted" style="margin-top:20px">Need help? <a href="mailto:hello@cornwallgymnastics.uk">Contact the club</a>. <a href="/#privacy">View policies on our website</a>.</p>
+</section>
+
+<section id="reset-panel" class="panel" hidden>
+<h1>Choose a new password</h1>
+<form id="password-form">
+  <label>New password<input name="password" type="password" minlength="10" autocomplete="new-password" required></label>
+  <button>Update password</button>
+</form>
+</section>
+
+<section id="dashboard" hidden>
+<h1 id="welcome"></h1>
+<p>A place for every little milestone.</p>
+<div class="actions">
+  <button id="refresh" class="secondary">Refresh</button>
+  <a class="button" href="/#timetable">Book classes</a>
+</div>
+<section class="panel">
+<h2>Your children</h2>
+<label for="child-select">Choose a child<select id="child-select"></select></label>
+<div id="child-profile"></div>
+<details><summary>Add a child</summary>
+  <form id="child-form" style="margin-top:16px">
+    <label>Child’s full name<input name="name" autocomplete="off" required maxlength="120"></label>
+    <label>Date of birth<input name="dob" type="date" required></label>
+    <button>Add child</button>
+  </form>
+</details>
+<p id="first-child" hidden>Add your child above to start their profile, then complete registration.</p>
+</section>
+
+<div class="grid">
+<section class="panel">
+  <h2>Booked classes</h2>
+  <div id="bookings"></div>
+</section>
+<section class="panel">
+  <h2>Payments</h2>
+  <p class="muted">Last family payment</p>
+  <div id="last-payment" class="price"></div>
+  <p id="last-payment-date" class="muted"></p>
+  <h3>Next payment</h3>
+  <p>No scheduled payment.</p>
+  <p class="muted">Your current bookings are one-off purchases, not recurring memberships.</p>
+  <details><summary>Payment history</summary><div id="payments"></div></details>
+</section>
+</div>
+
+<section class="panel">
+  <h2>Before your first class</h2>
+  <div id="checklist"></div>
+  <p>Check your class’s time and age range before arriving. Contact the club if you have questions about what to bring or any support your child needs.</p>
+  <a class="button secondary" href="mailto:hello@cornwallgymnastics.uk">Ask the team</a>
+</section>
+<section class="panel">
+  <h2>Stay connected</h2>
+  <p>Please let the club know if your contact information or your child’s medical details change.</p>
+  <p class="muted">Progress updates and dated session reminders will appear here when those features are available.</p>
+</section>
+</section>
+</main>
+<footer>Cornwall Gymnastics Centre · Your family’s information is private to your account.</footer>
+
+<script src="/portal-client.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const portal = window.CgcPortal;
+  let state = null;
+
+  const money = (n, c = 'gbp') => new Intl.NumberFormat('en-GB', {
+    style: 'currency', currency: c.toUpperCase()
+  }).format(n / 100);
+
+  function message(value) {
+    $('message').textContent = value;
+  }
+
+  function text(parent, tag, value, cls = '') {
+    const el = document.createElement(tag);
+    el.textContent = value;
+    if (cls) el.className = cls;
+    parent.append(el);
+    return el;
+  }
+
+  function age(dob) {
+    const now = new Date();
+    const [y, m, d] = dob.split('-').map(Number);
+    return now.getFullYear() - y -
+      ((now.getMonth() + 1 < m ||
+      (now.getMonth() + 1 === m && now.getDate() < d)) ? 1 : 0);
+  }
+
+  function profile() {
+    const child = state.children.find(c => c.id === $('child-select').value);
+    const box = $('child-profile');
+    box.replaceChildren();
+    const bookings = $('bookings');
+    bookings.replaceChildren();
+    const checklist = $('checklist');
+    checklist.replaceChildren();
+
+    if (!child) {
+      text(box, 'p', 'No children added yet.');
+      text(bookings, 'p', 'Add a child to start booking.');
+      return;
+    }
+
+    text(box, 'h3', child.full_name);
+    text(box, 'p', 'Age ' + age(child.date_of_birth) + ' · Born ' +
+      new Date(child.date_of_birth + 'T12:00:00').toLocaleDateString('en-GB'));
+    text(box, 'p', 'Class level: ' + (child.class_level || 'Not assigned yet'));
+    text(box, 'span', child.registered_at ?
+      'Registration received' : 'Registration needed', 'badge');
+
+    const link = text(box, 'a', child.registered_at ?
+      'Update registration' : 'Complete registration', 'button');
+    link.href = '/#register';
+    link.onclick = () => sessionStorage.setItem('cgc-register-child', child.id);
+    box.append(document.createElement('br'));
+
+    const rows = state.bookings.filter(b => b.child_id === child.id);
+    if (!rows.length) text(bookings, 'p', 'No classes booked yet.');
+
+    rows.forEach(b => {
+      const row = text(bookings, 'div', '', 'row');
+      text(row, 'strong', b.class_name);
+      text(row, 'p', b.quantity + ' session' + (b.quantity === 1 ? '' : 's') +
+        ' · ' + (b.status === 'cancelled' ? 'Cancelled' : 'Paid'));
+      text(row, 'small', b.session_date ?
+        new Date(b.session_date + 'T12:00:00').toLocaleDateString('en-GB') :
+        'Weekly class purchase · individual dates are not allocated yet', 'muted');
+    });
+
+    text(checklist, 'p', child.registered_at ?
+      'Registration received for ' + child.full_name + '.' :
+      'Complete ' + child.full_name + '’s registration before their first class.');
+    text(checklist, 'p', rows.length ?
+      'Your paid class purchases are listed above.' :
+      'Choose a class when you’re ready.');
+  }
+
+  async function dashboard() {
+    state = await portal.api('dashboard');
+    $('auth-panel').hidden = true;
+    $('dashboard').hidden = false;
+    $('logout').hidden = false;
+    $('welcome').textContent = 'Welcome, ' + state.profile.display_name + '.';
+
+    const selected = $('child-select').value;
+    $('child-select').replaceChildren();
+
+    state.children.forEach(child => {
+      const option = document.createElement('option');
+      option.value = child.id;
+      option.textContent = child.full_name;
+      $('child-select').append(option);
+    });
+
+    if (state.children.some(c => c.id === selected)) {
+      $('child-select').value = selected;
+    }
+
+    $('first-child').hidden = !!state.children.length;
+    $('child-select').disabled = !state.children.length;
+    profile();
+
+    const last = state.payments[0];
+    $('last-payment').textContent = last ?
+      money(last.amount_total, last.currency) : 'No payments yet';
+    $('last-payment-date').textContent = last ?
+      new Date(last.paid_at).toLocaleDateString('en-GB') +
+      (last.livemode ? '' : ' · Test payment') : '';
+
+    $('payments').replaceChildren();
+    state.payments.forEach(p => {
+      const row = text($('payments'), 'div', '', 'row');
+      text(row, 'strong', money(p.amount_total, p.currency));
+      text(row, 'small', new Date(p.paid_at).toLocaleDateString('en-GB') +
+        (p.livemode ? '' : ' · Test payment'));
+      p.items.forEach(item => {
+        text(row, 'p', item.quantity + ' × ' + item.class, 'muted');
+      });
+    });
+  }
+
+  document.querySelectorAll('[data-mode]').forEach(button => {
+    button.onclick = () => {
+      const mode = button.dataset.mode;
+      document.querySelectorAll('[data-mode]').forEach(b => {
+        b.setAttribute('aria-pressed', b === button);
+      });
+      $('login-form').hidden = mode !== 'login';
+      $('signup-form').hidden = mode !== 'signup';
+      message('');
+    };
+  });
+
+  function submit(id, action, handler, authenticated = false) {
+    $(id).addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector('button');
+      button.disabled = true;
+      message('Please wait…');
+      try {
+        const data = Object.fromEntries(new FormData(form));
+        const result = await portal.api(action, data, authenticated);
+        await handler(result);
+      } catch (error) {
+        message(error.message);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
+  submit('login-form', 'login', async session => {
+    portal.save(session);
+    $('login-form').reset();
+    message('');
+    await dashboard();
+  });
+
+  submit('signup-form', 'signup', result => {
+    message(result.message);
+    $('signup-form').reset();
+  });
+
+  submit('forgot-form', 'reset', result => message(result.message));
+
+  submit('child-form', 'child', async () => {
+    $('child-form').reset();
+    message('Child profile saved. Complete their registration next.');
+    await dashboard();
+  }, true);
+
+  submit('password-form', 'password', async result => {
+    message(result.message);
+    $('reset-panel').hidden = true;
+    await dashboard();
+  }, true);
+
+  $('logout').onclick = async () => {
+    try { await portal.api('logout'); } catch {}
+    portal.clear();
+    state = null;
+    $('dashboard').hidden = true;
+    $('logout').hidden = true;
+    $('auth-panel').hidden = false;
+    $('child-profile').replaceChildren();
+    $('bookings').replaceChildren();
+    $('payments').replaceChildren();
+    message('Signed out.');
+  };
+
+  $('refresh').onclick = () => dashboard().catch(e => message(e.message));
+  $('child-select').onchange = profile;
+
+  async function start() {
+    const hash = new URLSearchParams(location.hash.slice(1));
+
+    if (hash.has('access_token')) {
+      portal.save({
+        access_token: hash.get('access_token'),
+        refresh_token: hash.get('refresh_token'),
+        expires_at: Math.floor(Date.now() / 1000) +
+          Number(hash.get('expires_in') || 3600)
+      });
+      history.replaceState(null, '', location.pathname);
+
+      if (hash.get('type') === 'recovery') {
+        $('auth-panel').hidden = true;
+        $('reset-panel').hidden = false;
+        return;
+      }
+    }
+
+    if (await portal.session()) await dashboard();
+  }
+
+  start().catch(e => message(e.message));
+})();
+</script>
+</body>
+</html>
