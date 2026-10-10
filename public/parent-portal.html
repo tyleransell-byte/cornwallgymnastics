@@ -43,6 +43,8 @@ details{margin-top:12px}
 summary{cursor:pointer;font-weight:700}
 [hidden]{display:none!important}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.panel{padding:19px}header{padding:16px 20px}}
+
+.account-status{border-left:6px solid var(--status-colour);margin:20px 0}.account-status.red{--status-colour:#b42318;background:#fff4f2}.account-status.amber{--status-colour:#976100;background:#fff7df}.account-status.green{--status-colour:#18733d;background:#effaf1}.status-light{display:inline-block;width:17px;height:17px;border-radius:50%;background:var(--status-colour);margin-right:10px;vertical-align:middle}.status-task{border-top:1px solid #dedac1;padding:10px 0}.status-task .button{margin-top:4px}button,a.button{-webkit-text-fill-color:currentColor}
 </style>
 </head>
 <body>
@@ -94,6 +96,7 @@ summary{cursor:pointer;font-weight:700}
 
 <section id="dashboard" hidden>
 <h1 id="welcome"></h1>
+<section id="account-status" class="panel account-status" aria-label="Account status" aria-live="polite"></section>
 <p>A place for every little milestone.</p>
 <div class="actions">
   <button id="refresh" class="secondary">Refresh</button>
@@ -225,6 +228,39 @@ summary{cursor:pointer;font-weight:700}
       'Choose a class when you’re ready.');
   }
 
+  function accountStatus(family, now=new Date()) {
+    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
+    const get=key=>Number(parts.find(p=>p.type===key).value),y=get('year'),m=get('month'),day=get('day');
+    const next=new Date(Date.UTC(y,m,1)),month=next.toISOString().slice(0,7),label=next.toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'});
+    const tasks=[];
+    if(!family.children.length)tasks.push({kind:'add',label:'Add your child to start their profile.'});
+    family.children.filter(c=>!c.registered_at).forEach(c=>tasks.push({kind:'register',child:c,label:'Complete registration for '+c.full_name+'.'}));
+    if(tasks.length)return{colour:'red',title:'Action needed',description:'Please complete the following before booking classes.',tasks};
+    const daysInMonth=new Date(Date.UTC(y,m,0)).getUTCDate();
+    if(day>=daysInMonth-6){
+      const missing=family.children.filter(c=>{
+        const rows=family.bookings.filter(b=>b.child_id===c.id&&b.status!=='cancelled'&&(b.cancelled_quantity||0)<b.quantity);
+        const upcoming=rows.filter(b=>b.booking_month===month);
+        const previous=rows.filter(b=>b.booking_month&&b.booking_month<month).sort((a,b)=>b.booking_month.localeCompare(a.booking_month));
+        if(!upcoming.length)return true;
+        if(!previous.length)return false;
+        const expected=[...new Set(previous.filter(b=>b.booking_month===previous[0].booking_month).map(b=>b.class_id).filter(Boolean))];
+        return expected.some(id=>!upcoming.some(b=>b.class_id===id));
+      });
+      if(missing.length)return{colour:'amber',title:'Next month’s booking window is open',description:'If your child is continuing in '+label+', review their classes and book before the month starts. This is a booking reminder; it does not mean you owe an unpaid fee.',tasks:missing.map(child=>({kind:'book',child,label:'Review '+label+' bookings for '+child.full_name+'.'}))};
+    }
+    return{colour:'green',title:'You’re up to date',description:'Your children’s registrations are complete. No registration or booking reminders need attention right now.',tasks:[]};
+  }
+  function renderAccountStatus(){
+    const status=accountStatus(state),card=$('account-status');card.replaceChildren();card.className='panel account-status '+status.colour;
+    const title=text(card,'h2',status.title);const light=document.createElement('span');light.className='status-light';light.setAttribute('aria-hidden','true');title.prepend(light);
+    text(card,'p',status.description);
+    status.tasks.forEach(task=>{const row=text(card,'div','','status-task');text(row,'p',task.label);
+      if(task.kind==='add'){const button=text(row,'button','Add a child','button');button.type='button';button.onclick=()=>{const form=$('child-form');form.closest('details').open=true;form.scrollIntoView({behavior:'smooth',block:'center'});form.querySelector('input').focus();};}
+      else {const link=text(row,'a',task.kind==='register'?'Complete registration':'Review and book classes','button');link.href=task.kind==='register'?'/#register':'/#timetable';if(task.kind==='register')link.onclick=()=>sessionStorage.setItem('cgc-register-child',task.child.id);}
+    });
+  }
+
   async function dashboard() {
     state = await portal.api('dashboard');
     $('auth-panel').hidden = true;
@@ -249,6 +285,7 @@ summary{cursor:pointer;font-weight:700}
     $('first-child').hidden = !!state.children.length;
     $('child-select').disabled = !state.children.length;
     profile();
+    renderAccountStatus();
 
     const last = state.payments[0];
     $('last-payment').textContent = last ?
