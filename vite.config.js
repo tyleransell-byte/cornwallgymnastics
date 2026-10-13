@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "node:url";
 
 const startHereGuide = `
 <section id="start-here" aria-labelledby="start-here-heading" style="padding:54px 20px;background:#fff8f3;color:#26323b">
@@ -34,5 +35,5 @@ export default defineConfig({
     }
   ],
   base: "/",
-  build: { outDir: "dist" }
+  build: { outDir: "dist", rollupOptions: { input: { main: fileURLToPath(new URL("./index.html", import.meta.url)), preview: fileURLToPath(new URL("./programme-preview.html", import.meta.url)) } } }
 });
