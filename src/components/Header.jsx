@@ -15,6 +15,7 @@ export default function Header({ onTrial }) {
         </a>
 
         <nav className="nav-links" aria-label="Main navigation">
+          <a href="#start-here">Start here</a>
           <a href="#classes">Classes</a>
           <a href="/timetable.html">Timetable</a>
           <a href="#faq">FAQ</a>
