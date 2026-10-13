@@ -125,9 +125,8 @@ summary{cursor:pointer;font-weight:700}
 </section>
 
 <section class="panel" id="repeat-month-panel">
-<h2>Repeat last month's classes</h2>
+<h2>Repeat this month's classes</h2>
 <p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
-<button type="button" id="repeat-month-button" class="secondary">Repeat last month</button>
 <button type="button" id="repeat-current-button" class="secondary">Repeat this month</button>
 <div id="repeat-month-review" hidden>
 <h3 id="repeat-month-heading"></h3>
@@ -642,7 +641,6 @@ async function loadRepeat(source){
  render();review.hidden=false;message.textContent='Review or untick any classes before proceeding.';
  }catch(e){message.textContent=e.message||'Unable to load classes.'}
 }
-button.onclick=()=>loadRepeat('previous');
 $('repeat-current-button').onclick=()=>loadRepeat('current');
 $('repeat-month-cancel').onclick=()=>{review.hidden=true;message.textContent='No booking or payment was made.'};
 $('repeat-month-pay').onclick=async()=>{
