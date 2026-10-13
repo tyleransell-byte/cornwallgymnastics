@@ -251,15 +251,14 @@ summary{cursor:pointer;font-weight:700}
     rows.forEach(b => {
       const month = /^\\d{4}-(0[1-9]|1[0-2])$/.test(b.booking_month || '') ? b.booking_month
         : /^\\d{4}-\\d{2}-\\d{2}$/.test(b.session_date || '') ? b.session_date.slice(0,7)
-        : 'older';
+        : '2026-10';
       if (!grouped.has(month)) grouped.set(month, []);
       grouped.get(month).push(b);
     });
     [...grouped.keys()].sort((a,b) => b.localeCompare(a)).forEach(month => {
       const section = text(bookings, 'section', '', 'booking-month');
       section.style.marginTop = '18px';
-      const title = month === 'older' ? 'Earlier bookings — month not recorded'
-        : new Date(month + '-01T12:00:00Z').toLocaleDateString('en-GB', {month:'long',year:'numeric',timeZone:'UTC'});
+      const title = new Date(month + '-01T12:00:00Z').toLocaleDateString('en-GB', {month:'long',year:'numeric',timeZone:'UTC'}) + ' — Booked Classes';
       text(section, 'h3', title);
       grouped.get(month).sort((a,b)=>(a.session_date||'').localeCompare(b.session_date||'')).forEach(b => {
         const row = text(section, 'div', '', 'row');
