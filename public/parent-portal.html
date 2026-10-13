@@ -446,7 +446,7 @@ summary{cursor:pointer;font-weight:700}
     box.className = 'panel account-status ' + colour;
     text(box, 'h2', latest.status === 'pending' ? 'Trial request awaiting approval' : latest.status === 'accepted' ? 'Trial request approved' : 'Trial request declined');
     text(box, 'p', latest.child_name + ' · ' + latest.class_name + ' · Preferred date: ' + latest.requested_date);
-    text(box, 'p', latest.status === 'pending' ? 'The club has not made a decision yet.' : latest.status === 'accepted' ? 'Your trial request has been accepted.' : 'Your trial request has been declined.');
+    text(box, 'p', latest.status === 'pending' ? 'The club has not made a decision yet.' : latest.status === 'accepted' ? 'Your trial request has been accepted.' : 'Your trial request has been declined.');addDecisionAcknowledgement(box,'trial',latest,loadTrials);
   }
   const recreationalTrials=[
     ['tue-recreational-4-7','Tuesday 4:15–5:15pm',4,7],['tue-recreational-7-12','Tuesday 5:30–6:30pm',7,12],
