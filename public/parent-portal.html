@@ -493,6 +493,17 @@ summary{cursor:pointer;font-weight:700}
   $('close-trial').onclick = () => { $('trial-requests').hidden = true; };
   async function loadTrials() {
     const result = await trialApi('list');
+    const requestedNames = new Set(result.requests.map(r=>String(r.child_name||'').trim().toLocaleLowerCase('en-GB')));
+    const eligibleChildren = (state.children||[]).filter(c=>!requestedNames.has(String(c.full_name||'').trim().toLocaleLowerCase('en-GB')));
+    const trialChildSelect=$('trial-child');
+    const previousChild=trialChildSelect.value;
+    trialChildSelect.replaceChildren();
+    eligibleChildren.forEach(child=>{const option=document.createElement('option');option.value=child.id;option.textContent=child.full_name;trialChildSelect.append(option);});
+    if(eligibleChildren.some(c=>c.id===previousChild))trialChildSelect.value=previousChild;
+    $('trial-form').hidden=!eligibleChildren.length;
+    $('trial-form').querySelector('button').disabled=!eligibleChildren.length;
+    $('open-trial').hidden=!eligibleChildren.length;
+    if(eligibleChildren.length)updateTrialClasses();
     renderTrialStatus(result.requests);
     parentStatus('trials',result.requests.some(r=>r.status!=='pending'&&!requestAcks.has(requestKey('trial',r.id))));
     $('trial-list').replaceChildren();
