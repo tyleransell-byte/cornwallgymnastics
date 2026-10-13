@@ -417,7 +417,7 @@ summary{cursor:pointer;font-weight:700}
     text(box,'h2',request.status==='pending'?'Leaving request awaiting confirmation':request.status==='confirmed'?'Leaving request confirmed':'Leaving request needs discussion');
     const child=state.children.find(c=>c.id===request.child_id);
     text(box,'p',(child?.full_name||'Child')+' · Proposed final date: '+new Date(request.final_date+'T12:00:00').toLocaleDateString('en-GB'));
-    text(box,'p','Bookings and payments are not automatically changed.');addDecisionAcknowledgement(box,'leaving',request,loadLeaving);
+    text(box,'p','Bookings and payments are not automatically changed.');addDecisionAcknowledgement(box,'leaving',request,loadLeaving);const older=result.requests.slice(1).filter(r=>r.status!=='pending'&&!requestAcks.has(requestKey('leaving',r.id)));older.forEach(item=>{const row=text(box,'div','','row');text(row,'p','Earlier leaving request · '+item.status+' · '+item.final_date);addDecisionAcknowledgement(row,'leaving',item,loadLeaving);});
   }
   $('close-leaving').onclick=()=>{$('leaving-panel').hidden=true;};
   $('leaving-form').onsubmit=async event=>{
