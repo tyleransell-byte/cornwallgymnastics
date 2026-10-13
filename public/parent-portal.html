@@ -356,6 +356,7 @@ summary{cursor:pointer;font-weight:700}
     $('trial-child').replaceChildren();
     state.children.forEach(child => { const option = document.createElement('option'); option.value = child.id; option.textContent = child.full_name; $('trial-child').append(option); });
     $('trial-form').querySelector('button').disabled = !state.children.length;
+    updateTrialClasses();
     if (new URLSearchParams(location.search).has('trial')) $('trial-requests').hidden = false;
     loadTrials().catch(e => { $('trial-message').textContent = e.message; });
 
