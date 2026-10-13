@@ -338,6 +338,7 @@ summary{cursor:pointer;font-weight:700}
   async function dashboard() {
     state = await portal.api('dashboard');
     await loadRequestAcks();
+    loadTeamThreads().catch(e=>message(e.message));
     $('auth-panel').hidden = true;
     $('dashboard').hidden = false;
     $('logout').hidden = false;
