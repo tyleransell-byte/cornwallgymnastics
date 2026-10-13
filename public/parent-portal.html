@@ -285,7 +285,7 @@ summary{cursor:pointer;font-weight:700}
           new Date(b.session_date + 'T12:00:00').toLocaleDateString('en-GB') :
           'Paid class purchase · individual dates not recorded', 'muted');
         if (b.session_date && b.id) {
-          const cancel = text(row, 'button', 'Cancel this session', 'secondary');
+          const cancel = text(row, 'button', 'Cancel session — ' + new Date(b.session_date + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'short'}), 'secondary');
           cancel.type = 'button';
           cancel.style.marginTop = '10px';
           cancel.onclick = () => {
@@ -296,7 +296,7 @@ summary{cursor:pointer;font-weight:700}
             }
             const confirmation = text(row, 'div', '', 'cancel-confirmation');
             confirmation.style.cssText = 'margin-top:12px;padding:14px;background:#fff5e9;border:1px solid #bd804d;border-radius:12px';
-            text(confirmation, 'p', 'Cancel this booked session? No refund will be issued. The session will be removed from the staff register.');
+            text(confirmation, 'p', 'Cancel the session on ' + new Date(b.session_date + 'T12:00:00').toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '? No refund will be issued. Only this dated session will be removed from the staff register.');
             const yes = text(confirmation, 'button', 'Yes, cancel session', 'secondary');
             yes.type = 'button';
             const no = text(confirmation, 'button', 'Keep session', 'secondary');
@@ -322,6 +322,8 @@ summary{cursor:pointer;font-weight:700}
               }
             };
           };
+        } else if (!b.session_date) {
+          text(row, 'p', 'This older booking has no recorded session date. Please contact the club to correct it before cancelling a specific session.', 'muted');
         }
       });
     });
