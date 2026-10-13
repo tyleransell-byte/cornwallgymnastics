@@ -46,7 +46,7 @@ small{display:block}
 footer{text-align:center;padding:20px;font-size:14px}
 details{margin-top:12px}
 summary{cursor:pointer;font-weight:700}
-[hidden]{display:none!important}
+.portal-menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin:18px 0 24px}.portal-menu button{background:#fff;border-radius:16px;display:flex;justify-content:space-between;align-items:center;text-align:left;gap:10px}.portal-menu button[aria-pressed=true]{background:var(--orange)}.portal-dot{width:13px;height:13px;border-radius:50%;background:#248a48;flex-shrink:0}.portal-dot.red{background:#d52d2d}.portal-dot.grey{background:#888}.portal-view[hidden]{display:none!important}[hidden]{display:none!important}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.panel{padding:19px}header{padding:16px 20px}}
 
 .account-status{border-left:6px solid var(--status-colour);margin:20px 0}.account-status.red{--status-colour:#b42318;background:#fff4f2}.account-status.amber{--status-colour:#976100;background:#fff7df}.account-status.green{--status-colour:#18733d;background:#effaf1}.status-light{display:inline-block;width:17px;height:17px;border-radius:50%;background:var(--status-colour);margin-right:10px;vertical-align:middle}.status-task{border-top:1px solid #dedac1;padding:10px 0}.status-task .button{margin-top:4px}button,a.button{-webkit-text-fill-color:currentColor}
@@ -100,7 +100,7 @@ summary{cursor:pointer;font-weight:700}
 </section>
 
 <section id="dashboard" hidden>
-<h1 id="welcome"></h1><section class="panel" id="parent-direct"><h2>Private messages</h2><div id="parent-direct-list"></div></section><section class="panel" id="parent-news"><h2>Club newsletters</h2><div id="parent-news-list"></div></section>
+<h1 id="welcome"></h1><p class="muted">Choose a section. A red light means something needs your attention; green means all clear.</p><nav id="parent-menu" class="portal-menu" aria-label="Parent portal sections"></nav><section class="panel" id="parent-direct"><h2>Private messages</h2><div id="parent-direct-list"></div></section><section class="panel" id="parent-news"><h2>Club newsletters</h2><div id="parent-news-list"></div></section>
 <section id="account-status" class="panel account-status" aria-label="Account status" aria-live="polite"></section>
 <section id="trial-status" class="panel account-status" aria-live="polite" hidden></section>
 <section id="leaving-status" class="panel account-status" aria-live="polite" hidden></section>
