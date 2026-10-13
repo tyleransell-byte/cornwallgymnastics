@@ -619,7 +619,7 @@ function render(){
 }
 function total(){
  const selected=current.filter(x=>x.selected);
- $('repeat-month-total').textContent=selected.length+' class(es) selected · estimated test checkout total £'+(selected.length*10).toFixed(2)+'. Final price and dates are confirmed by checkout.';
+ $('repeat-month-total').textContent=selected.length+' class(es) selected. The amount must match your previous paid booking; check the total on the Stripe test checkout screen before proceeding.';
  $('repeat-month-pay').disabled=!selected.length;
 }
 async function loadRepeat(source){
