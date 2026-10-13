@@ -405,7 +405,7 @@ summary{cursor:pointer;font-weight:700}
     box.replaceChildren();
     if(!result.requests.length){parentStatus('leaving',false);box.hidden=parentActive!=='leaving';return;}
     box.hidden=parentActive!=='leaving';
-    parentStatus('leaving',result.requests.some(r=>r.status==='needs_discussion'));
+    parentStatus('leaving',result.requests.some(r=>r.status!=='pending'&&!requestAcks.has(requestKey('leaving',r.id))));
     const request=result.requests[0],colour=request.status==='pending'?'amber':request.status==='confirmed'?'green':'red';
     box.className='panel account-status portal-view '+colour;
     text(box,'h2',request.status==='pending'?'Leaving request awaiting confirmation':request.status==='confirmed'?'Leaving request confirmed':'Leaving request needs discussion');
@@ -473,7 +473,7 @@ summary{cursor:pointer;font-weight:700}
   async function loadTrials() {
     const result = await trialApi('list');
     renderTrialStatus(result.requests);
-    parentStatus('trials',result.requests.some(r=>r.status==='accepted'||r.status==='declined'));
+    parentStatus('trials',result.requests.some(r=>r.status!=='pending'&&!requestAcks.has(requestKey('trial',r.id))));
     $('trial-list').replaceChildren();
     if (!result.requests.length) text($('trial-list'),'p','No trial requests yet.');
     result.requests.forEach(request => {
