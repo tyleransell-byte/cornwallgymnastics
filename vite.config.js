@@ -18,12 +18,48 @@ const startHereGuide = `
   </div>
 </section>`;
 
+
+const cgcPrices = new Map([
+  ["Stay and Play", "£6.50 per session"],
+  ["Adult Child Structured", "£7.50 per session"],
+  ["Home Education", "£10.00 per session"],
+  ["Recreational Gymnastics (ages 4–7)", "£57.00 per month"],
+  ["Recreational Gymnastics (ages 6–8)", "£35.00 per month"],
+  ["Recreational Gymnastics (ages 6–12)", "£35.00 per month"],
+  ["Recreational Gymnastics (ages 7–12)", "£35.00 per month"],
+  ["Recreational Plus", "£57.50 per month"],
+  ["Development WAG", "£105.00 per month"],
+  ["Novice WAG Junior", "£105.00 per month"],
+  ["Novice WAG Senior", "£105.00 per month"],
+  ["WAG 1", "£160.00 per month"],
+  ["WAG 2", "£160.00 per month"]
+]);
+
+function applyCgcPrices(html) {
+  // Update only the timetable row's visible price, leaving class times,
+  // session controls, booking identifiers and event handlers unchanged.
+  let updated = 0;
+  const result = html.replace(/(<li><div><b>([^<]+)<\/b><span>)([^<]*)(<\/span>)/g,
+    (whole, prefix, className, details, suffix) => {
+      const price = cgcPrices.get(className.trim());
+      if (!price || !/£10 per session/.test(details)) return whole;
+      updated++;
+      return prefix + details.replace(/£10 per session/, price) + suffix;
+    });
+  if (updated < 20) throw new Error("Timetable price update matched too few rows; refusing partial publish.");
+  return result.replace(
+    /Trial pricing: £10 per session, with no discount for multiple sessions\. Invite-only classes require a coach’s invitation\./,
+    "Class fees are shown beside each timetable entry. Some classes are charged per session and others monthly. Invite-only classes require a coach’s invitation. Stripe test checkout amounts have not yet been updated."
+  );
+}
+
 export default defineConfig({
   plugins: [
     react(),
     {
       name: "cgc-start-here-guide",
       transformIndexHtml(html) {
+        html = applyCgcPrices(html);
         if (html.includes('id="start-here"')) return html;
         const anchor = '<section class="classes" id="classes">';
         if (!html.includes(anchor)) {
