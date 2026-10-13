@@ -100,17 +100,17 @@ summary{cursor:pointer;font-weight:700}
 </section>
 
 <section id="dashboard" hidden>
-<h1 id="welcome"></h1><p class="muted">Choose a section. A red light means something needs your attention; green means all clear.</p><nav id="parent-menu" class="portal-menu" aria-label="Parent portal sections"></nav><section class="panel" id="parent-direct"><h2>Private messages</h2><div id="parent-direct-list"></div></section><section class="panel" id="parent-news"><h2>Club newsletters</h2><div id="parent-news-list"></div></section>
-<section id="account-status" class="panel account-status" aria-label="Account status" aria-live="polite"></section>
-<section id="trial-status" class="panel account-status" aria-live="polite" hidden></section>
-<section id="leaving-status" class="panel account-status" aria-live="polite" hidden></section>
-<p>A place for every little milestone.</p>
+<h1 id="welcome"></h1><p class="muted">Choose a section. A red light means something needs your attention; green means all clear.</p><nav id="parent-menu" class="portal-menu" aria-label="Parent portal sections"></nav><section class="panel portal-view" id="parent-direct"><h2>Private messages</h2><div id="parent-direct-list"></div></section><section class="panel portal-view" id="parent-news"><h2>Club newsletters</h2><div id="parent-news-list"></div></section>
+<section id="account-status" class="panel account-status portal-view" aria-label="Account status" aria-live="polite"></section>
+<section id="trial-status" class="panel account-status portal-view" aria-live="polite" hidden></section>
+<section id="leaving-status" class="panel account-status portal-view" aria-live="polite" hidden></section>
+<div id="parent-overview" class="portal-view"><p>A place for every little milestone.</p>
 <div class="actions">
   <button id="refresh" class="secondary">Refresh</button>
   <a class="button" href="/#timetable">Book classes</a>
   <button id="open-trial" type="button">Trial Request</button>
 </div>
-<section class="panel">
+</div><section class="panel portal-view" id="parent-children-view">
 <h2>Your children</h2>
 <label for="child-select">Choose a child<select id="child-select"></select></label>
 <div id="child-profile"></div>
@@ -124,7 +124,7 @@ summary{cursor:pointer;font-weight:700}
 <p id="first-child" hidden>Add your child above to start their profile, then complete registration.</p>
 </section>
 
-<section class="panel" id="repeat-month-panel">
+<section class="panel portal-view" id="repeat-month-panel">
 <h2>Repeat this month's classes</h2>
 <p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
 <button type="button" id="repeat-current-button" class="secondary">Repeat this month</button>
@@ -137,7 +137,7 @@ summary{cursor:pointer;font-weight:700}
 </div>
 <p id="repeat-month-message" role="status"></p>
 </section>
-<div class="grid">
+<div class="grid portal-view" id="parent-bookings-view">
 <section class="panel">
   <h2>Paid Booked Classes</h2><p class="muted">Cancel an individual dated session below. Cancellations are non-refundable; see the <a href="/#privacy">club policies</a>.</p>
   <div id="bookings"></div>
@@ -154,7 +154,7 @@ summary{cursor:pointer;font-weight:700}
 </section>
 </div>
 
-<section class="panel" id="leaving-panel" hidden><h2>Request to Leave Gymnastics</h2><p>One full calendar month's notice applies. Your proposed final date will be the last day of the following month. Staff will confirm your request.</p><form id="leaving-form"><label>Child<select id="leaving-child" required></select></label><button type="submit">Submit leaving request</button><button id="close-leaving" type="button" class="secondary">Close</button></form><p id="leaving-message" role="status" aria-live="polite"></p></section><section class="panel" id="trial-requests" hidden>
+<section class="panel portal-view" id="leaving-panel" hidden><h2>Request to Leave Gymnastics</h2><p>One full calendar month's notice applies. Your proposed final date will be the last day of the following month. Staff will confirm your request.</p><form id="leaving-form"><label>Child<select id="leaving-child" required></select></label><button type="submit">Submit leaving request</button><button id="close-leaving" type="button" class="secondary">Close</button></form><p id="leaving-message" role="status" aria-live="polite"></p></section><section class="panel portal-view" id="trial-requests" hidden>
 <h2>Send a trial request</h2>
 <button id="close-trial" class="secondary" type="button">Close</button>
 <p class="muted">Choose a child, class and preferred date. Staff will accept or decline your request here.</p>
@@ -167,13 +167,13 @@ summary{cursor:pointer;font-weight:700}
 <p id="trial-message" role="status" aria-live="polite"></p>
 <h3>Your requests</h3><div id="trial-list"></div>
 </section>
-<section class="panel">
+<section class="panel portal-view" id="parent-checklist-view">
   <h2>Before your first class</h2>
   <div id="checklist"></div>
   <p>Check your class’s time and age range before arriving. Contact the club if you have questions about what to bring or any support your child needs.</p>
   <a class="button secondary" href="mailto:hello@cornwallgymnastics.uk">Ask the team</a>
 </section>
-<section class="panel">
+<section class="panel portal-view" id="parent-connected-view">
   <h2>Stay connected</h2>
   <p>Please let the club know if your contact information or your child’s medical details change.</p>
   <p class="muted">Progress updates and dated session reminders will appear here when those features are available.</p>
