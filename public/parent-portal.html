@@ -139,7 +139,7 @@ summary{cursor:pointer;font-weight:700}
 </section>
 <div class="grid">
 <section class="panel">
-  <h2>Paid Booked Classes</h2>
+  <h2>Paid Booked Classes</h2><p class="muted">Cancel an individual dated session below. Cancellations are non-refundable; see the <a href="/#privacy">club policies</a>.</p>
   <div id="bookings"></div>
 </section>
 <section class="panel">
@@ -244,7 +244,7 @@ summary{cursor:pointer;font-weight:700}
     leave.type='button';
     leave.onclick=()=>{ $('leaving-child').value=child.id; $('leaving-panel').hidden=false; $('leaving-panel').scrollIntoView(); };
 
-    const rows = state.bookings.filter(b => b.child_id === child.id && b.status === 'paid');
+    const rows = state.bookings.filter(b => b.child_id === child.id && b.status === 'paid' && (b.cancelled_quantity || 0) < b.quantity);
     if (!rows.length) text(bookings, 'p', 'No paid classes booked yet.');
 
     const grouped = new Map();
@@ -267,6 +267,20 @@ summary{cursor:pointer;font-weight:700}
         text(row, 'small', b.session_date ?
           new Date(b.session_date + 'T12:00:00').toLocaleDateString('en-GB') :
           'Paid class purchase · individual dates not recorded', 'muted');
+        if (b.session_date && b.id) {
+          const cancel = text(row, 'button', 'Cancel this session', 'secondary');
+          cancel.type = 'button';
+          cancel.style.marginTop = '10px';
+          cancel.onclick = async () => {
+            if (!confirm('Cancel this booked session? No refunds are given. Please refer to the club cancellation policy on our website. This will remove the session from the staff register.')) return;
+            cancel.disabled = true;
+            try {
+              await portal.api('cancel-session', {booking_id:b.id,request_id:crypto.randomUUID()});
+              message('Session cancelled. No refund is issued. Please refer to the club policy.');
+              await dashboard();
+            } catch (error) { message(error.message); cancel.disabled = false; }
+          };
+        }
       });
     });
 
