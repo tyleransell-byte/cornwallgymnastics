@@ -1,0 +1,13 @@
+import {strict as assert} from "node:assert";
+import {PROGRAMMES,SESSIONS,sessionsForBooking,validateProgrammeBooking} from "../src/programmeCatalog.js";
+assert.equal(Object.keys(PROGRAMMES).length,10);
+assert.equal(PROGRAMMES.recreational_plus.pricePence,5750);
+assert.deepEqual(sessionsForBooking("novice_wag_junior"),["tue-novice-wag-junior","thu-novice-wag-junior"]);
+assert.equal(sessionsForBooking("wag_1").length,3);
+assert.equal(sessionsForBooking("development_wag").length,2);
+assert.deepEqual(sessionsForBooking("recreational_plus","thu-recreational-plus"),["thu-recreational-plus"]);
+assert.throws(()=>sessionsForBooking("recreational_plus","tue-development-wag"));
+assert.throws(()=>validateProgrammeBooking({programmeCode:"development_wag",age:10}));
+assert.throws(()=>validateProgrammeBooking({programmeCode:"recreational_4_7",age:9,selectedClassId:"tue-recreational-4-7"}));
+assert.equal(validateProgrammeBooking({programmeCode:"development_wag",age:10,approvedProgrammes:["development_wag"]}).amountPence,10500);
+console.log("Programme catalogue tests passed");
