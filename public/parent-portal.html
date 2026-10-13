@@ -485,7 +485,7 @@ summary{cursor:pointer;font-weight:700}
     result.requests.forEach(request => {
       const row = text($('trial-list'),'div','','row');
       text(row,'strong',request.child_name+' · '+request.class_name);
-      text(row,'p','Preferred date: '+request.requested_date+' · '+request.status);
+      text(row,'p','Preferred date: '+request.requested_date+' · '+request.status);addDecisionAcknowledgement(row,'trial',request,loadTrials);
     });
   }
   $('trial-form').addEventListener('submit', async event => {
