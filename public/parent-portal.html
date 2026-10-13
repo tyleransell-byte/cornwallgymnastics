@@ -98,6 +98,7 @@ summary{cursor:pointer;font-weight:700}
 <h1 id="welcome"></h1>
 <section id="account-status" class="panel account-status" aria-label="Account status" aria-live="polite"></section>
 <section id="trial-status" class="panel account-status" aria-live="polite" hidden></section>
+<section id="leaving-status" class="panel account-status" aria-live="polite" hidden></section>
 <p>A place for every little milestone.</p>
 <div class="actions">
   <button id="refresh" class="secondary">Refresh</button>
@@ -221,6 +222,9 @@ summary{cursor:pointer;font-weight:700}
     link.href = '/#register';
     link.onclick = () => sessionStorage.setItem('cgc-register-child', child.id);
     box.append(document.createElement('br'));
+    const leave = text(box,'button','Request to Leave Gymnastics','secondary');
+    leave.type='button';
+    leave.onclick=()=>{ $('leaving-child').value=child.id; $('leaving-panel').hidden=false; $('leaving-panel').scrollIntoView(); };
 
     const rows = state.bookings.filter(b => b.child_id === child.id);
     if (!rows.length) text(bookings, 'p', 'No classes booked yet.');
