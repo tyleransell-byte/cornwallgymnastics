@@ -1,0 +1,17 @@
+{
+  "name": "Cornwall Gymnastics Centre Parent Portal",
+  "short_name": "CGC Parent",
+  "start_url": "/parent-portal.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FDF9D7",
+  "theme_color": "#FE9F59",
+  "icons": [
+    {
+      "src": "/cgg-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
