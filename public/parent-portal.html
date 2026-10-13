@@ -160,7 +160,7 @@ summary{cursor:pointer;font-weight:700}
 <p class="muted">Choose a child, class and preferred date. Staff will accept or decline your request here.</p>
 <form id="trial-form">
 <label>Child<select id="trial-child" required></select></label>
-<label>Class<input name="class_name" required maxlength="150" placeholder="Class you would like to try"></label>
+<label>Recreational gymnastics class<select name="class_id" id="trial-class" required></select></label><p id="trial-age-help" class="muted"></p>
 <label>Preferred date<input name="requested_date" type="date" required></label>
 <button>Send Trial Request</button>
 </form>
@@ -433,6 +433,26 @@ summary{cursor:pointer;font-weight:700}
     text(box, 'p', latest.child_name + ' · ' + latest.class_name + ' · Preferred date: ' + latest.requested_date);
     text(box, 'p', latest.status === 'pending' ? 'The club has not made a decision yet.' : latest.status === 'accepted' ? 'Your trial request has been accepted.' : 'Your trial request has been declined.');
   }
+  const recreationalTrials=[
+    ['tue-recreational-4-7','Tuesday 4:15–5:15pm',4,7],['tue-recreational-7-12','Tuesday 5:30–6:30pm',7,12],
+    ['wed-recreational-4-7','Wednesday 4:15–5:15pm',4,7],['wed-recreational-6-8','Wednesday 5:30–6:30pm',6,8],['wed-recreational-7-12','Wednesday 5:30–6:30pm',7,12],
+    ['thu-recreational-4-7','Thursday 4:15–5:15pm',4,7],['thu-recreational-7-12','Thursday 5:30–6:30pm',7,12],
+    ['fri-recreational-7-12','Friday 5:30–6:30pm',7,12],['sat-recreational-4-7','Saturday 9–10am',4,7],
+    ['sat-recreational-7-12','Saturday 9–10am',7,12],['sat-recreational-6-12','Saturday 10–11am',6,12]
+  ];
+  function updateTrialClasses(){
+    const child=state?.children.find(c=>c.id===$('trial-child').value),sel=$('trial-class');
+    const date=$('trial-form').elements.requested_date.value||new Date().toISOString().slice(0,10);
+    sel.replaceChildren();
+    const placeholder=text(sel,'option','Choose a suitable class');placeholder.value='';
+    if(!child){$('trial-age-help').textContent='Choose a child first.';return;}
+    const birth=child.date_of_birth.split('-').map(Number),day=date.split('-').map(Number);
+    const age=day[0]-birth[0]-(day[1]<birth[1]||(day[1]===birth[1]&&day[2]<birth[2])?1:0);
+    recreationalTrials.filter(c=>age>=c[2]&&age<=c[3]).forEach(c=>{const opt=text(sel,'option','Ages '+c[2]+'–'+c[3]+' · '+c[1]);opt.value=c[0];});
+    $('trial-age-help').textContent='Showing recreational gymnastics classes suitable for age '+age+' on the chosen date. Staff will confirm availability.';
+  }
+  $('trial-child').addEventListener('change',updateTrialClasses);
+  $('trial-form').elements.requested_date.addEventListener('change',updateTrialClasses);
   $('open-trial').onclick = () => { $('trial-requests').hidden = false; $('trial-requests').scrollIntoView({behavior:'smooth',block:'start'}); };
   $('close-trial').onclick = () => { $('trial-requests').hidden = true; };
   async function loadTrials() {
@@ -451,9 +471,10 @@ summary{cursor:pointer;font-weight:700}
     const form = event.currentTarget, button = form.querySelector('button');
     button.disabled = true; $('trial-message').textContent = 'Sending…';
     try {
-      await trialApi('submit',{ child_id:$('trial-child').value, class_name:form.elements.class_name.value, requested_date:form.elements.requested_date.value });
+      await trialApi('submit',{ child_id:$('trial-child').value, class_id:form.elements.class_id.value, requested_date:form.elements.requested_date.value });
       $('trial-message').textContent = 'Trial request sent. Please refer to your Parent Portal to see whether it has been accepted or declined.';
       form.reset();
+      updateTrialClasses();
       await loadTrials();
     } catch(e) { $('trial-message').textContent = e.message; }
     finally { button.disabled = false; }
