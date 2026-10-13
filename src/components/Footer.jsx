@@ -31,6 +31,8 @@ export default function Footer() {
           <a href="/participants-code-of-conduct.html">
             Participants Code of Conduct
           </a>
+          <br />
+          <a href="/privacy-policy.html">Privacy Policy</a>
         </div>
 
         <div className="legal">
