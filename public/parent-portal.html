@@ -30,6 +30,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .muted{font-size:14px;color:#4b4a3c}
 .row{padding:14px 0;border-bottom:1px solid #ddd;overflow-wrap:anywhere}
+.child-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:20px 0 12px}
+.child-actions .button,.child-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 18px;margin:0;border-radius:10px;font-weight:600;text-decoration:none;line-height:1.25}
+.child-actions button.secondary{border:1px solid #b7c4cc;background:#f4f7f9;color:#263b49}
+.child-actions button.secondary:hover{background:#e9f0f4}
+@media(max-width:520px){.child-actions>*{width:100%}}
 .row:last-child{border:0}
 .price{font-size:28px;font-weight:800}
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
@@ -217,12 +222,12 @@ summary{cursor:pointer;font-weight:700}
     text(box, 'span', child.registered_at ?
       'Registration received' : 'Registration needed', 'badge');
 
-    const link = text(box, 'a', child.registered_at ?
+    const childActions = text(box, 'div', '', 'child-actions');
+    const link = text(childActions, 'a', child.registered_at ?
       'Update registration' : 'Complete registration', 'button');
     link.href = '/#register';
     link.onclick = () => sessionStorage.setItem('cgc-register-child', child.id);
-    box.append(document.createElement('br'));
-    const leave = text(box,'button','Request to Leave Gymnastics','secondary');
+    const leave = text(childActions,'button','Request to Leave Gymnastics','secondary');
     leave.type='button';
     leave.onclick=()=>{ $('leaving-child').value=child.id; $('leaving-panel').hidden=false; $('leaving-panel').scrollIntoView(); };
 
