@@ -519,5 +519,45 @@ summary{cursor:pointer;font-weight:700}
   start().catch(e => message(e.message));
 })();
 </script>
+<style>
+.account-status.notice-collapsed{padding:12px 18px!important;min-height:0!important}
+.account-status.notice-collapsed>:not(.notice-toggle){display:none!important}
+.account-status .notice-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:transparent;color:inherit;text-align:left;padding:8px 0;cursor:pointer;font:inherit}
+.account-status .notice-toggle strong{font-weight:750}
+.account-status .notice-toggle small{display:block;font-size:.85em;opacity:.8;font-weight:400}
+.account-status .notice-toggle .chevron{font-size:1.3em;flex-shrink:0}
+.account-status:not(.notice-collapsed) .notice-toggle{margin-top:12px;border-top:1px solid #0002;font-size:.9em}
+</style>
+<script>
+(()=>{
+ const ids=['account-status','trial-status','leaving-status'];
+ function decorate(card){
+  if(card.hidden||!card.querySelector('h2')||card.querySelector('.notice-toggle'))return;
+  const heading=card.querySelector('h2').textContent.trim();
+  const detail=card.querySelector('p')?.textContent.trim()||'';
+  const key='cgc-notice-read:'+card.id+':'+heading+':'+detail;
+  let read=false;try{read=localStorage.getItem(key)==='1'}catch{}
+  const toggle=document.createElement('button');toggle.type='button';toggle.className='notice-toggle';
+  const labels=document.createElement('span'),name=document.createElement('strong'),hint=document.createElement('small'),arrow=document.createElement('span');
+  name.textContent=heading;
+  const shortDetail=detail.length>95?detail.slice(0,92)+'…':detail;
+  arrow.className='chevron';arrow.setAttribute('aria-hidden','true');labels.append(name,hint);toggle.append(labels,arrow);
+  function apply(collapsed){
+    hint.textContent=collapsed?shortDetail:'Mark as read · '+shortDetail;
+    card.classList.toggle('notice-collapsed',collapsed);
+    toggle.setAttribute('aria-expanded',String(!collapsed));
+    toggle.setAttribute('aria-label',(collapsed?'Expand ':'Mark as read and collapse ')+heading);
+    arrow.textContent=collapsed?'⌄':'⌃';
+  }
+  toggle.onclick=()=>{const collapsed=!card.classList.contains('notice-collapsed');try{if(collapsed)localStorage.setItem(key,'1')}catch{}apply(collapsed)};
+  card.prepend(toggle);apply(read);
+ }
+ ids.forEach(id=>{
+  const card=document.getElementById(id);if(!card)return;
+  const observer=new MutationObserver(()=>{if(card.querySelector('h2')&&!card.querySelector('.notice-toggle'))decorate(card)});
+  observer.observe(card,{childList:true});decorate(card);
+ });
+})();
+</script>
 </body>
 </html>
