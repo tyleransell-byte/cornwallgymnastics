@@ -449,8 +449,9 @@ summary{cursor:pointer;font-weight:700}
     if(!child){$('trial-age-help').textContent='Choose a child first.';return;}
     const birth=child.date_of_birth.split('-').map(Number),day=date.split('-').map(Number);
     const age=day[0]-birth[0]-(day[1]<birth[1]||(day[1]===birth[1]&&day[2]<birth[2])?1:0);
-    recreationalTrials.filter(c=>age>=c[2]&&age<=c[3]).forEach(c=>{const opt=text(sel,'option','Ages '+c[2]+'–'+c[3]+' · '+c[1]);opt.value=c[0];});
-    $('trial-age-help').textContent='Showing recreational gymnastics classes suitable for age '+age+' on the chosen date. Staff will confirm availability.';
+    const suitable=recreationalTrials.filter(c=>age>=c[2]&&age<=c[3]);
+    suitable.forEach(c=>{const opt=text(sel,'option','Ages '+c[2]+'–'+c[3]+' · '+c[1]);opt.value=c[0];});
+    $('trial-age-help').textContent=suitable.length ? 'Showing recreational gymnastics classes suitable for age '+age+' on the chosen date. Staff will confirm availability.' : 'No recreational gymnastics trial classes are available for age '+age+'. Please check the child’s date of birth in their profile or contact the club.';
   }
   $('trial-child').addEventListener('change',updateTrialClasses);
   $('trial-form').elements.requested_date.addEventListener('change',updateTrialClasses);
