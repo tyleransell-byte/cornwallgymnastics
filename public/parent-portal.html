@@ -468,6 +468,8 @@ summary{cursor:pointer;font-weight:700}
   }
   $('trial-child').addEventListener('change',updateTrialClasses);
   $('trial-form').elements.requested_date.addEventListener('change',updateTrialClasses);
+  $('open-timetable').onclick=()=>{const panel=$('timetable-chooser'),select=$('timetable-child');panel.hidden=!panel.hidden;if(panel.hidden)return;select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent='Select a child';select.append(empty);(state.children||[]).forEach(child=>{const option=document.createElement('option');option.value=child.id;option.textContent=child.full_name;select.append(option);});$('timetable-book').hidden=true;$('timetable-view').hidden=true;panel.scrollIntoView({behavior:'smooth',block:'nearest'});};
+  $('timetable-child').onchange=()=>{const selected=$('timetable-child').value;$('timetable-book').hidden=!selected;$('timetable-view').hidden=!selected;if(selected){$('timetable-book').onclick=()=>sessionStorage.setItem('cgc-register-child',selected);$('timetable-view').onclick=()=>sessionStorage.setItem('cgc-register-child',selected);}};
   $('open-trial').onclick = () => { parentSection('trials'); $('trial-requests').scrollIntoView({behavior:'smooth',block:'start'}); };
   $('close-trial').onclick = () => { $('trial-requests').hidden = true; };
   async function loadTrials() {
