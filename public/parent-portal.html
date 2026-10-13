@@ -247,7 +247,7 @@ summary{cursor:pointer;font-weight:700}
     link.onclick = () => sessionStorage.setItem('cgc-register-child', child.id);
     const leave = text(childActions,'button','Request to Leave Gymnastics','secondary');
     leave.type='button';
-    leave.onclick=()=>{ $('leaving-child').value=child.id; $('leaving-panel').hidden=false; $('leaving-panel').scrollIntoView(); };
+    leave.onclick=()=>{ $('leaving-child').value=child.id; parentSection('leaving'); $('leaving-panel').scrollIntoView(); };
 
     const rows = state.bookings.filter(b => b.child_id === child.id && b.status === 'paid' && (b.cancelled_quantity || 0) < b.quantity);
     if (!rows.length) text(bookings, 'p', 'No paid classes booked yet.');
@@ -365,7 +365,7 @@ summary{cursor:pointer;font-weight:700}
     state.children.forEach(child => { const option = document.createElement('option'); option.value = child.id; option.textContent = child.full_name; $('trial-child').append(option); });
     $('trial-form').querySelector('button').disabled = !state.children.length;
     updateTrialClasses();
-    if (new URLSearchParams(location.search).has('trial')) $('trial-requests').hidden = false;
+    if (new URLSearchParams(location.search).has('trial')) parentSection('trials');
     loadTrials().catch(e => { $('trial-message').textContent = e.message; });
 
     const last = state.payments[0];
@@ -399,10 +399,11 @@ summary{cursor:pointer;font-weight:700}
   async function loadLeaving(){
     const result=await leavingApi('list'),box=$('leaving-status');
     box.replaceChildren();
-    if(!result.requests.length){box.hidden=true;return;}
-    box.hidden=false;
+    if(!result.requests.length){parentStatus('leaving',false);box.hidden=parentActive!=='leaving';return;}
+    box.hidden=parentActive!=='leaving';
+    parentStatus('leaving',result.requests.some(r=>r.status==='needs_discussion'));
     const request=result.requests[0],colour=request.status==='pending'?'amber':request.status==='confirmed'?'green':'red';
-    box.className='panel account-status '+colour;
+    box.className='panel account-status portal-view '+colour;
     text(box,'h2',request.status==='pending'?'Leaving request awaiting confirmation':request.status==='confirmed'?'Leaving request confirmed':'Leaving request needs discussion');
     const child=state.children.find(c=>c.id===request.child_id);
     text(box,'p',(child?.full_name||'Child')+' · Proposed final date: '+new Date(request.final_date+'T12:00:00').toLocaleDateString('en-GB'));
@@ -463,11 +464,12 @@ summary{cursor:pointer;font-weight:700}
   }
   $('trial-child').addEventListener('change',updateTrialClasses);
   $('trial-form').elements.requested_date.addEventListener('change',updateTrialClasses);
-  $('open-trial').onclick = () => { $('trial-requests').hidden = false; $('trial-requests').scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('open-trial').onclick = () => { parentSection('trials'); $('trial-requests').scrollIntoView({behavior:'smooth',block:'start'}); };
   $('close-trial').onclick = () => { $('trial-requests').hidden = true; };
   async function loadTrials() {
     const result = await trialApi('list');
     renderTrialStatus(result.requests);
+    parentStatus('trials',result.requests.some(r=>r.status==='accepted'||r.status==='declined'));
     $('trial-list').replaceChildren();
     if (!result.requests.length) text($('trial-list'),'p','No trial requests yet.');
     result.requests.forEach(request => {
