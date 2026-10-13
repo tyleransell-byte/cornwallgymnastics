@@ -255,12 +255,12 @@ summary{cursor:pointer;font-weight:700}
       if (!grouped.has(month)) grouped.set(month, []);
       grouped.get(month).push(b);
     });
-    [...grouped.keys()].sort((a,b) => b.localeCompare(a)).forEach(month => {
+    [...grouped.keys()].sort((a,b) => a.localeCompare(b)).forEach(month => {
       const section = text(bookings, 'section', '', 'booking-month');
       section.style.marginTop = '18px';
       const title = new Date(month + '-01T12:00:00Z').toLocaleDateString('en-GB', {month:'long',year:'numeric',timeZone:'UTC'}) + ' — Booked Classes';
       text(section, 'h3', title);
-      grouped.get(month).sort((a,b)=>(a.session_date||'').localeCompare(b.session_date||'')).forEach(b => {
+      grouped.get(month).sort((a,b)=>{ const dateOrder=(a.session_date||'').localeCompare(b.session_date||''); if(dateOrder)return dateOrder; const startTime=x=>{ const m=(x.class_name||'').match(/(?:^|\s)(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*[-–]/i); if(!m)return 9999; let h=Number(m[1]); if(m[3])h=h%12+(m[3].toLowerCase()==='pm'?12:0); return h*60+Number(m[2]||0); }; return startTime(a)-startTime(b); }).forEach(b => {
         const row = text(section, 'div', '', 'row');
         text(row, 'strong', b.class_name);
         text(row, 'p', b.quantity + ' session' + (b.quantity === 1 ? '' : 's') + ' · Paid');
