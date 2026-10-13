@@ -250,6 +250,14 @@ export default function App() {
           </details>
 
           <details>
+            <summary>Can class prices increase?</summary>
+            <p>
+              Cornwall Gymnastics Centre reserves the right to increase class prices,
+              giving parents a minimum of 31 days’ notice before any increase takes effect.
+            </p>
+          </details>
+
+          <details>
             <summary>What is the cancellation policy?</summary>
 
             <p>
