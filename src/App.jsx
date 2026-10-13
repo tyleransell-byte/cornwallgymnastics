@@ -41,6 +41,8 @@ export default function App() {
                 Book a trial
               </button>
 
+              <a className="btn outline" href="#start-here">New to CGC online? Start here!</a>
+
               <a className="btn outline" href="/timetable.html">
                 See the timetable
               </a>
