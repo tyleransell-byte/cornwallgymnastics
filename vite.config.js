@@ -14,7 +14,7 @@ const startHereGuide = `
       <li style="padding:22px;border-radius:16px;background:white;border:1px solid #f0d9d0"><h3>4. Follow booking instructions</h3><p>Review your selection and complete the booking steps shown on screen.</p></li>
       <li style="padding:22px;border-radius:16px;background:white;border:1px solid #f0d9d0"><h3>5. Manage your bookings</h3><p>Use your Parent Portal to view and manage your child's classes.</p></li>
     </ol>
-    <a class="button" href="/parent-portal.html">Open the Parent Portal →</a>
+    <a class="button" href="/parent-portal.html">Open the Parent Portal →</a><p><a href="/programme-preview.html">Preview monthly programme prices and training days →</a></p>
   </div>
 </section>`;
 
