@@ -128,6 +128,7 @@ summary{cursor:pointer;font-weight:700}
 <h2>Repeat last month's classes</h2>
 <p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
 <button type="button" id="repeat-month-button" class="secondary">Repeat last month</button>
+<button type="button" id="repeat-current-button" class="secondary">Repeat this month</button>
 <div id="repeat-month-review" hidden>
 <h3 id="repeat-month-heading"></h3>
 <div id="repeat-month-items"></div>
@@ -598,7 +599,7 @@ function monthInfo(){
  const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'numeric'}).formatToParts(new Date());
  const y=Number(parts.find(p=>p.type==='year').value),m=Number(parts.find(p=>p.type==='month').value);
  const fmt=d=>d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0');
- return {previous:fmt(new Date(Date.UTC(y,m-2,1))),next:fmt(new Date(Date.UTC(y,m,1)))};
+ return {previous:fmt(new Date(Date.UTC(y,m-2,1))),current:fmt(new Date(Date.UTC(y,m-1,1))),next:fmt(new Date(Date.UTC(y,m,1)))};
 }
 function datesFor(id,target){
  const wd=weekday[id.split('-')[0]];if(wd===undefined)return [];
@@ -622,24 +623,27 @@ function total(){
  $('repeat-month-total').textContent=selected.length+' class(es) selected · estimated test checkout total £'+(selected.length*10).toFixed(2)+'. Final price and dates are confirmed by checkout.';
  $('repeat-month-pay').disabled=!selected.length;
 }
-button.onclick=async()=>{
- message.textContent='Loading previous paid classes…';review.hidden=true;
+async function loadRepeat(source){
+ message.textContent='Loading paid classes…';review.hidden=true;
  try{
  const portal=window.CgcPortal,session=await portal.session();if(!session)throw Error('Please sign in first.');
  childId=$('child-select').value;if(!childId)throw Error('Please select a child.');
  const state=await portal.api('dashboard');
- const {previous,next}=monthInfo();month=next;
- const rows=state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&b.booking_month===previous&&typeof b.class_id==='string'&&Object.hasOwn(weekday,b.class_id.split('-')[0]));
+ const {previous,current:currentMonth,next}=monthInfo();month=next;
+ const sourceMonth=source==='current'?currentMonth:previous;
+ const rows=state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&b.booking_month===sourceMonth&&typeof b.class_id==='string'&&Object.hasOwn(weekday,b.class_id.split('-')[0]));
  const unique=new Map(rows.map(b=>[b.class_id,{id:b.class_id,name:b.class_name||b.class_id,selected:true}]));
  current=[...unique.values()];
- if(!current.length)throw Error('No eligible paid monthly classes were found for the previous month. You can still book classes normally.');
+ if(!current.length)throw Error('No eligible paid monthly classes were found for '+(source==='current'?'this month':'last month')+'. You can still book classes normally.');
  const existing=new Set(state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&b.booking_month===next).map(b=>b.class_id));
  current=current.filter(x=>!existing.has(x.id));
  if(!current.length)throw Error('These classes are already booked for the next month.');
  $('repeat-month-heading').textContent='Review classes for '+new Date(next+'-01T12:00:00Z').toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'});
  render();review.hidden=false;message.textContent='Review or untick any classes before proceeding.';
  }catch(e){message.textContent=e.message||'Unable to load classes.'}
-};
+}
+button.onclick=()=>loadRepeat('previous');
+$('repeat-current-button').onclick=()=>loadRepeat('current');
 $('repeat-month-cancel').onclick=()=>{review.hidden=true;message.textContent='No booking or payment was made.'};
 $('repeat-month-pay').onclick=async()=>{
  const selected=current.filter(x=>x.selected);if(!selected.length)return;
