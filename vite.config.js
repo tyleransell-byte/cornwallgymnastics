@@ -24,7 +24,8 @@ export default defineConfig({
     react(),
     {
       name: "cgc-start-here-guide",
-      transformIndexHtml(html) {
+      transformIndexHtml(html, ctx) {
+        if (ctx?.path && ctx.path !== '/index.html' && ctx.path !== '/') return html;
         if (html.includes('id="start-here"')) return html;
         const anchor = '<section class="classes" id="classes">';
         if (!html.includes(anchor)) {
