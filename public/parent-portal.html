@@ -133,6 +133,18 @@ summary{cursor:pointer;font-weight:700}
 </section>
 </div>
 
+<section class="panel" id="trial-requests">
+<h2>Trial requests</h2>
+<p class="muted">Choose a child, class and preferred date. Staff will accept or decline your request here.</p>
+<form id="trial-form">
+<label>Child<select id="trial-child" required></select></label>
+<label>Class<input name="class_name" required maxlength="150" placeholder="Class you would like to try"></label>
+<label>Preferred date<input name="requested_date" type="date" required></label>
+<button>Send Trial Request</button>
+</form>
+<p id="trial-message" role="status" aria-live="polite"></p>
+<h3>Your requests</h3><div id="trial-list"></div>
+</section>
 <section class="panel">
   <h2>Before your first class</h2>
   <div id="checklist"></div>
@@ -286,6 +298,10 @@ summary{cursor:pointer;font-weight:700}
     $('child-select').disabled = !state.children.length;
     profile();
     renderAccountStatus();
+    $('trial-child').replaceChildren();
+    state.children.forEach(child => { const option = document.createElement('option'); option.value = child.id; option.textContent = child.full_name; $('trial-child').append(option); });
+    $('trial-form').querySelector('button').disabled = !state.children.length;
+    loadTrials().catch(e => { $('trial-message').textContent = e.message; });
 
     const last = state.payments[0];
     $('last-payment').textContent = last ?
@@ -306,6 +322,40 @@ summary{cursor:pointer;font-weight:700}
     });
   }
 
+  const trialEndpoint = 'https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/trial-requests';
+  async function trialApi(action, data = {}) {
+    const session = await portal.session();
+    if (!session) throw new Error('Please sign in first.');
+    const response = await fetch(trialEndpoint, { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+session.access_token }, body:JSON.stringify({ action, ...data }) });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Unable to process trial request.');
+    return result;
+  }
+  async function loadTrials() {
+    const result = await trialApi('list');
+    $('trial-list').replaceChildren();
+    if (!result.requests.length) text($('trial-list'),'p','No trial requests yet.');
+    result.requests.forEach(request => {
+      const row = text($('trial-list'),'div','','row');
+      text(row,'strong',request.child_name+' · '+request.class_name);
+      text(row,'p','Preferred date: '+request.requested_date+' · '+request.status);
+    });
+  }
+  $('trial-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const form = event.currentTarget, button = form.querySelector('button');
+    button.disabled = true; $('trial-message').textContent = 'Sending…';
+    try {
+      await trialApi('submit',{ child_id:$('trial-child').value, class_name:form.elements.class_name.value, requested_date:form.elements.requested_date.value });
+      $('trial-message').textContent = 'Trial request sent. Please refer to your Parent Portal to see whether it has been accepted or declined.';
+      form.reset();
+      await loadTrials();
+    } catch(e) { $('trial-message').textContent = e.message; }
+    finally { button.disabled = false; }
+  });
+  if (new URLSearchParams(location.search).has('trial')) {
+    $('auth-panel').querySelector('p').textContent = 'Sign in or create an account to send a trial request.';
+  }
   document.querySelectorAll('[data-mode]').forEach(button => {
     button.onclick = () => {
       const mode = button.dataset.mode;
