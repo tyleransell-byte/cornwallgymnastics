@@ -520,6 +520,12 @@ summary{cursor:pointer;font-weight:700}
 })();
 </script>
 <style>
+
+.account-status{position:relative}
+.account-status .notice-dismiss{position:absolute;top:8px;right:10px;z-index:3;display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:#176d40;font-size:26px;line-height:1;cursor:pointer}
+.account-status .notice-dismiss:focus-visible{outline:3px solid #176d40;outline-offset:2px}
+.account-status.green .notice-toggle{padding-right:40px}
+.account-status.notice-collapsed>.notice-dismiss{display:grid!important}
 .account-status.notice-collapsed{padding:12px 18px!important;min-height:0!important}
 .account-status.notice-collapsed>:not(.notice-toggle){display:none!important}
 .account-status .notice-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:transparent;color:inherit;text-align:left;padding:8px 0;cursor:pointer;font:inherit}
@@ -551,6 +557,15 @@ summary{cursor:pointer;font-weight:700}
   }
   toggle.onclick=()=>{const collapsed=!card.classList.contains('notice-collapsed');try{if(collapsed)localStorage.setItem(key,'1')}catch{}apply(collapsed)};
   card.prepend(toggle);apply(read);
+  if(card.classList.contains('green')){
+    const dismissKey='cgc-notice-dismissed:'+card.id+':'+heading+':'+detail;
+    try{if(localStorage.getItem(dismissKey)==='1'){card.hidden=true;return}}catch{}
+    const dismiss=document.createElement('button');
+    dismiss.type='button';dismiss.className='notice-dismiss';dismiss.textContent='×';
+    dismiss.setAttribute('aria-label','Dismiss '+heading+' notification');
+    dismiss.onclick=(event)=>{event.stopPropagation();try{localStorage.setItem(dismissKey,'1')}catch{}card.hidden=true;};
+    card.append(dismiss);
+  }
  }
  ids.forEach(id=>{
   const card=document.getElementById(id);if(!card)return;
