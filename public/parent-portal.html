@@ -631,14 +631,22 @@ async function loadRepeat(source){
  const {previous,current:currentMonth,next}=monthInfo();month=next;
  const sourceMonth=source==='current'?currentMonth:previous;
  const rows=state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&b.booking_month===sourceMonth&&typeof b.class_id==='string'&&Object.hasOwn(weekday,b.class_id.split('-')[0]));
+ const legacyClassIds = {
+ 'Recreational Plus (Tuesday 4–6pm)': 'tue-recreational-plus',
+ 'Stay and Play (Tuesday 9:30–10:15am)': 'tue-stay-and-play',
+ 'WAG 2 (Wednesday 4–8pm)': 'wed-wag-2'
+ };
  const unique=new Map(rows.map(b=>[b.class_id,{id:b.class_id,name:b.class_name||b.class_id,selected:true}]));
+ if(source==='current')state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&!b.booking_month&&!b.class_id).forEach(b=>{
+ const id=legacyClassIds[b.class_name];if(id&&!unique.has(id))unique.set(id,{id,name:b.class_name,selected:true,legacy:true});
+ });
  current=[...unique.values()];
  if(!current.length)throw Error('No eligible paid monthly classes were found for '+(source==='current'?'this month':'last month')+'. You can still book classes normally.');
  const existing=new Set(state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&b.booking_month===next).map(b=>b.class_id));
  current=current.filter(x=>!existing.has(x.id));
  if(!current.length)throw Error('These classes are already booked for the next month.');
  $('repeat-month-heading').textContent='Review classes for '+new Date(next+'-01T12:00:00Z').toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'});
- render();review.hidden=false;message.textContent='Review or untick any classes before proceeding.';
+ render();review.hidden=false;message.textContent=current.some(x=>x.legacy)?'These older paid bookings have no recorded month. Check that these are your current classes before paying.':'Review or untick any classes before proceeding.';
  }catch(e){message.textContent=e.message||'Unable to load classes.'}
 }
 $('repeat-current-button').onclick=()=>loadRepeat('current');
