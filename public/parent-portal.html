@@ -331,6 +331,7 @@ summary{cursor:pointer;font-weight:700}
     $('dashboard').hidden = false;
     $('logout').hidden = false;
     $('welcome').textContent = 'Welcome, ' + state.profile.display_name + '.';
+    const newsBox = $('parent-news-list'); newsBox.replaceChildren(); const announcements=state.announcements||[]; if(!announcements.length){text(newsBox,'p','No club announcements yet.');}else{announcements.forEach(item=>{const row=text(newsBox,'article','','row');text(row,'h3',item.title);text(row,'small',new Date(item.created_at).toLocaleDateString('en-GB'));text(row,'p',item.body);});}
 
     const selected = $('child-select').value;
     $('child-select').replaceChildren();
