@@ -136,7 +136,7 @@ summary{cursor:pointer;font-weight:700}
 </section>
 </div>
 
-<section class="panel" id="trial-requests" hidden>
+<section class="panel" id="leaving-panel" hidden><h2>Request to Leave Gymnastics</h2><p>One full calendar month's notice applies. Your proposed final date will be the last day of the following month. Staff will confirm your request.</p><form id="leaving-form"><label>Child<select id="leaving-child" required></select></label><button type="submit">Submit leaving request</button><button id="close-leaving" type="button" class="secondary">Close</button></form><p id="leaving-message" role="status" aria-live="polite"></p></section><section class="panel" id="trial-requests" hidden>
 <h2>Send a trial request</h2>
 <button id="close-trial" class="secondary" type="button">Close</button>
 <p class="muted">Choose a child, class and preferred date. Staff will accept or decline your request here.</p>
@@ -305,6 +305,9 @@ summary{cursor:pointer;font-weight:700}
     $('child-select').disabled = !state.children.length;
     profile();
     renderAccountStatus();
+    $('leaving-child').replaceChildren();
+    state.children.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.full_name;$('leaving-child').append(o);});
+    loadLeaving().catch(e=>message(e.message));
     $('trial-child').replaceChildren();
     state.children.forEach(child => { const option = document.createElement('option'); option.value = child.id; option.textContent = child.full_name; $('trial-child').append(option); });
     $('trial-form').querySelector('button').disabled = !state.children.length;
