@@ -124,6 +124,19 @@ summary{cursor:pointer;font-weight:700}
 <p id="first-child" hidden>Add your child above to start their profile, then complete registration.</p>
 </section>
 
+<section class="panel" id="repeat-month-panel">
+<h2>Repeat last month's classes</h2>
+<p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
+<button type="button" id="repeat-month-button" class="secondary">Repeat last month</button>
+<div id="repeat-month-review" hidden>
+<h3 id="repeat-month-heading"></h3>
+<div id="repeat-month-items"></div>
+<p id="repeat-month-total"></p>
+<button type="button" id="repeat-month-pay">Continue to Stripe test checkout</button>
+<button type="button" id="repeat-month-cancel" class="secondary">Cancel</button>
+</div>
+<p id="repeat-month-message" role="status"></p>
+</section>
 <div class="grid">
 <section class="panel">
   <h2>Booked classes</h2>
@@ -572,6 +585,74 @@ summary{cursor:pointer;font-weight:700}
   const observer=new MutationObserver(()=>{if(card.querySelector('h2')&&!card.querySelector('.notice-toggle'))decorate(card)});
   observer.observe(card,{childList:true});decorate(card);
  });
+})();
+</script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const button=$('repeat-month-button'),review=$('repeat-month-review'),items=$('repeat-month-items'),message=$('repeat-month-message');
+const endpoint='https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/create-checkout';
+const weekday={tue:2,wed:3,thu:4,fri:5,sat:6};
+let current=[],month='',childId='';
+function monthInfo(){
+ const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'numeric'}).formatToParts(new Date());
+ const y=Number(parts.find(p=>p.type==='year').value),m=Number(parts.find(p=>p.type==='month').value);
+ const fmt=d=>d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0');
+ return {previous:fmt(new Date(Date.UTC(y,m-2,1))),next:fmt(new Date(Date.UTC(y,m,1)))};
+}
+function datesFor(id,target){
+ const wd=weekday[id.split('-')[0]];if(wd===undefined)return [];
+ const [y,m]=target.split('-').map(Number),result=[];
+ for(let d=1;d<=new Date(Date.UTC(y,m,0)).getUTCDate();d++){
+ const date=new Date(Date.UTC(y,m-1,d));if(date.getUTCDay()===wd)result.push(date.toLocaleDateString('en-GB',{timeZone:'UTC',day:'numeric',month:'short'}));
+ }return result;
+}
+function render(){
+ items.replaceChildren();
+ current.forEach(item=>{
+ const label=document.createElement('label');label.style.cssText='display:block;padding:12px 0;border-bottom:1px solid #ddd';
+ const check=document.createElement('input');check.type='checkbox';check.checked=item.selected;check.style.cssText='width:auto;display:inline;margin-right:10px';check.onchange=()=>{item.selected=check.checked;total()};
+ const name=document.createElement('strong');name.textContent=item.name;
+ const detail=document.createElement('small');detail.style.display='block';detail.textContent=datesFor(item.id,month).join(', ');
+ label.append(check,name,detail);items.append(label);
+ });total();
+}
+function total(){
+ const selected=current.filter(x=>x.selected);
+ $('repeat-month-total').textContent=selected.length+' class(es) selected · estimated test checkout total £'+(selected.length*10).toFixed(2)+'. Final price and dates are confirmed by checkout.';
+ $('repeat-month-pay').disabled=!selected.length;
+}
+button.onclick=async()=>{
+ message.textContent='Loading previous paid classes…';review.hidden=true;
+ try{
+ const portal=window.CgcPortal,session=await portal.session();if(!session)throw Error('Please sign in first.');
+ childId=$('child-select').value;if(!childId)throw Error('Please select a child.');
+ const state=await portal.api('dashboard');
+ const {previous,next}=monthInfo();month=next;
+ const rows=state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&b.booking_month===previous&&typeof b.class_id==='string'&&Object.hasOwn(weekday,b.class_id.split('-')[0]));
+ const unique=new Map(rows.map(b=>[b.class_id,{id:b.class_id,name:b.class_name||b.class_id,selected:true}]));
+ current=[...unique.values()];
+ if(!current.length)throw Error('No eligible paid monthly classes were found for the previous month. You can still book classes normally.');
+ const existing=new Set(state.bookings.filter(b=>b.child_id===childId&&b.status==='paid'&&b.booking_month===next).map(b=>b.class_id));
+ current=current.filter(x=>!existing.has(x.id));
+ if(!current.length)throw Error('These classes are already booked for the next month.');
+ $('repeat-month-heading').textContent='Review classes for '+new Date(next+'-01T12:00:00Z').toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'});
+ render();review.hidden=false;message.textContent='Review or untick any classes before proceeding.';
+ }catch(e){message.textContent=e.message||'Unable to load classes.'}
+};
+$('repeat-month-cancel').onclick=()=>{review.hidden=true;message.textContent='No booking or payment was made.'};
+$('repeat-month-pay').onclick=async()=>{
+ const selected=current.filter(x=>x.selected);if(!selected.length)return;
+ const pay=$('repeat-month-pay');pay.disabled=true;message.textContent='Preparing secure test checkout…';
+ try{
+ const session=await window.CgcPortal.session();if(!session)throw Error('Please sign in again.');
+ const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},body:JSON.stringify({month,child_id:childId,items:selected.map(x=>({id:x.id,quantity:1}))})});
+ const data=await response.json();if(!response.ok||!data.url)throw Error(data.error||'Checkout unavailable.');
+ const target=new URL(data.url);if(target.protocol!=='https:'||!(target.hostname==='checkout.stripe.com'||target.hostname.endsWith('.checkout.stripe.com')))throw Error('Unexpected checkout destination.');
+ window.location.assign(target.href);
+ }catch(e){message.textContent=e.message||'Unable to start checkout.';pay.disabled=false;}
+};
+$('child-select').addEventListener('change',()=>{review.hidden=true;current=[];message.textContent=''});
 })();
 </script>
 </body>
