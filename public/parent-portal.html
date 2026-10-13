@@ -412,7 +412,7 @@ summary{cursor:pointer;font-weight:700}
     if(!result.requests.length){parentStatus('leaving',false);box.hidden=parentActive!=='leaving';return;}
     box.hidden=parentActive!=='leaving';
     parentStatus('leaving',result.requests.some(r=>r.status!=='pending'&&!requestAcks.has(requestKey('leaving',r.id))));
-    const request=result.requests[0],colour=request.status==='pending'?'amber':request.status==='confirmed'?'green':'red';
+    const request=result.requests[0],colour=requestAcks.has(requestKey('leaving',request.id))?'green':request.status==='pending'?'amber':'red';
     box.className='panel account-status portal-view '+colour;
     text(box,'h2',request.status==='pending'?'Leaving request awaiting confirmation':request.status==='confirmed'?'Leaving request confirmed':'Leaving request needs discussion');
     const child=state.children.find(c=>c.id===request.child_id);
@@ -447,8 +447,8 @@ summary{cursor:pointer;font-weight:700}
     if (!requests.length) { box.hidden = true; return; }
     box.hidden = false;
     const latest = [...requests].sort((a,b) => Number(b.id)-Number(a.id))[0];
-    const colour = latest.status === 'pending' ? 'amber' : latest.status === 'accepted' ? 'green' : 'red';
-    box.className = 'panel account-status ' + colour;
+    const colour = requestAcks.has(requestKey('trial',latest.id)) ? 'green' : latest.status === 'pending' ? 'amber' : 'red';
+    box.className = 'panel account-status portal-view ' + colour;
     text(box, 'h2', latest.status === 'pending' ? 'Trial request awaiting approval' : latest.status === 'accepted' ? 'Trial request approved' : 'Trial request declined');
     text(box, 'p', latest.child_name + ' · ' + latest.class_name + ' · Preferred date: ' + latest.requested_date);
     text(box, 'p', latest.status === 'pending' ? 'The club has not made a decision yet.' : latest.status === 'accepted' ? 'Your trial request has been accepted.' : 'Your trial request has been declined.');addDecisionAcknowledgement(box,'trial',latest,loadTrials);
