@@ -97,10 +97,12 @@ summary{cursor:pointer;font-weight:700}
 <section id="dashboard" hidden>
 <h1 id="welcome"></h1>
 <section id="account-status" class="panel account-status" aria-label="Account status" aria-live="polite"></section>
+<section id="trial-status" class="panel account-status" aria-live="polite" hidden></section>
 <p>A place for every little milestone.</p>
 <div class="actions">
   <button id="refresh" class="secondary">Refresh</button>
   <a class="button" href="/#timetable">Book classes</a>
+  <button id="open-trial" type="button">Trial Request</button>
 </div>
 <section class="panel">
 <h2>Your children</h2>
@@ -133,8 +135,9 @@ summary{cursor:pointer;font-weight:700}
 </section>
 </div>
 
-<section class="panel" id="trial-requests">
-<h2>Trial requests</h2>
+<section class="panel" id="trial-requests" hidden>
+<h2>Send a trial request</h2>
+<button id="close-trial" class="secondary" type="button">Close</button>
 <p class="muted">Choose a child, class and preferred date. Staff will accept or decline your request here.</p>
 <form id="trial-form">
 <label>Child<select id="trial-child" required></select></label>
@@ -301,6 +304,7 @@ summary{cursor:pointer;font-weight:700}
     $('trial-child').replaceChildren();
     state.children.forEach(child => { const option = document.createElement('option'); option.value = child.id; option.textContent = child.full_name; $('trial-child').append(option); });
     $('trial-form').querySelector('button').disabled = !state.children.length;
+    if (new URLSearchParams(location.search).has('trial')) $('trial-requests').hidden = false;
     loadTrials().catch(e => { $('trial-message').textContent = e.message; });
 
     const last = state.payments[0];
@@ -331,8 +335,23 @@ summary{cursor:pointer;font-weight:700}
     if (!response.ok) throw new Error(result.error || 'Unable to process trial request.');
     return result;
   }
+  function renderTrialStatus(requests) {
+    const box = $('trial-status');
+    box.replaceChildren();
+    if (!requests.length) { box.hidden = true; return; }
+    box.hidden = false;
+    const latest = [...requests].sort((a,b) => Number(b.id)-Number(a.id))[0];
+    const colour = latest.status === 'pending' ? 'amber' : latest.status === 'accepted' ? 'green' : 'red';
+    box.className = 'panel account-status ' + colour;
+    text(box, 'h2', latest.status === 'pending' ? 'Trial request awaiting approval' : latest.status === 'accepted' ? 'Trial request approved' : 'Trial request declined');
+    text(box, 'p', latest.child_name + ' · ' + latest.class_name + ' · Preferred date: ' + latest.requested_date);
+    text(box, 'p', latest.status === 'pending' ? 'The club has not made a decision yet.' : latest.status === 'accepted' ? 'Your trial request has been accepted.' : 'Your trial request has been declined.');
+  }
+  $('open-trial').onclick = () => { $('trial-requests').hidden = false; $('trial-requests').scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('close-trial').onclick = () => { $('trial-requests').hidden = true; };
   async function loadTrials() {
     const result = await trialApi('list');
+    renderTrialStatus(result.requests);
     $('trial-list').replaceChildren();
     if (!result.requests.length) text($('trial-list'),'p','No trial requests yet.');
     result.requests.forEach(request => {
