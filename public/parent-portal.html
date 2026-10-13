@@ -214,7 +214,9 @@ summary{cursor:pointer;font-weight:700}
   }
 
   const parentSections=[['overview','Overview',['parent-overview','account-status']],['messages','Private messages',['parent-direct']],['news','Club announcements',['parent-news']],['team','Message the team',['parent-team']],['children','Children',['parent-children-view','parent-checklist-view']],['bookings','Bookings & payments',['parent-bookings-view','repeat-month-panel']],['trials','Trial requests',['trial-requests','trial-status']],['leaving','Leaving requests',['leaving-panel','leaving-status']],['info','Stay connected',['parent-connected-view']]];
-  let parentActive='overview';
+  let parentActive='overview',requestAcks=new Set();
+  const requestKey=(type,id)=>type+':'+id;
+  async function loadRequestAcks(){try{const result=await portal.api('request-acks');requestAcks=new Set(result.acknowledgements.map(a=>requestKey(a.request_type,a.request_id)));}catch(e){message(e.message);}}
   function parentSection(key){parentActive=key;parentSections.forEach(([id,,panels])=>{panels.forEach(panel=>{const el=$(panel);if(el)el.hidden=id!==key;});const button=document.querySelector('[data-parent-section="'+id+'"]');if(button)button.setAttribute('aria-pressed',String(id===key));});}
   function parentStatus(key,attention){const dot=document.querySelector('[data-parent-dot="'+key+'"]');if(dot){dot.className='portal-dot'+(attention?' red':'');dot.title=attention?'Needs attention':'All clear';}}
   function parentNavigation(){const menu=$('parent-menu');if(!menu.children.length){parentSections.forEach(([id,label])=>{const button=text(menu,'button','');button.type='button';button.dataset.parentSection=id;button.setAttribute('aria-label',label);text(button,'span',label);const dot=text(button,'span','');dot.dataset.parentDot=id;dot.className='portal-dot';dot.setAttribute('aria-hidden','true');button.onclick=()=>parentSection(id);});}parentStatus('messages',(state.direct_messages||[]).some(x=>!x.read_at));parentStatus('children',state.children.some(c=>!c.registered_at)||!state.children.length);parentSection(parentActive);}
@@ -333,6 +335,7 @@ summary{cursor:pointer;font-weight:700}
 
   async function dashboard() {
     state = await portal.api('dashboard');
+    await loadRequestAcks();
     $('auth-panel').hidden = true;
     $('dashboard').hidden = false;
     $('logout').hidden = false;
