@@ -400,6 +400,7 @@ summary{cursor:pointer;font-weight:700}
     if(!response.ok)throw Error(result.error||'Unable to process request.');
     return result;
   }
+  function addDecisionAcknowledgement(container,type,request,refresh){if(request.status==='pending'||requestAcks.has(requestKey(type,request.id)))return;const label=text(container,'label','');const box=document.createElement('input');box.type='checkbox';box.style.width='auto';box.style.display='inline';box.style.marginRight='9px';label.append(box,document.createTextNode('I acknowledge this decision'));box.onchange=async()=>{if(!box.checked)return;box.disabled=true;try{await portal.api('request-ack',{request_type:type,request_id:String(request.id)});requestAcks.add(requestKey(type,request.id));await refresh();}catch(e){box.checked=false;box.disabled=false;message(e.message);}};}
   async function loadLeaving(){
     const result=await leavingApi('list'),box=$('leaving-status');
     box.replaceChildren();
@@ -411,7 +412,7 @@ summary{cursor:pointer;font-weight:700}
     text(box,'h2',request.status==='pending'?'Leaving request awaiting confirmation':request.status==='confirmed'?'Leaving request confirmed':'Leaving request needs discussion');
     const child=state.children.find(c=>c.id===request.child_id);
     text(box,'p',(child?.full_name||'Child')+' · Proposed final date: '+new Date(request.final_date+'T12:00:00').toLocaleDateString('en-GB'));
-    text(box,'p','Bookings and payments are not automatically changed.');
+    text(box,'p','Bookings and payments are not automatically changed.');addDecisionAcknowledgement(box,'leaving',request,loadLeaving);
   }
   $('close-leaving').onclick=()=>{$('leaving-panel').hidden=true;};
   $('leaving-form').onsubmit=async event=>{
