@@ -48,6 +48,24 @@ export default function App() {
           </div>
         </section>
 
+        {/* PARENT PORTAL GETTING STARTED */}
+        <section className="section wrap" id="start-here" aria-labelledby="start-here-title">
+          <div className="section-head">
+            <p className="eyebrow">Parent Portal guide</p>
+            <h2 id="start-here-title">New to CGC online? Start here!</h2>
+            <p className="muted">Follow these five steps to get started with online class bookings.</p>
+          </div>
+          <ol className="cards" style={{ listStyle: "none", padding: 0 }}>
+            <li className="card orange"><h3>1. Create your parent account</h3><p>Sign up for the Parent Portal and confirm your email address.</p></li>
+            <li className="card teal"><h3>2. Add your child</h3><p>Complete your child's registration details before booking.</p></li>
+            <li className="card orange"><h3>3. Choose your classes</h3><p>Select a class and month. A Tuesday class books every scheduled Tuesday that month; the same applies to other class days.</p></li>
+            <li className="card teal"><h3>4. Complete checkout</h3><p>Follow the payment instructions to confirm your class booking. Places are limited to eight children per session.</p></li>
+            <li className="card orange"><h3>5. Manage your bookings</h3><p>View booked dates, cancel individual sessions under Bookings &amp; payments, and repeat classes for next month.</p></li>
+          </ol>
+          <p><a className="btn" href="/parent-portal.html">Open the Parent Portal →</a></p>
+          <p className="muted">Need help? Email <a href="mailto:hello@cornwallgymnasticscentre.com">hello@cornwallgymnasticscentre.com</a>.</p>
+        </section>
+
         {/* CLASSES */}
         <section className="section wrap" id="classes">
           <div className="section-head">
