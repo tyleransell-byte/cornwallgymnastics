@@ -41,7 +41,11 @@ function applyCgcPrices(html) {
   let updated = 0;
   const result = html.replace(/(<li><div><b>([^<]+)<\/b><span>)([^<]*)(<\/span>)/g,
     (whole, prefix, className, details, suffix) => {
-      const price = cgcPrices.get(className.trim());
+      const ageMatch = details.match(/Ages?\\s+(4–7|6–8|6–12|7–12)/i);
+      const key = className.trim() === "Recreational Gymnastics" && ageMatch
+        ? "Recreational Gymnastics (ages " + ageMatch[1] + ")"
+        : className.trim();
+      const price = cgcPrices.get(key);
       if (!price || !/£10 per session/.test(details)) return whole;
       updated++;
       return prefix + details.replace(/£10 per session/, price) + suffix;
