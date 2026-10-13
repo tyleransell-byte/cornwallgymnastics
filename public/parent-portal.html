@@ -215,6 +215,7 @@ summary{cursor:pointer;font-weight:700}
 
   const parentSections=[['overview','Overview',['parent-overview','account-status']],['messages','Private messages',['parent-direct']],['news','Club announcements',['parent-news']],['team','Message the team',['parent-team']],['children','Children',['parent-children-view','parent-checklist-view']],['bookings','Bookings & payments',['parent-bookings-view','repeat-month-panel']],['trials','Trial requests',['trial-requests','trial-status']],['leaving','Leaving requests',['leaving-panel','leaving-status']],['info','Stay connected',['parent-connected-view']]];
   let parentActive='overview',requestAcks=new Set();
+  setInterval(()=>{if(parentActive==='team'&&!$('dashboard').hidden&&!document.hidden)loadTeamThreads().catch(()=>{});},15000);
   const requestKey=(type,id)=>type+':'+id;
   async function loadRequestAcks(){try{const result=await portal.api('request-acks');requestAcks=new Set(result.acknowledgements.map(a=>requestKey(a.request_type,a.request_id)));}catch(e){message(e.message);}}
   function parentSection(key){parentActive=key;parentSections.forEach(([id,,panels])=>{panels.forEach(panel=>{const el=$(panel);if(el)el.hidden=id!==key;});const button=document.querySelector('[data-parent-section="'+id+'"]');if(button)button.setAttribute('aria-pressed',String(id===key));});}
