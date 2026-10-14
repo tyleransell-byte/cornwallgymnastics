@@ -396,7 +396,7 @@ summary{cursor:pointer;font-weight:700}
   setInterval(()=>{if(state&&!$('dashboard').hidden)renderNextMonthPayment();},1000);
   async function dashboard() {
     state = await portal.api('dashboard');
-    await loadRequestAcks();
+    loadRequestAcks().catch(error => message(error.message));
     loadTeamThreads().catch(e=>message(e.message));
     $('auth-panel').hidden = true;
     $('dashboard').hidden = false;
