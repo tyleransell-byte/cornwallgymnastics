@@ -20,19 +20,33 @@
   }
 
   async function call(body, token) {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: 'Bearer ' + token } : {})
-      },
-      body: JSON.stringify(body)
-    });
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: 'Bearer ' + token } : {})
+        },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15000)
+      });
+    } catch (error) {
+      if (error.name === 'TimeoutError' || error.name === 'AbortError') {
+        throw new Error('The parent portal is taking too long to respond. Please try again.');
+      }
+      throw new Error('Unable to contact the parent portal. Check your connection and try again.');
+    }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error('The parent portal returned an unexpected response. Please try again later.');
+    }
 
     if (!response.ok) {
-      throw new Error(data.error || 'Unable to connect. Please try again.');
+      throw new Error(data.error || 'Parent portal request failed (' + response.status + '). Please try again.');
     }
 
     return data;
