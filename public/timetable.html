@@ -279,6 +279,11 @@ a.trial{text-decoration:none;display:inline-block}
   }
 
   function bindBooking() {
+    // Timetables are view-only. Remove all class booking and membership actions
+    // after the timetable content is decrypted and inserted into the page.
+    document.querySelectorAll("#content a[data-class], #content a[data-membership], #content .book").forEach(function (element) {
+      element.remove();
+    });
   // Booking buttons open the checkout link in a new tab.
   document.querySelectorAll("a[data-class]").forEach(function (a) {
     var mode = a.dataset.mode;
