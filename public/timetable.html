@@ -185,6 +185,13 @@ dialog .btn{margin-top:20px}
 a.trial{text-decoration:none;display:inline-block}
 #content{padding-bottom:96px}
 #content .timetable{padding-top:40px}
+
+/* Public timetable is display-only: hide all booking controls even before scripts run. */
+#content .book,
+#content a[data-class],
+#content a[data-membership],
+#content .book-actions,
+#content .booking-actions { display:none !important; }
 </style>
 </head>
 <body>
