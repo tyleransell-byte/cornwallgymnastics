@@ -283,7 +283,7 @@ a.trial{text-decoration:none;display:inline-block}
     var content = document.getElementById("content");
     content.querySelectorAll("a, button, input[type=button], input[type=submit], [role=button]").forEach(function (el) {
       var label = (el.textContent || el.value || el.getAttribute("aria-label") || "").trim();
-      var isBooking = /\\bbook(?:ing)?\\b|\\bjoin\\b|\\bpay\\b|\\bcheckout\\b/i.test(label);
+      var isBooking = /\bbook(?:ing)?\b|\bjoin\b|\bpay\b|\bcheckout\b/i.test(label);
       if (el.matches("[data-class], [data-membership]") || isBooking) el.remove();
     });
   }
