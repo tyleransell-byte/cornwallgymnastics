@@ -279,44 +279,13 @@ a.trial{text-decoration:none;display:inline-block}
   }
 
   function bindBooking() {
-    // Timetables are view-only. Remove all class booking and membership actions
-    // after the timetable content is decrypted and inserted into the page.
-    document.querySelectorAll("#content a[data-class], #content a[data-membership], #content .book").forEach(function (element) {
-      element.remove();
+    // Timetable is view-only: strip booking actions from the decrypted content.
+    var content = document.getElementById("content");
+    content.querySelectorAll("a, button, input[type=button], input[type=submit], [role=button]").forEach(function (el) {
+      var label = (el.textContent || el.value || el.getAttribute("aria-label") || "").trim();
+      var isBooking = /\\bbook(?:ing)?\\b|\\bjoin\\b|\\bpay\\b|\\bcheckout\\b/i.test(label);
+      if (el.matches("[data-class], [data-membership]") || isBooking) el.remove();
     });
-  // Booking buttons open the checkout link in a new tab.
-  document.querySelectorAll("a[data-class]").forEach(function (a) {
-    var mode = a.dataset.mode;
-    var link = (CLASS_LINKS[a.dataset.class] || {})[mode];
-    if (link) {
-      a.href = link;
-      a.target = "_blank";
-      a.rel = "noopener";
-      return;
-    }
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      var what = mode === "many" ? "multiple sessions of " : "one session of ";
-      openDialog("Class booking isn’t connected yet",
-        "Booking " + what + a.dataset.name + " isn’t set up online yet. Please ask at reception to book a place.");
-    });
-  });
-
-  document.querySelectorAll("a[data-membership]").forEach(function (a) {
-    var link = MEMBERSHIP_LINKS[a.dataset.membership];
-    if (link) {
-      a.href = link;
-      a.target = "_blank";
-      a.rel = "noopener";
-      return;
-    }
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      openDialog("Membership booking isn’t connected yet",
-        "Monthly membership for " + a.dataset.name + " isn’t set up online yet. Please ask at reception to join.");
-    });
-  });
-
   }
 
   function fromB64(b) {
