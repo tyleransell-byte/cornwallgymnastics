@@ -115,7 +115,7 @@ a{color:inherit}
 .tt-day li b{font-weight:700}
 .tt-day li span{color:var(--muted);font-variant-numeric:tabular-nums}
 .tt-day li .row-actions{flex-direction:row;flex-wrap:wrap;gap:8px}
-.book{text-decoration:none;display:inline-block;line-height:1.3;font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;flex:none;white-space:nowrap;background:transparent;color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:7px 16px}
+.book{display:none !important;text-decoration:none;display:inline-block;line-height:1.3;font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;flex:none;white-space:nowrap;background:transparent;color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:7px 16px}
 .book:hover{background:var(--ink);color:var(--bg)}
 
 /* included */
@@ -187,8 +187,8 @@ a.trial{text-decoration:none;display:inline-block}
 #content .timetable{padding-top:40px}
 
 /* Public timetable is display-only: hide all booking controls even before scripts run. */
-#content .book,
-#content a[data-class],
+.book,
+a[data-class],
 #content a[data-membership],
 #content .book-actions,
 #content .booking-actions { display:none !important; }
