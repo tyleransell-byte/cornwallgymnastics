@@ -278,14 +278,18 @@ a.trial{text-decoration:none;display:inline-block}
     if (dialog.showModal) { dialog.showModal(); } else { alert(text); }
   }
 
-  function bindBooking() {
-    // Timetable is view-only: strip booking actions from the decrypted content.
+  function removeBookingActions() {
     var content = document.getElementById("content");
+    if (!content) return;
     content.querySelectorAll("a, button, input[type=button], input[type=submit], [role=button]").forEach(function (el) {
-      var label = (el.textContent || el.value || el.getAttribute("aria-label") || "").trim();
-      var isBooking = /\bbook(?:ing)?\b|\bjoin\b|\bpay\b|\bcheckout\b/i.test(label);
-      if (el.matches("[data-class], [data-membership]") || isBooking) el.remove();
+      var label = [el.textContent, el.value, el.getAttribute("aria-label"), el.getAttribute("title")].filter(Boolean).join(" ").trim();
+      if (el.matches("[data-class], [data-membership]") || /\bbook\\s*now\b|\bbook(?:ing)?\b|\bjoin\b|\bpay\b|\bcheckout\b/i.test(label)) el.remove();
     });
+  }
+  function bindBooking() {
+    removeBookingActions();
+    // Catch actions inserted after the timetable is first displayed.
+    new MutationObserver(removeBookingActions).observe(document.getElementById("content"), {childList:true,subtree:true});
   }
 
   function fromB64(b) {
