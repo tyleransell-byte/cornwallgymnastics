@@ -137,6 +137,32 @@ a {
   opacity: 0.85;
 }
 
+/* Parent Portal navigation action: a deeper orange than the trial button */
+.nav-links a.parent-portal-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 19px;
+  border: 2px solid #d96b22;
+  border-radius: 999px;
+  background: #d96b22;
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.nav-links a.parent-portal-link:hover {
+  background: #b94f12;
+  border-color: #b94f12;
+  text-decoration: none;
+}
+
+.nav-links a.parent-portal-link:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 3px;
+}
+
 /* =========================
    HERO
 ========================= */
@@ -458,8 +484,13 @@ dialog::backdrop {
     gap: 10px;
   }
 
-  .nav-links > a {
+  .nav-links > a:not(.parent-portal-link) {
     display: none;
+  }
+
+  .nav-links a.parent-portal-link {
+    padding: 9px 12px;
+    font-size: 0.9rem;
   }
 
   .trial {
@@ -500,6 +531,11 @@ dialog::backdrop {
 
   .trial {
     padding: 8px 12px;
+    font-size: 0.82rem;
+  }
+
+  .nav-links a.parent-portal-link {
+    padding: 8px 10px;
     font-size: 0.82rem;
   }
 
