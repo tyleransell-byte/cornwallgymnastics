@@ -119,6 +119,47 @@ summary{cursor:pointer;font-weight:700}
 .portal-subpage #dashboard>.portal-intro,.portal-subpage #dashboard>.upcoming-bookings,.portal-subpage #dashboard>.quick-actions,.portal-subpage #dashboard>.timetable-launch,.portal-subpage #dashboard>.mobile-home{display:none!important}
 .portal-subpage #parent-menu .portal-view[hidden],.portal-subpage #parent-account-view[hidden]{display:none!important}
 @media(max-width:700px){.portal-subpage #parent-menu .parent-section-slot{display:block}.portal-subpage #parent-menu .portal-view:not([hidden]){display:block}}
+/* CGC unified app screen design — presentation only, preserve original event handlers */
+:root{--orange:#ff741c;--teal:#168fb0;--ink:#102d42;--sky:#e6f6fb;--cream:#f6fafb}
+body{background:#f6fafb;color:var(--ink);font-size:15px}
+.portal-header{background:#fff;border-bottom:1px solid #e2ebef;box-shadow:0 2px 12px #102d420d}
+.portal-header .brand-copy strong{color:#102d42}.portal-header .brand-copy small{color:#547080}
+main{max-width:980px}
+.panel{background:#fff;border:1px solid #e3ebef;border-radius:19px;box-shadow:0 3px 15px #12374809}
+.panel h2{color:#102d42;font-size:clamp(21px,4vw,27px);letter-spacing:-.025em}
+.panel h3{color:#173d52}
+button,.button{border:0;border-radius:12px;background:#ff741c;color:#fff;-webkit-text-fill-color:currentColor;box-shadow:none}
+button.secondary,.button.secondary{background:#e8f3f7;color:#10364a}
+button:focus-visible,a:focus-visible{outline:3px solid #168fb0;outline-offset:3px}
+input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
+.muted{color:#5d7582}
+.portal-menu button{background:#fff;border:1px solid #e2ebef;border-radius:14px;color:#173d52}
+.portal-menu button[aria-pressed=true]{background:#e6f6fb;border-color:#168fb0}
+.portal-subpage #parent-menu{display:block;max-width:850px;margin:0 auto}
+.portal-subpage #parent-menu .parent-section-slot{display:block}
+.portal-subpage #parent-menu .portal-view:not([hidden]){display:block;background:#fff;border-radius:19px}
+.portal-subpage #parent-menu .portal-view[hidden]{display:none!important}
+.portal-subpage #parent-menu>button{display:none!important}
+.portal-subpage #parent-menu .grid:not([hidden]){grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.portal-subpage #parent-menu #parent-children-view details,.portal-subpage #parent-menu #parent-bookings-view details{border:1px solid #e2ebef;border-radius:13px;padding:14px;background:#f8fbfd}
+.portal-subpage #parent-menu .row{background:#fff;border-bottom:1px solid #e5edf1;padding:17px 10px}
+.portal-subpage #parent-menu .child-actions{gap:9px}
+.portal-subpage #parent-menu .child-actions button,.portal-subpage #parent-menu .child-actions a{border:0;border-radius:10px}
+.portal-subpage #parent-menu #parent-direct-list>*,.portal-subpage #parent-menu #parent-news-list>*,.portal-subpage #parent-menu #bookings>*,.portal-subpage #parent-menu #child-profile>*{border-radius:14px}
+.portal-subpage #parent-menu #parent-team form,.portal-subpage #parent-menu #parent-children-view form{background:#f6fafb;border:1px solid #e2ebef;border-radius:16px;padding:16px}
+.portal-subpage #parent-account-view{max-width:850px;margin:0 auto 20px}
+.portal-subpage #parent-account-view:not([hidden]){display:block}
+.portal-subpage .mobile-bottom-nav button{background:transparent}
+@media(max-width:700px){
+ main{padding:16px 14px 105px}
+ .panel{padding:18px}
+ .portal-subpage #parent-menu .grid:not([hidden]){grid-template-columns:1fr}
+ .portal-subpage #parent-menu .portal-view h2{font-size:23px}
+ .portal-subpage #parent-menu .portal-view{margin:0 0 14px}
+ .portal-subpage #parent-menu .portal-view .button,.portal-subpage #parent-menu .portal-view button{max-width:100%}
+ .mobile-bottom-nav:not([hidden]) button{border:0;background:transparent;color:#315366}
+ .mobile-bottom-nav:not([hidden]) button[aria-current=page]{background:#fff3e8;color:#e76719}
+}
 </style>
 </head>
 <body>
