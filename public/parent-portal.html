@@ -179,6 +179,13 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 .portal-subpage #parent-menu .portal-view button.secondary{background:#e7f6fb;color:#10364a}
 .portal-subpage #parent-menu .portal-view a.button{background:#ff741c;color:#fff}
 @media(max-width:700px){.app-page-heading{gap:12px}.app-page-heading .app-page-icon{width:52px;height:52px;font-size:26px}.portal-subpage #parent-bookings-view:not([hidden]){grid-template-columns:1fr}.portal-subpage #parent-menu .portal-view:not([hidden]),.portal-subpage #parent-account-view:not([hidden]){padding:18px}}
+/* Back to dashboard on every in-portal subpage */
+#portal-back-dashboard[hidden]{display:none!important}
+.portal-back-dashboard{display:none;align-items:center;gap:10px;background:#e6f6fb!important;color:#14536a!important;border:1px solid #cbe8f0!important;border-radius:12px!important;padding:10px 15px!important;margin:0 0 17px;min-height:44px;font-size:14px;font-weight:750;box-shadow:none!important}
+.portal-subpage .portal-back-dashboard:not([hidden]){display:inline-flex}
+.portal-back-dashboard span{font-size:22px;line-height:1}
+.portal-back-dashboard:hover{background:#d5f0f7!important}
+@media(max-width:700px){.portal-back-dashboard{margin:0 0 15px;width:auto;max-width:100%}}
 </style>
 </head>
 <body>
@@ -225,6 +232,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 </section>
 
 <section id="dashboard" hidden>
+<button type="button" id="portal-back-dashboard" class="portal-back-dashboard" data-mobile-section="overview" hidden aria-label="Back to parent dashboard"><span aria-hidden="true">←</span> Back to dashboard</button>
 <section class="mobile-home" aria-label="Parent portal home">
   <div class="mobile-home-welcome"><span class="portal-eyebrow">CORNWALL GYMNASTICS</span><h1>Welcome to your<br><em>Parent Portal</em></h1><p>Your family's gymnastics journey, all in one place.</p></div>
   <div class="mobile-home-tiles">
@@ -955,9 +963,9 @@ $('child-select').addEventListener('change',()=>{review.hidden=true;current=[];m
 <script>
 /* Keep app navigation in sync with the portal's existing authenticated section logic. */
 (function(){
- const dashboard=document.getElementById('dashboard'),nav=document.getElementById('mobile-bottom-nav'),account=document.getElementById('parent-account-view'),shortcut=document.getElementById('portal-account-shortcut'),menu=document.getElementById('parent-menu');
+ const dashboard=document.getElementById('dashboard'),nav=document.getElementById('mobile-bottom-nav'),account=document.getElementById('parent-account-view'),shortcut=document.getElementById('portal-account-shortcut'),menu=document.getElementById('parent-menu'),back=document.getElementById('portal-back-dashboard');
  let current='overview';
- function update(){const active=!dashboard.hidden;nav.hidden=!active;shortcut.hidden=!active;document.body.classList.toggle('portal-subpage',active&&current!=='overview');account.hidden=current!=='account';nav.querySelectorAll('button').forEach(b=>{if(b.dataset.mobileSection===current)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
+ function update(){const active=!dashboard.hidden;nav.hidden=!active;shortcut.hidden=!active;document.body.classList.toggle('portal-subpage',active&&current!=='overview');back.hidden=!active||current==='overview';account.hidden=current!=='account';nav.querySelectorAll('button').forEach(b=>{if(b.dataset.mobileSection===current)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
  function navigate(key,scrollId){
   if(key==='programmes'){location.assign('/parent-programmes.html');return}
   if(key==='account'){current='account';}
