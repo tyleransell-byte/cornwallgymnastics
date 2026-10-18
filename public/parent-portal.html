@@ -114,7 +114,12 @@ summary{cursor:pointer;font-weight:700}
   .mobile-bottom-nav button span{font-size:21px;line-height:1.1}
   .mobile-bottom-nav button[aria-current=page]{color:#e76719;background:#fff3e8}
 }
-.portal-account-links{display:grid;gap:9px;margin:20px 0}.portal-account-links button,.portal-account-links a{display:block;width:100%;background:#fff;border:1px solid #dce7ec;border-radius:14px;min-height:55px;padding:14px 16px;text-align:left;text-decoration:none;color:#102c39;font-size:15px;font-weight:650}.portal-account-links button:hover,.portal-account-links a:hover{background:#eaf7fa}#portal-account-shortcut{background:#fff;border:1px solid #dce7ec;border-radius:12px;min-height:40px;font-size:13px;padding:8px 12px}#portal-account-shortcut[hidden]{display:none!important}.portal-subpage .mobile-home,.portal-subpage #dashboard>.upcoming-bookings,.portal-subpage #dashboard>.quick-actions,.portal-subpage #dashboard>.timetable-launch{display:none!important}.portal-subpage #dashboard>#parent-menu{margin-top:10px}.portal-subpage #parent-menu>button{display:none}.portal-subpage #parent-menu .portal-view:not([hidden]){display:block}@media(max-width:700px){.portal-subpage #parent-menu{display:block}.portal-subpage #parent-menu .parent-section-slot{display:contents}.portal-subpage #parent-menu .portal-view:not([hidden]){margin:0 0 14px}.portal-subpage #parent-account-view{margin-top:12px}.portal-subpage #parent-bookings-view:not([hidden]){display:grid;grid-template-columns:1fr}.portal-subpage #parent-direct .secondary{width:100%;border:1px solid #dce7ec}.portal-subpage .portal-view h2{font-size:24px}}</style>
+.portal-account-links{display:grid;gap:9px;margin:20px 0}.portal-account-links button,.portal-account-links a{display:block;width:100%;background:#fff;border:1px solid #dce7ec;border-radius:14px;min-height:55px;padding:14px 16px;text-align:left;text-decoration:none;color:#102c39;font-size:15px;font-weight:650}.portal-account-links button:hover,.portal-account-links a:hover{background:#eaf7fa}#portal-account-shortcut{background:#fff;border:1px solid #dce7ec;border-radius:12px;min-height:40px;font-size:13px;padding:8px 12px}#portal-account-shortcut[hidden]{display:none!important}.portal-subpage .mobile-home,.portal-subpage #dashboard>.upcoming-bookings,.portal-subpage #dashboard>.quick-actions,.portal-subpage #dashboard>.timetable-launch{display:none!important}.portal-subpage #dashboard>#parent-menu{margin-top:10px}.portal-subpage #parent-menu>button{display:none}.portal-subpage #parent-menu .portal-view:not([hidden]){display:block}@media(max-width:700px){.portal-subpage #parent-menu{display:block}.portal-subpage #parent-menu .parent-section-slot{display:contents}.portal-subpage #parent-menu .portal-view:not([hidden]){margin:0 0 14px}.portal-subpage #parent-account-view{margin-top:12px}.portal-subpage #parent-bookings-view:not([hidden]){display:grid;grid-template-columns:1fr}.portal-subpage #parent-direct .secondary{width:100%;border:1px solid #dce7ec}.portal-subpage .portal-view h2{font-size:24px}}/* Hidden sections must stay hidden even when display rules target .portal-view. */
+#dashboard [hidden],#mobile-bottom-nav[hidden],#portal-account-shortcut[hidden]{display:none!important}
+.portal-subpage #dashboard>.portal-intro,.portal-subpage #dashboard>.upcoming-bookings,.portal-subpage #dashboard>.quick-actions,.portal-subpage #dashboard>.timetable-launch,.portal-subpage #dashboard>.mobile-home{display:none!important}
+.portal-subpage #parent-menu .portal-view[hidden],.portal-subpage #parent-account-view[hidden]{display:none!important}
+@media(max-width:700px){.portal-subpage #parent-menu .parent-section-slot{display:block}.portal-subpage #parent-menu .portal-view:not([hidden]){display:block}}
+</style>
 </head>
 <body>
 <header class="portal-header"><a class="portal-brand" href="/" aria-label="Cornwall Gymnastics Centre home"><img src="/cgg-logo.png" alt="CGC logo" class="portal-logo"><span class="brand-copy"><strong>Cornwall Gymnastics Centre</strong><small>Parent Portal</small></span></a><button type="button" id="portal-account-shortcut" class="secondary" hidden>Account</button><button id="logout" class="secondary" hidden>Sign out</button></header>
@@ -889,22 +894,28 @@ $('child-select').addEventListener('change',()=>{review.hidden=true;current=[];m
 </script>
 <div style="text-align:center;padding:12px 20px 24px"><a href="/privacy-policy.html">Privacy Policy</a></div>
 <script>
-/* Route app controls to the existing authenticated portal sections. */
+/* Keep app navigation in sync with the portal's existing authenticated section logic. */
 (function(){
- const dashboard=document.getElementById('dashboard'),nav=document.getElementById('mobile-bottom-nav'),account=document.getElementById('parent-account-view'),shortcut=document.getElementById('portal-account-shortcut');
+ const dashboard=document.getElementById('dashboard'),nav=document.getElementById('mobile-bottom-nav'),account=document.getElementById('parent-account-view'),shortcut=document.getElementById('portal-account-shortcut'),menu=document.getElementById('parent-menu');
  let current='overview';
- function update(){const active=!dashboard.hidden;nav.hidden=!active;shortcut.hidden=!active;if(!active){document.body.classList.remove('portal-subpage');return}document.body.classList.toggle('portal-subpage',current!=='overview');account.hidden=current!=='account';nav.querySelectorAll('button').forEach(b=>{if(b.dataset.mobileSection===current)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
+ function update(){const active=!dashboard.hidden;nav.hidden=!active;shortcut.hidden=!active;document.body.classList.toggle('portal-subpage',active&&current!=='overview');account.hidden=current!=='account';nav.querySelectorAll('button').forEach(b=>{if(b.dataset.mobileSection===current)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
  function navigate(key,scrollId){
-   if(key==='programmes'){window.location.assign('/parent-programmes.html');return}
-   if(key==='account'){current='account';}
-   else{const button=document.querySelector('#parent-menu button[data-parent-section="'+key+'"]');if(!button)return;if(button.getAttribute('aria-pressed')!=='true')button.click();current=key;}
-   update();
-   requestAnimationFrame(()=>{if(scrollId)document.getElementById(scrollId)?.scrollIntoView({behavior:'smooth',block:'start'});else if(key==='overview')window.scrollTo({top:0,behavior:'smooth'});else (key==='account'?account:document.getElementById('parent-menu'))?.scrollIntoView({behavior:'smooth',block:'start'})});
+  if(key==='programmes'){location.assign('/parent-programmes.html');return}
+  if(key==='account'){current='account';}
+  else{
+   const button=menu.querySelector('button[data-parent-section="'+key+'"]');
+   if(!button)return;
+   if(button.getAttribute('aria-pressed')!=='true')button.click();
+   current=key;
+  }
+  update();
+  requestAnimationFrame(()=>{if(scrollId)document.getElementById(scrollId)?.scrollIntoView({behavior:'smooth',block:'start'});else if(key==='overview')window.scrollTo({top:0,behavior:'smooth'});else (key==='account'?account:menu)?.scrollIntoView({behavior:'smooth',block:'start'})});
  }
- document.addEventListener('click',event=>{const target=event.target.closest('[data-mobile-section]');if(target&&!dashboard.hidden){navigate(target.dataset.mobileSection,target.dataset.mobileScroll);return}const menu=event.target.closest('#parent-menu button[data-parent-section]');if(menu&&!dashboard.hidden){current=menu.dataset.parentSection;requestAnimationFrame(update)}});
+ document.addEventListener('click',e=>{const tile=e.target.closest('[data-mobile-section]');if(tile&&!dashboard.hidden){navigate(tile.dataset.mobileSection,tile.dataset.mobileScroll);return}const button=e.target.closest('#parent-menu button[data-parent-section]');if(button&&!dashboard.hidden){current=button.dataset.parentSection;requestAnimationFrame(update)}});
  shortcut.addEventListener('click',()=>navigate('account'));
  document.getElementById('account-sign-out').addEventListener('click',()=>document.getElementById('logout').click());
- new MutationObserver(update).observe(dashboard,{attributes:true,attributeFilter:['hidden']});update();
+ new MutationObserver(update).observe(dashboard,{attributes:true,attributeFilter:['hidden']});
+ update();
 })();
 </script>
 </body>
