@@ -60,9 +60,9 @@ export default function App() {
           <ol className="cards" style={{ listStyle: "none", padding: 0 }}>
             <li className="card orange"><h3>1. Create your parent account</h3><p>Sign up for the Parent Portal and confirm your email address.</p></li>
             <li className="card teal"><h3>2. Add your child</h3><p>Complete your child's registration details before booking.</p></li>
-            <li className="card orange"><h3>3. Choose your classes</h3><p>Select a class and month. A Tuesday class books every scheduled Tuesday that month; the same applies to other class days.</p></li>
-            <li className="card teal"><h3>4. Complete checkout</h3><p>Follow the payment instructions to confirm your class booking. Places are limited to eight children per session.</p></li>
-            <li className="card orange"><h3>5. Manage your bookings</h3><p>View booked dates, cancel individual sessions under Bookings &amp; payments, and repeat classes for next month.</p></li>
+            <li className="card orange"><h3>3. Request a class place</h3><p>Explore the available classes and request a place for your child through the Parent Portal. Our team will review your request and confirm which classes are suitable.</p></li>
+            <li className="card teal"><h3>4. Review your approved classes</h3><p>Once our team has approved your request, open Approved classes in the Parent Portal to see your child's class options, monthly price and payment choices.</p></li>
+            <li className="card orange"><h3>5. Confirm and stay up to date</h3><p>Follow the payment instructions to confirm your place. Then use the Parent Portal to check upcoming sessions, bookings, payments and messages from the team.</p></li>
           </ol>
           <p><a className="btn" href="/parent-portal.html">Open the Parent Portal →</a></p>
           <p className="muted">Need help? Email <a href="mailto:hello@cornwallgymnasticscentre.com">hello@cornwallgymnasticscentre.com</a>.</p>
