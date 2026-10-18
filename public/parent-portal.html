@@ -114,10 +114,10 @@ summary{cursor:pointer;font-weight:700}
   .mobile-bottom-nav button span{font-size:21px;line-height:1.1}
   .mobile-bottom-nav button[aria-current=page]{color:#e76719;background:#fff3e8}
 }
-</style>
+.portal-account-links{display:grid;gap:9px;margin:20px 0}.portal-account-links button,.portal-account-links a{display:block;width:100%;background:#fff;border:1px solid #dce7ec;border-radius:14px;min-height:55px;padding:14px 16px;text-align:left;text-decoration:none;color:#102c39;font-size:15px;font-weight:650}.portal-account-links button:hover,.portal-account-links a:hover{background:#eaf7fa}#portal-account-shortcut{background:#fff;border:1px solid #dce7ec;border-radius:12px;min-height:40px;font-size:13px;padding:8px 12px}#portal-account-shortcut[hidden]{display:none!important}.portal-subpage .mobile-home,.portal-subpage #dashboard>.upcoming-bookings,.portal-subpage #dashboard>.quick-actions,.portal-subpage #dashboard>.timetable-launch{display:none!important}.portal-subpage #dashboard>#parent-menu{margin-top:10px}.portal-subpage #parent-menu>button{display:none}.portal-subpage #parent-menu .portal-view:not([hidden]){display:block}@media(max-width:700px){.portal-subpage #parent-menu{display:block}.portal-subpage #parent-menu .parent-section-slot{display:contents}.portal-subpage #parent-menu .portal-view:not([hidden]){margin:0 0 14px}.portal-subpage #parent-account-view{margin-top:12px}.portal-subpage #parent-bookings-view:not([hidden]){display:grid;grid-template-columns:1fr}.portal-subpage #parent-direct .secondary{width:100%;border:1px solid #dce7ec}.portal-subpage .portal-view h2{font-size:24px}}</style>
 </head>
 <body>
-<header class="portal-header"><a class="portal-brand" href="/" aria-label="Cornwall Gymnastics Centre home"><img src="/cgg-logo.png" alt="CGC logo" class="portal-logo"><span class="brand-copy"><strong>Cornwall Gymnastics Centre</strong><small>Parent Portal</small></span></a><button id="logout" class="secondary" hidden>Sign out</button></header>
+<header class="portal-header"><a class="portal-brand" href="/" aria-label="Cornwall Gymnastics Centre home"><img src="/cgg-logo.png" alt="CGC logo" class="portal-logo"><span class="brand-copy"><strong>Cornwall Gymnastics Centre</strong><small>Parent Portal</small></span></a><button type="button" id="portal-account-shortcut" class="secondary" hidden>Account</button><button id="logout" class="secondary" hidden>Sign out</button></header>
 <main>
 <div id="message" role="status" aria-live="polite"></div>
 
@@ -163,22 +163,22 @@ summary{cursor:pointer;font-weight:700}
 <section class="mobile-home" aria-label="Parent portal home">
   <div class="mobile-home-welcome"><span class="portal-eyebrow">CORNWALL GYMNASTICS</span><h1>Welcome to your<br><em>Parent Portal</em></h1><p>Your family's gymnastics journey, all in one place.</p></div>
   <div class="mobile-home-tiles">
-    <button type="button" data-mobile-section="children"><span aria-hidden="true">👨‍👩‍👧</span><strong>My Children</strong></button>
-    <a href="/parent-programmes.html"><span aria-hidden="true">📅</span><strong>Request a class</strong></a>
+    <button type="button" data-mobile-section="children"><span aria-hidden="true">♙</span><strong>My Children</strong></button>
+    <a href="/parent-programmes.html"><span aria-hidden="true">▦</span><strong>Classes</strong></a>
     <a href="/parent-programmes.html"><span aria-hidden="true">✓</span><strong>Approved classes</strong></a>
-    <button type="button" data-mobile-section="bookings"><span aria-hidden="true">💳</span><strong>Bookings &amp; Payments</strong></button>
-    <button type="button" data-mobile-section="overview" data-mobile-scroll="upcoming-bookings-list"><span aria-hidden="true">🗓</span><strong>Upcoming Sessions</strong></button>
-    <button type="button" data-mobile-section="messages"><span aria-hidden="true">💬</span><strong>Messages</strong></button>
+    <button type="button" data-mobile-section="bookings"><span aria-hidden="true">▣</span><strong>Bookings &amp; Payments</strong></button>
+    <button type="button" data-mobile-section="overview" data-mobile-scroll="upcoming-bookings-list"><span aria-hidden="true">▤</span><strong>Upcoming Sessions</strong></button>
+    <button type="button" data-mobile-section="messages"><span aria-hidden="true">◉</span><strong>Messages</strong></button>
   </div>
-  <button class="mobile-home-news" type="button" data-mobile-section="news"><span aria-hidden="true">📣</span><span><strong>Latest from CGC</strong><small>Club announcements and important updates</small></span><span aria-hidden="true">›</span></button>
+  <button class="mobile-home-news" type="button" data-mobile-section="news"><span aria-hidden="true">◈</span><span><strong>Latest from CGC</strong><small>Club announcements and important updates</small></span><span aria-hidden="true">›</span></button>
 </section>
 
-<section id="next-month-payment" class="panel" aria-live="polite" hidden><h2>Next month’s class bookings</h2><p id="next-month-payment-text"></p><p id="next-month-payment-clock" style="font-size:22px;font-weight:800"></p><button type="button" id="next-month-repeat">Repeat classes for next month</button></section><section class="upcoming-bookings" aria-label="Next booked classes"><div class="upcoming-heading"><span>COMING UP</span><h2>Next booked classes</h2></div><div id="upcoming-bookings-list"></div></section><div class="quick-actions" aria-label="Quick actions"><button id="open-trial" type="button">Trial request</button></div><button type="button" id="open-timetable" class="timetable-launch">Timetable <span aria-hidden="true">→</span></button><section id="timetable-chooser" class="panel" hidden><h2>Choose a child</h2><p>Select who you would like to view the timetable for.</p><label for="timetable-child">Child<select id="timetable-child"></select></label><div class="timetable-choices"><button class="button" type="button" id="timetable-book" hidden disabled>Book classes</button><button class="button secondary" type="button" id="timetable-view">View timetable</button></div><p class="muted">To cancel a booked session, open <strong>Bookings &amp; payments</strong> in the parent menu and choose the cancellation button beside the date. Sessions cannot be cancelled from the timetable.</p><button type="button" id="timetable-repeat" class="secondary" hidden disabled>Repeat classes for next month</button><div id="child-timetable-results" hidden aria-live="polite"></div></section><dialog id="session-booking-dialog" class="session-booking-dialog"><div class="session-dialog-head"><h2>Choose your sessions</h2><button type="button" id="session-dialog-close" aria-label="Close">×</button></div><p><strong>Monthly booking:</strong> Choosing a Tuesday class books <strong>every Tuesday in your selected month</strong>. The same applies to Wednesday, Thursday, Friday and Saturday classes. All scheduled dates are included in one booking, not just one week.</p><p id="session-booking-child"></p><label>Booking month<select id="session-booking-month"></select></label><div id="session-booking-classes"></div><p class="muted">For example, a Tuesday class in November 2026 includes 3, 10, 17 and 24 November. Each class covers every scheduled occurrence of its weekday in the chosen month (excluding confirmed club closures). Checkout is currently in Stripe test mode.</p><p id="session-booking-error" role="alert"></p><button id="session-booking-pay" type="button">Continue to checkout</button></dialog><div class="portal-intro"><span class="portal-eyebrow">YOUR FAMILY DASHBOARD</span><h1 id="welcome"></h1><p>Everything you need for your gymnastics journey, all in one place.</p><div class="portal-legend" aria-label="Status light guide"><div><span class="portal-dot red" aria-hidden="true"></span><span><strong>Needs attention</strong><small>Something is waiting for you to check or acknowledge.</small></span></div><div><span class="portal-dot" aria-hidden="true"></span><span><strong>All clear</strong><small>No action needed right now.</small></span></div></div></div><nav id="parent-menu" class="portal-menu" aria-label="Parent portal sections"></nav><section class="panel portal-view" id="parent-direct"><h2>Private messages</h2><div id="parent-direct-list"></div></section><section class="panel portal-view" id="parent-news"><h2>Club newsletters</h2><div id="parent-news-list"></div></section>
+<section id="next-month-payment" class="panel" aria-live="polite" hidden><h2>Next month’s class bookings</h2><p id="next-month-payment-text"></p><p id="next-month-payment-clock" style="font-size:22px;font-weight:800"></p><button type="button" id="next-month-repeat">Repeat classes for next month</button></section><section class="upcoming-bookings" aria-label="Next booked classes"><div class="upcoming-heading"><span>COMING UP</span><h2>Next booked classes</h2></div><div id="upcoming-bookings-list"></div></section><div class="quick-actions" aria-label="Quick actions"><button id="open-trial" type="button">Trial request</button></div><button type="button" id="open-timetable" class="timetable-launch">Timetable <span aria-hidden="true">→</span></button><section id="timetable-chooser" class="panel" hidden><h2>Choose a child</h2><p>Select who you would like to view the timetable for.</p><label for="timetable-child">Child<select id="timetable-child"></select></label><div class="timetable-choices"><button class="button" type="button" id="timetable-book" hidden disabled>Book classes</button><button class="button secondary" type="button" id="timetable-view">View timetable</button></div><p class="muted">To cancel a booked session, open <strong>Bookings &amp; payments</strong> in the parent menu and choose the cancellation button beside the date. Sessions cannot be cancelled from the timetable.</p><button type="button" id="timetable-repeat" class="secondary" hidden disabled>Repeat classes for next month</button><div id="child-timetable-results" hidden aria-live="polite"></div></section><dialog id="session-booking-dialog" class="session-booking-dialog"><div class="session-dialog-head"><h2>Choose your sessions</h2><button type="button" id="session-dialog-close" aria-label="Close">×</button></div><p><strong>Monthly booking:</strong> Choosing a Tuesday class books <strong>every Tuesday in your selected month</strong>. The same applies to Wednesday, Thursday, Friday and Saturday classes. All scheduled dates are included in one booking, not just one week.</p><p id="session-booking-child"></p><label>Booking month<select id="session-booking-month"></select></label><div id="session-booking-classes"></div><p class="muted">For example, a Tuesday class in November 2026 includes 3, 10, 17 and 24 November. Each class covers every scheduled occurrence of its weekday in the chosen month (excluding confirmed club closures). Checkout is currently in Stripe test mode.</p><p id="session-booking-error" role="alert"></p><button id="session-booking-pay" type="button">Continue to checkout</button></dialog><div class="portal-intro"><span class="portal-eyebrow">YOUR FAMILY DASHBOARD</span><h1 id="welcome"></h1><p>Everything you need for your gymnastics journey, all in one place.</p><div class="portal-legend" aria-label="Status light guide"><div><span class="portal-dot red" aria-hidden="true"></span><span><strong>Needs attention</strong><small>Something is waiting for you to check or acknowledge.</small></span></div><div><span class="portal-dot" aria-hidden="true"></span><span><strong>All clear</strong><small>No action needed right now.</small></span></div></div></div><nav id="parent-menu" class="portal-menu" aria-label="Parent portal sections"></nav><section class="panel portal-view" id="parent-direct"><h2>Messages</h2><p class="muted">Your private updates from the CGC team.</p><button type="button" class="secondary" data-mobile-section="team">Message the team →</button><h3 style="margin-top:18px">Private messages</h3><div id="parent-direct-list"></div></section><section class="panel portal-view" id="parent-news"><h2>Latest from CGC</h2><p class="muted">Club announcements and important updates.</p><div id="parent-news-list"></div></section>
 <section id="parent-team" class="panel portal-view" hidden><h2>Message the team</h2><p>Send a question directly to Cornwall Gymnastics Centre staff.</p><form id="team-form"><label>Reason<select name="category" required><option value="">Choose a reason</option><option>Site Issues</option><option>Class Enquiries</option><option>Payment Enquiries</option><option>Booking Enquiries</option><option>Registration Enquiries</option><option>Other</option></select></label><label>Subject<input name="subject" maxlength="160" required></label><label>Message<textarea name="content" maxlength="10000" rows="6" required style="display:block;width:100%;padding:12px;font:inherit"></textarea></label><button>Send to staff</button></form><h3>Your conversations</h3><button type="button" class="secondary" id="team-refresh">Refresh conversations</button><div style="display:flex;gap:10px;margin:12px 0"><button type="button" id="team-open-tab">Open</button><button type="button" id="team-closed-tab" class="secondary">Closed</button></div><div id="team-conversations"></div></section><section id="account-status" class="panel account-status portal-view" aria-label="Account status" aria-live="polite"></section>
 <section id="trial-status" class="panel account-status portal-view" aria-live="polite" hidden></section>
 <section id="leaving-status" class="panel account-status portal-view" aria-live="polite" hidden></section>
 <div id="parent-overview" class="portal-view"><p>A place for every little milestone.</p></div><section class="panel portal-view" id="parent-children-view">
-<h2>Your children</h2>
+<h2>My Children</h2><p class="muted">View your children’s details and registration.</p>
 <label for="child-select">Choose a child<select id="child-select"></select></label>
 <div id="child-profile"></div>
 <details><summary>Add a child</summary>
@@ -206,7 +206,7 @@ summary{cursor:pointer;font-weight:700}
 </section>
 <div class="grid portal-view" id="parent-bookings-view">
 <section class="panel">
-  <h2>Paid Booked Classes</h2><p class="muted">Cancel an individual dated session below. Cancellations are non-refundable; see the <a href="/#privacy">club policies</a>.</p>
+  <h2>Bookings</h2><p class="muted">Cancel an individual dated session below. Cancellations are non-refundable; see the <a href="/#privacy">club policies</a>.</p>
   <div id="bookings"></div>
 </section>
 <section class="panel">
@@ -240,6 +240,7 @@ summary{cursor:pointer;font-weight:700}
   <p>Check your class’s time and age range before arriving. Contact the club if you have questions about what to bring or any support your child needs.</p>
   <a class="button secondary" href="mailto:hello@cornwallgymnastics.uk">Ask the team</a>
 </section>
+<section id="parent-account-view" class="panel portal-view" hidden><h2>Account &amp; help</h2><p class="muted">Manage your portal access and get help from the club.</p><div class="portal-account-links"><button type="button" data-mobile-section="children">Children and registration →</button><button type="button" data-mobile-section="bookings">Bookings and payment history →</button><button type="button" data-mobile-section="team">Contact the CGC team →</button><a href="/privacy-policy.html">Privacy policy →</a><a href="mailto:hello@cornwallgymnastics.uk">Email the club →</a></div><p class="muted">To reset your password, sign out and use “Forgot your password?” on the sign-in screen.</p><button type="button" class="secondary" id="account-sign-out">Sign out</button></section>
 <section class="panel portal-view" id="parent-connected-view">
   <h2>Stay connected</h2>
   <p>Please let the club know if your contact information or your child’s medical details change.</p>
@@ -888,26 +889,22 @@ $('child-select').addEventListener('change',()=>{review.hidden=true;current=[];m
 </script>
 <div style="text-align:center;padding:12px 20px 24px"><a href="/privacy-policy.html">Privacy Policy</a></div>
 <script>
-/* Presentation-only navigation: delegate to the existing parent menu handlers. */
+/* Route app controls to the existing authenticated portal sections. */
 (function(){
- const dashboard=document.getElementById('dashboard'),nav=document.getElementById('mobile-bottom-nav');
- function update(){const active=!dashboard.hidden;nav.hidden=!active;if(!active)return;const selected=document.querySelector('#parent-menu button[aria-pressed="true"]');const key=selected?.dataset.parentSection||'overview';nav.querySelectorAll('button').forEach(b=>{if(b.dataset.mobileSection===key)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
- document.addEventListener('click',event=>{
-   const target=event.target.closest('[data-mobile-section]');if(!target||dashboard.hidden)return;
-   const key=target.dataset.mobileSection;
+ const dashboard=document.getElementById('dashboard'),nav=document.getElementById('mobile-bottom-nav'),account=document.getElementById('parent-account-view'),shortcut=document.getElementById('portal-account-shortcut');
+ let current='overview';
+ function update(){const active=!dashboard.hidden;nav.hidden=!active;shortcut.hidden=!active;if(!active){document.body.classList.remove('portal-subpage');return}document.body.classList.toggle('portal-subpage',current!=='overview');account.hidden=current!=='account';nav.querySelectorAll('button').forEach(b=>{if(b.dataset.mobileSection===current)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')})}
+ function navigate(key,scrollId){
    if(key==='programmes'){window.location.assign('/parent-programmes.html');return}
-   const section=document.querySelector('#parent-menu button[data-parent-section="'+key+'"]');
-   if(section){
-     if(section.getAttribute('aria-pressed')!=='true')section.click();
-     if(target.dataset.mobileScroll){document.getElementById(target.dataset.mobileScroll)?.scrollIntoView({behavior:'smooth',block:'start'})}
-     else if(key==='overview')window.scrollTo({top:0,behavior:'smooth'});
-     else document.getElementById('parent-menu')?.scrollIntoView({behavior:'smooth',block:'start'});
-   }
+   if(key==='account'){current='account';}
+   else{const button=document.querySelector('#parent-menu button[data-parent-section="'+key+'"]');if(!button)return;if(button.getAttribute('aria-pressed')!=='true')button.click();current=key;}
    update();
- });
- const observer=new MutationObserver(update);observer.observe(dashboard,{attributes:true,attributeFilter:['hidden']});
- document.getElementById('parent-menu').addEventListener('click',()=>requestAnimationFrame(update));
- update();
+   requestAnimationFrame(()=>{if(scrollId)document.getElementById(scrollId)?.scrollIntoView({behavior:'smooth',block:'start'});else if(key==='overview')window.scrollTo({top:0,behavior:'smooth'});else (key==='account'?account:document.getElementById('parent-menu'))?.scrollIntoView({behavior:'smooth',block:'start'})});
+ }
+ document.addEventListener('click',event=>{const target=event.target.closest('[data-mobile-section]');if(target&&!dashboard.hidden){navigate(target.dataset.mobileSection,target.dataset.mobileScroll);return}const menu=event.target.closest('#parent-menu button[data-parent-section]');if(menu&&!dashboard.hidden){current=menu.dataset.parentSection;requestAnimationFrame(update)}});
+ shortcut.addEventListener('click',()=>navigate('account'));
+ document.getElementById('account-sign-out').addEventListener('click',()=>document.getElementById('logout').click());
+ new MutationObserver(update).observe(dashboard,{attributes:true,attributeFilter:['hidden']});update();
 })();
 </script>
 </body>
