@@ -20,6 +20,8 @@ export default function Header({ onTrial }) {
           <a href="/timetable.html">Timetable</a>
           <a href="#faq">FAQ</a>
 
+          <a className="parent-portal-link" href="/parent-portal.html">Parent Portal</a>
+
           <button
             className="trial"
             type="button"
