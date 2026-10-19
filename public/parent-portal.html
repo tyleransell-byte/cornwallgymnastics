@@ -399,9 +399,10 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
   <div id="last-payment" class="price"></div>
   <p id="last-payment-date" class="muted"></p>
   <p id="last-payment-for" class="payment-purchase-detail"></p>
-  <h3>Next payment</h3>
-  <p>Check your programme subscription for the next billing date.</p>
-  <p class="muted">Programme subscriptions and one-off bookings may have different payment schedules.</p>
+  <h3>Months paid for</h3>
+  <p class="muted">Successful programme payments unlock the following month’s approved classes. Your calendar shows only paid months.</p>
+  <div id="programme-paid-months" aria-live="polite"></div>
+  <p class="muted">For your next charge date or to manage a recurring subscription, contact the club. Individual session bookings are shown separately above.</p>
   <details><summary>Payment history</summary><div id="payments"></div></details>
 </section>
 </div>
@@ -956,6 +957,20 @@ const editKeys=['Mobile number','Home address','Emergency contact number 1','Eme
     $('last-payment').textContent=last?money(last.amount_total,last.currency):'No payments yet';
     $('last-payment-date').textContent=last?new Date(last.paid_at).toLocaleDateString('en-GB')+(last.kind==='programme'?' · Programme payment recorded':last.livemode?'':' · Test payment'):'';
     $('last-payment-for').textContent=last?paymentDescription(last):'';
+    const paidMonths=$('programme-paid-months');
+    if(paidMonths){
+      paidMonths.replaceChildren();
+      const records=(state.programme_paid_months||[]).slice().sort((a,b)=>String(b.booking_month).localeCompare(String(a.booking_month)));
+      if(!records.length)text(paidMonths,'p','No monthly programme payments recorded yet.','muted');
+      for(const record of records){
+        const child=(state.children||[]).find(c=>String(c.id)===String(record.child_id));
+        const label=new Date(record.booking_month+'-01T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',month:'long',year:'numeric'});
+        const row=text(paidMonths,'div','','row');
+        text(row,'strong',label+' · Paid');
+        text(row,'p',(child?.full_name||'Child')+' · '+(record.programme_codes||[]).map(c=>familyNames[c]||c).join(', '),'muted');
+        text(row,'small',money(record.amount_total,'gbp')+' · Paid '+new Date(record.paid_at).toLocaleDateString('en-GB'));
+      }
+    }
     $('payments').replaceChildren();
     allPayments.forEach(p=>{
       const row=text($('payments'),'div','','row');
