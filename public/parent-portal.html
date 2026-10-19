@@ -399,7 +399,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
  if(!children.length){text(box,'p','Add a child to see upcoming classes.');return;}
  children.forEach(child=>{
   const card=text(box,'article','','upcoming-child');text(card,'h3',child.full_name);
-  const rows=bookings.filter(b=>b.child_id===child.id&&b.status==='paid'&&(b.cancelled_quantity||0)<b.quantity&&/^\\d{4}-\\d{2}-\\d{2}$/.test(b.session_date||'')&&b.session_date>=today).sort((a,b)=>a.session_date.localeCompare(b.session_date));
+  const rows=bookings.filter(b=>b.child_id===child.id&&b.status==='paid'&&(b.cancelled_quantity||0)<b.quantity&&/^\d{4}-\d{2}-\d{2}$/.test(b.session_date||'')&&b.session_date>=today).sort((a,b)=>a.session_date.localeCompare(b.session_date));
   if(rows.length){const nextDate=rows[0].session_date;rows.filter(b=>b.session_date===nextDate).forEach(b=>{
    const row=text(card,'div','','upcoming-session');const date=new Date(b.session_date+'T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long'});
    text(row,'strong',b.class_name||'Gymnastics class');text(row,'span',date+' · Booked and paid');
