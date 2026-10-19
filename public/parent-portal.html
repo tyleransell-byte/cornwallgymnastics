@@ -258,6 +258,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 /* Next class is now covered by the live Family Calendar. Keep its data nodes for legacy render compatibility, but remove the duplicate home shortcut. */
 .mobile-home .home-compact-action[data-home-panel="next"],#home-next-panel{display:none!important}
 .family-payment-summary{background:#f5fafc;border:1px solid #dce8ed;border-radius:20px;padding:19px;margin:15px 0}.family-payment-summary-head h2{font-size:23px;color:#143b4f;margin:0 0 5px}.family-payment-summary-head p{color:#607785;font-size:14px;margin:0 0 15px}.family-payment-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.family-payment-summary-grid section{min-width:0;background:#fff;border:1px solid #e0e9ed;border-radius:14px;padding:15px}.family-payment-summary-grid h3{font-size:16px;color:#173e51;margin:0 0 11px}.family-payment-row{display:flex;flex-direction:column;gap:4px;border-top:1px solid #e8eef1;padding:10px 0}.family-payment-row strong{font-size:13px;color:#143b4f}.family-payment-row small{font-size:12px;color:#59727f}.family-payment-classes-link{background:#fff0e3!important;color:#b94c10!important;border-radius:10px;padding:10px 12px;font-weight:750;margin-top:10px}.family-payment-disclaimer{color:#627d89;font-size:12px;margin:14px 0 0}@media(max-width:700px){.family-payment-summary-grid{grid-template-columns:1fr}.family-payment-summary{padding:14px}}
+#profile-editor label{display:block;margin:12px 0;font-weight:650}#profile-editor input,#profile-editor textarea{display:block;width:100%;padding:11px;border:1px solid #cbd9de;border-radius:10px;font:inherit;background:#fff}#profile-editor textarea{min-height:85px}
 </style>
 </head>
 <body>
@@ -346,7 +347,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 <p id="first-child" hidden>Add your child above to start their profile, then complete registration.</p>
 </section>
 
-<section class="panel portal-view" id="repeat-month-panel">
+<section id="profile-editor" class="panel portal-view" hidden><h2>Edit child profile</h2><p>Save changes securely for authorised staff. A weekly staff summary records changed fields.</p><p id="profile-editor-status" role="status"></p><form id="profile-edit-form"><div id="profile-edit-fields"></div><button type="submit">Save profile changes</button><button type="button" class="secondary" id="profile-edit-cancel">Cancel</button></form></section><section class="panel portal-view" id="repeat-month-panel">
 <h2>Repeat this month's classes</h2>
 <p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
 <button type="button" id="repeat-current-button" class="secondary">Repeat this month</button>
@@ -648,6 +649,12 @@ async function updateApprovedUpcoming(today){
 }
 
   setInterval(()=>{if(state&&!$('dashboard').hidden)renderUpcomingBookings();},60*60*1000);
+  const profileFields=['Mobile number','Home address','Emergency contact number 1','Emergency contact number 2','Emergency contact number 3','Allergies or dietary needs','Long-term illness or condition','Long-term condition details','Medical conditions','Other medical condition','Any other needs we should know about to support your child',"Doctor's name","Doctor's phone number"];
+  let editingProfileChild=null;
+  async function profileUpdateApi(action,body={}){const session=await portal.session();if(!session)throw Error('Please sign in again.');const response=await fetch('https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/profile-updates',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},body:JSON.stringify({action,...body})});const result=await response.json();if(!response.ok)throw Error(result.error||'Unable to update profile');return result;}
+  async function openProfileEditor(id){editingProfileChild=id;const panel=$('profile-editor'),fields=$('profile-edit-fields');panel.hidden=false;fields.replaceChildren();$('profile-editor-status').textContent='Loading secure profile…';panel.scrollIntoView({block:'start',behavior:'smooth'});try{const result=await profileUpdateApi('read',{child_id:id});if(editingProfileChild!==id)return;for(const key of profileFields){const label=document.createElement('label');label.textContent=key;const input=document.createElement(key==='Home address'||key.includes('needs')||key.includes('condition')||key==='Medical conditions'?'textarea':'input');input.name=key;input.value=result.values[key]||'';input.maxLength=2000;input.required=!['Long-term condition details','Other medical condition'].includes(key);label.append(input);fields.append(label)}$('profile-editor-status').textContent='Review and save any changes below.';}catch(e){$('profile-editor-status').textContent=e.message;}}
+  $('profile-edit-cancel').onclick=()=>{$('profile-editor').hidden=true;editingProfileChild=null;};
+  $('profile-edit-form').onsubmit=async e=>{e.preventDefault();const button=e.currentTarget.querySelector('button[type=submit]');button.disabled=true;try{const values=Object.fromEntries(new FormData(e.currentTarget).entries());const result=await profileUpdateApi('save',{child_id:editingProfileChild,values});$('profile-editor-status').textContent=result.changed.length?'Saved securely. Staff can see the latest details; changed fields appear in the weekly summary.':'No changes to save.';}catch(error){$('profile-editor-status').textContent=error.message;}finally{button.disabled=false;}};
   function profile() {
     const child = state.children.find(c => c.id === $('child-select').value);
     const box = $('child-profile');
@@ -675,6 +682,7 @@ async function updateApprovedUpcoming(today){
       'Update registration' : 'Complete registration', 'button');
     link.href = '/#register';
     link.onclick = () => sessionStorage.setItem('cgc-register-child', child.id);
+    if(child.registered_at){const edit=text(childActions,'button','Edit profile details','secondary');edit.type='button';edit.onclick=()=>openProfileEditor(child.id);}
     const leave = text(childActions,'button','Request to Leave Gymnastics','secondary');
     leave.type='button';
     leave.onclick=()=>{ $('leaving-child').value=child.id; parentSection('leaving'); $('leaving-panel').scrollIntoView(); };
