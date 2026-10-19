@@ -257,6 +257,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 #dashboard #timetable-chooser[hidden]{display:none!important}
 /* Next class is now covered by the live Family Calendar. Keep its data nodes for legacy render compatibility, but remove the duplicate home shortcut. */
 .mobile-home .home-compact-action[data-home-panel="next"],#home-next-panel{display:none!important}
+.family-payment-summary{background:#f5fafc;border:1px solid #dce8ed;border-radius:20px;padding:19px;margin:15px 0}.family-payment-summary-head h2{font-size:23px;color:#143b4f;margin:0 0 5px}.family-payment-summary-head p{color:#607785;font-size:14px;margin:0 0 15px}.family-payment-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.family-payment-summary-grid section{min-width:0;background:#fff;border:1px solid #e0e9ed;border-radius:14px;padding:15px}.family-payment-summary-grid h3{font-size:16px;color:#173e51;margin:0 0 11px}.family-payment-row{display:flex;flex-direction:column;gap:4px;border-top:1px solid #e8eef1;padding:10px 0}.family-payment-row strong{font-size:13px;color:#143b4f}.family-payment-row small{font-size:12px;color:#59727f}.family-payment-classes-link{background:#fff0e3!important;color:#b94c10!important;border-radius:10px;padding:10px 12px;font-weight:750;margin-top:10px}.family-payment-disclaimer{color:#627d89;font-size:12px;margin:14px 0 0}@media(max-width:700px){.family-payment-summary-grid{grid-template-columns:1fr}.family-payment-summary{padding:14px}}
 </style>
 </head>
 <body>
@@ -313,7 +314,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 </div>
 <section class="home-compact-detail" id="home-next-panel" hidden><div class="home-compact-detail-head"><h2>Next class</h2><button type="button" data-close-home-panel aria-label="Close next class">×</button></div><div id="home-next-class" aria-live="polite"></div><button type="button" class="home-smart-link" data-mobile-section="bookings">View bookings →</button></section>
 <section class="home-compact-detail" id="home-todo-panel" hidden><div class="home-compact-detail-head"><h2>Things to do</h2><button type="button" data-close-home-panel aria-label="Close things to do">×</button></div><div id="home-todo-items" aria-live="polite"></div></section>
-<section class="home-compact-detail" id="home-calendar-panel" hidden><div class="home-compact-detail-head"><h2>Class calendar</h2><button type="button" data-close-home-panel aria-label="Close calendar">×</button></div><div class="family-calendar-filter"><label for="family-calendar-child">Show classes for</label><select id="family-calendar-child"><option value="all">All children</option></select></div><div id="family-calendar-legend" class="family-calendar-legend"></div><div class="home-calendar-controls"><button type="button" id="home-calendar-prev" aria-label="Previous month">‹</button><strong id="home-calendar-month"></strong><button type="button" id="home-calendar-next" aria-label="Next month">›</button></div><div id="home-calendar-grid" class="home-calendar-grid"></div><div class="family-calendar-events"><h3 id="family-calendar-selected-label">Select a day</h3><div id="family-calendar-selected-events"></div></div><div id="family-calendar-unscheduled"></div><p class="home-calendar-note">Paid bookings are confirmed. Approved timetable days are indicative until the exact session and any club closures are confirmed.</p></section>
+<section class="home-compact-detail" id="home-calendar-panel" hidden><div class="home-compact-detail-head"><h2>Class calendar</h2><button type="button" data-close-home-panel aria-label="Close calendar">×</button></div><div class="family-calendar-filter"><label for="family-calendar-child">Show classes for</label><select id="family-calendar-child"><option value="all">All children</option></select></div><div id="family-calendar-legend" class="family-calendar-legend"></div><div class="home-calendar-controls"><button type="button" id="home-calendar-prev" aria-label="Previous month">‹</button><strong id="home-calendar-month"></strong><button type="button" id="home-calendar-next" aria-label="Next month">›</button></div><div id="home-calendar-grid" class="home-calendar-grid"></div><div class="family-calendar-events"><h3 id="family-calendar-selected-label">Select a day</h3><div id="family-calendar-selected-events"></div></div><div id="family-calendar-unscheduled"></div><p class="home-calendar-note">Paid bookings are confirmed. Approved offers are listed separately until a dated booking or verified assigned schedule is available. Check Classes for your approved places.</p></section>
 <div class="mobile-home-tiles">
     <button type="button" data-mobile-section="children"><span class="home-tile-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><strong>My Children</strong></button>
     <a href="/parent-programmes.html"><span class="home-tile-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 19 4-7 4 4 4-9 4 5"/><circle cx="16" cy="5" r="2"/><path d="M3 21h18"/></svg></span><strong>Classes</strong></a>
@@ -358,6 +359,11 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 </div>
 <p id="repeat-month-message" role="status"></p>
 </section>
+<div class="family-payment-summary portal-view" id="family-payment-summary" aria-label="Family bookings overview">
+<div class="family-payment-summary-head"><h2>Family bookings &amp; payments</h2><p>One clear view of confirmed sessions, approved offers and payment history.</p></div>
+<div class="family-payment-summary-grid"><section><h3>Upcoming booked &amp; paid</h3><div id="family-payment-upcoming">Loading bookings…</div></section><section><h3>Approved classes</h3><div id="family-payment-approved">Check Classes for approved offers.</div><button type="button" data-mobile-section="programmes" class="family-payment-classes-link">View Classes →</button></section><section><h3>Payment history</h3><div id="family-payment-history">Loading payments…</div></section></div>
+<p class="family-payment-disclaimer">Approved does not always mean payment is due. Any payment amount and checkout are confirmed on the Classes page. Test payments are labelled.</p>
+</div>
 <div class="grid portal-view" id="parent-bookings-view">
 <section class="panel">
   <div class="app-page-heading"><span class="app-page-icon">▤</span><div><span class="app-page-kicker">YOUR SESSIONS</span><h2>Bookings</h2><p>View your booked sessions and dates.</p></div></div><p class="muted">Cancel an individual dated session below. Cancellations are non-refundable; see the <a href="/#privacy">club policies</a>.</p>
@@ -483,6 +489,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     if(loadId!==familyCalendarLoadId)return;
     const unique=new Set();familyCalendarOffers=results.flat().filter(o=>{const key=o.childId+':'+o.code;if(unique.has(key))return false;unique.add(key);return true});
     renderHomeCalendar();
+    renderFamilyPaymentSummary();
   }
   function familyCalendarEvents(year,month){
     const filter=$('family-calendar-child')?.value||'all',children=state?.children||[];
@@ -495,19 +502,23 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       events.push({date:b.session_date,childId:b.child_id,child:child?.full_name||'Child',name:b.class_name||'Gymnastics class',status:'paid'});
       paidKeys.add(b.child_id+':'+b.session_date);
     }
-    const daysInMonth=new Date(Date.UTC(year,month+1,0)).getUTCDate();
-    for(const offer of familyCalendarOffers){
-      if(!show(offer.childId))continue;
-      const weekdays=familyWeekdays[offer.code];if(!weekdays)continue;
-      const child=children.find(c=>String(c.id)===String(offer.childId));
-      for(let day=1;day<=daysInMonth;day++){
-        const date=new Date(Date.UTC(year,month,day));if(!weekdays.includes(date.getUTCDay()))continue;
-        const key=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-        if(paidKeys.has(offer.childId+':'+key))continue;
-        events.push({date:key,childId:offer.childId,child:child?.full_name||'Child',name:familyNames[offer.code]||offer.code,status:'approved'});
-      }
-    }
+    // Approved offers alone do not establish an assigned weekday or a dated booking.
+    // Never fabricate calendar sessions from programme-wide example timetables.
     return events.sort((a,b)=>a.date.localeCompare(b.date)||a.child.localeCompare(b.child));
+  }
+  function renderFamilyPaymentSummary(){
+    if(!state)return;
+    const upcoming=$('family-payment-upcoming'),approved=$('family-payment-approved'),history=$('family-payment-history');if(!upcoming||!approved||!history)return;
+    upcoming.replaceChildren();approved.replaceChildren();history.replaceChildren();
+    const bookings=paidDatedBookings().filter(b=>b.session_date>=homeToday()).sort((a,b)=>a.session_date.localeCompare(b.session_date));
+    if(!bookings.length)text(upcoming,'p','No upcoming dated paid bookings.');
+    else bookings.slice(0,6).forEach(b=>{const child=(state.children||[]).find(c=>String(c.id)===String(b.child_id));const row=text(upcoming,'div','','family-payment-row');text(row,'strong',(child?.full_name||'Child')+' · '+(b.class_name||'Gymnastics class'));text(row,'small',new Date(b.session_date+'T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',weekday:'short',day:'numeric',month:'short'})+' · Booked & paid')});
+    if(bookings.length>6)text(upcoming,'p','More sessions are shown in Bookings.');
+    if(!familyCalendarOffers.length)text(approved,'p','No approved offers loaded. Open Classes to review your offers.');
+    else familyCalendarOffers.forEach(o=>{const child=(state.children||[]).find(c=>String(c.id)===String(o.childId));const row=text(approved,'div','','family-payment-row');text(row,'strong',(child?.full_name||'Child')+' · '+(familyNames[o.code]||o.code));text(row,'small','Approved offer · Check Classes for payment and schedule')});
+    const payments=state.payments||[];
+    if(!payments.length)text(history,'p','No payments recorded.');
+    else payments.slice(0,4).forEach(p=>{const row=text(history,'div','','family-payment-row');text(row,'strong',money(p.amount_total,p.currency));text(row,'small',new Date(p.paid_at).toLocaleDateString('en-GB')+(p.livemode?' · Paid':' · Test payment'))});
   }
   function renderHomeCalendar(){
     const grid=$('home-calendar-grid'),title=$('home-calendar-month'),filter=$('family-calendar-child'),legend=$('family-calendar-legend'),eventsBox=$('family-calendar-selected-events'),unscheduled=$('family-calendar-unscheduled');
@@ -536,8 +547,8 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     eventsBox.replaceChildren();const selected=byDate.get(familyCalendarSelected)||[];
     if(!selected.length){const p=document.createElement('p');p.className='muted';p.textContent='No classes shown for this date.';eventsBox.append(p)}
     for(const e of selected){const row=document.createElement('div');row.className='family-calendar-event';row.style.borderLeftColor=familyChildColour(e.childId);const name=document.createElement('strong');name.textContent=e.child+' · '+e.name;const status=document.createElement('small');status.textContent=e.status==='paid'?'Booked & paid':'Approved timetable day — not a paid booking';row.append(name,status);eventsBox.append(row)}
-    unscheduled.replaceChildren();const unknown=familyCalendarOffers.filter(o=>!familyWeekdays[o.code]&&(filter.value==='all'||String(o.childId)===filter.value));
-    if(unknown.length){const h=document.createElement('h3');h.textContent='Awaiting day confirmation';unscheduled.append(h);for(const o of unknown){const child=children.find(c=>String(c.id)===String(o.childId));const p=document.createElement('p');p.className='muted';p.textContent=(child?.full_name||'Child')+' · '+(familyNames[o.code]||o.code)+' — choose or confirm a weekday in Classes';unscheduled.append(p)}}
+    unscheduled.replaceChildren();const unknown=familyCalendarOffers.filter(o=>filter.value==='all'||String(o.childId)===filter.value);
+    if(unknown.length){const h=document.createElement('h3');h.textContent='Approved classes — dates not yet verified';unscheduled.append(h);for(const o of unknown){const child=children.find(c=>String(c.id)===String(o.childId));const p=document.createElement('p');p.className='muted';p.textContent=(child?.full_name||'Child')+' · '+(familyNames[o.code]||o.code)+' — check Classes for the assigned day and booking status';unscheduled.append(p)}}
   }
   $('family-calendar-child')?.addEventListener('change',renderHomeCalendar);
   document.getElementById('home-calendar-prev')?.addEventListener('click',()=>{homeCalendarOffset=Math.max(-12,homeCalendarOffset-1);familyCalendarSelected=null;renderHomeCalendar()});
@@ -835,6 +846,7 @@ async function updateApprovedUpcoming(today){
     parentNavigation();
     updateHomeNotificationBadges();
     renderHomeSmart();
+    renderFamilyPaymentSummary();
     loadFamilyCalendarOffers();
     $('leaving-child').replaceChildren();
     state.children.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.full_name;$('leaving-child').append(o);});
