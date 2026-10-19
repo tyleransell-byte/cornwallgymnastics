@@ -496,7 +496,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       try{
         const r=await fetch('https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/programme-requests',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+session.access_token},body:JSON.stringify({action:'parent_list',child_id:child.id})});
         if(!r.ok)throw Error('Unavailable');const data=await r.json();
-        return (data.requests||[]).filter(o=>['offered','accepted'].includes(o.status)).flatMap(o=>(o.programme_codes||[]).map(code=>({childId:child.id,code,status:o.status,paid:!!o.paid_at})));
+        return (data.requests||[]).filter(o=>['offered','accepted'].includes(o.status)).flatMap(o=>(o.programme_codes||[]).map(code=>({childId:child.id,code,status:o.status,paid:!!o.paid_at,paidMonth:typeof o.paid_at==='string'?o.paid_at.slice(0,7):null})));
       }catch{return []}
     }));
     if(loadId!==familyCalendarLoadId)return;
@@ -509,8 +509,8 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
   const staffWeekdays={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
   function recurringClassAssignments(){
     const assignments=new Map();
-    for(const b of state?.bookings||[]){if(b.status!=='paid'||(b.cancelled_quantity||0)>=b.quantity||!staffClassCatalogue[b.class_id])continue;const key=b.child_id+':'+b.class_id;assignments.set(key,{childId:b.child_id,classId:b.class_id,name:staffClassCatalogue[b.class_id]});}
-    for(const e of state?.enrolments||[]){if(!['paid','active'].includes(e.status)||!staffClassCatalogue[e.selected_class_id])continue;const key=e.child_id+':'+e.selected_class_id;assignments.set(key,{childId:e.child_id,classId:e.selected_class_id,name:staffClassCatalogue[e.selected_class_id]});}
+    for(const b of state?.bookings||[]){if(b.status!=='paid'||(b.cancelled_quantity||0)>=b.quantity||!staffClassCatalogue[b.class_id])continue;const key=b.child_id+':'+b.class_id;assignments.set(key,{childId:b.child_id,classId:b.class_id,name:staffClassCatalogue[b.class_id],paidMonth:/^\\d{4}-\\d{2}$/.test(b.booking_month||'')?b.booking_month:null});}
+    for(const e of state?.enrolments||[]){if(!['paid','active'].includes(e.status)||!staffClassCatalogue[e.selected_class_id])continue;const key=e.child_id+':'+e.selected_class_id;assignments.set(key,{childId:e.child_id,classId:e.selected_class_id,name:staffClassCatalogue[e.selected_class_id],paidMonth:e.paid_at?.slice(0,7)||null});}
     // A paid accepted programme may not yet have a portal_programme_enrolments row.
     // For programmes with a known multi-day staff timetable, show each weekly day.
     const programmeClassIds={wag_1:['wed-wag-1','fri-wag-1','sat-wag-1'],wag_2:['wed-wag-2','fri-wag-2','sat-wag-2'],development_wag:['tue-development-wag','thu-development-wag'],novice_wag_senior:['tue-novice-wag-senior','thu-novice-wag-senior']};
@@ -519,7 +519,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       for(const classId of programmeClassIds[offer.code]||[]){
         if(!staffClassCatalogue[classId])continue;
         const key=offer.childId+':'+classId;
-        if(!assignments.has(key))assignments.set(key,{childId:offer.childId,classId,name:staffClassCatalogue[classId]});
+        if(!assignments.has(key))assignments.set(key,{childId:offer.childId,classId,name:staffClassCatalogue[classId],paidMonth:offer.paidMonth});
       }
     }
     return [...assignments.values()];
@@ -535,11 +535,11 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       events.push({date:b.session_date,childId:b.child_id,child:child?.full_name||'Child',name:b.class_name||'Gymnastics class',status:'paid'});
       paidKeys.add(b.child_id+':'+b.session_date);
     }
-    // Staff Portal class IDs establish the recurring weekday. Only assigned/paid classes qualify.
+    // Only show weekly sessions in the explicitly evidenced paid month; never project a paid month forward.
     const today=homeToday(),end=new Date(today+'T12:00:00Z');end.setUTCDate(end.getUTCDate()+364);
     const endDate=end.toISOString().slice(0,10);
     for(const assignment of recurringClassAssignments()){
-      if(!show(assignment.childId))continue;
+      if(!show(assignment.childId)||assignment.paidMonth!==year+'-'+String(month+1).padStart(2,'0'))continue;
       const weekday=staffWeekdays[assignment.classId.split('-')[0]];
       if(weekday===undefined)continue;
       const child=children.find(c=>String(c.id)===String(assignment.childId));
