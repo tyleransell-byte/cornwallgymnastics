@@ -250,6 +250,11 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 .family-calendar-legend{display:flex;flex-wrap:wrap;gap:9px 15px;margin:12px 0 15px}.family-calendar-legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#456171}.family-calendar-legend i,.family-calendar-dots i{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
 .home-calendar-grid button.calendar-day{cursor:pointer;font:inherit}.home-calendar-grid .calendar-day.has-booking{background:#f9fcfd;border-color:#d6e5ec;color:#143d50}.home-calendar-grid .calendar-day.has-booking:after{display:none}.home-calendar-grid .calendar-day.selected{outline:2px solid #ed6a19;outline-offset:-2px}.family-calendar-dots{display:flex;gap:2px;justify-content:center;min-height:8px}.family-calendar-dots i{width:6px;height:6px}
 .family-calendar-events{border-top:1px solid #e3ebef;margin-top:16px;padding-top:12px}.family-calendar-events h3,#family-calendar-unscheduled h3{font-size:15px;margin:5px 0 12px}.family-calendar-event{border-left:4px solid #ed6a19;background:#f6fafb;padding:11px 13px;margin:8px 0;border-radius:8px;display:flex;flex-direction:column;gap:4px}.family-calendar-event strong{font-size:13px;color:#163b4e}.family-calendar-event small{font-size:12px;color:#526e7c}#family-calendar-unscheduled{margin-top:14px}#family-calendar-unscheduled p{font-size:12px;margin:7px 0}
+/* Legacy dashboard panels superseded by the new Classes and Things to do shortcuts.
+   Retain DOM and handlers for existing booking flows, but remove duplicate home controls. */
+#dashboard #open-timetable,
+#dashboard #account-status{display:none!important}
+#dashboard #timetable-chooser[hidden]{display:none!important}
 </style>
 </head>
 <body>
