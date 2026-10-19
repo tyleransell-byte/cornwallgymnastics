@@ -346,7 +346,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 <p id="first-child" hidden>Add your child above to start their profile, then complete registration.</p>
 </section>
 
-<section class="panel portal-view" id="repeat-month-panel">
+<section class="panel portal-view" id="profile-editor" hidden><h2>Edit child details</h2><p>Changes save immediately for authorised staff.</p><p id="profile-edit-status"></p><form id="profile-edit-form"><div id="profile-edit-fields"></div><button>Save updates</button> <button type="button" id="profile-edit-close" class="secondary">Close</button></form></section><section class="panel portal-view" id="repeat-month-panel">
 <h2>Repeat this month's classes</h2>
 <p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
 <button type="button" id="repeat-current-button" class="secondary">Repeat this month</button>
@@ -648,6 +648,7 @@ async function updateApprovedUpcoming(today){
 }
 
   setInterval(()=>{if(state&&!$('dashboard').hidden)renderUpcomingBookings();},60*60*1000);
+const editKeys=['Mobile number','Home address','Emergency contact number 1','Emergency contact number 2','Emergency contact number 3','Allergies or dietary needs','Long-term illness or condition','Long-term condition details','Medical conditions','Other medical condition','Any other needs we should know about to support your child',"Doctor's name","Doctor's phone number"];let editChildId=null;async function editApi(action,values){const session=await portal.session();if(!session)throw Error('Sign in again');const r=await fetch('https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/profile-updates',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},body:JSON.stringify({action,child_id:editChildId,...values})});const data=await r.json();if(!r.ok)throw Error(data.error||'Unable to save');return data;}async function editChildDetails(id){editChildId=id;const panel=$('profile-editor'),fields=$('profile-edit-fields');panel.hidden=false;fields.replaceChildren();$('profile-edit-status').textContent='Loading…';panel.scrollIntoView();try{const data=await editApi('read',{});for(const key of editKeys){const label=document.createElement('label');label.textContent=key;label.style.display='block';label.style.margin='12px 0';const input=document.createElement('textarea');input.name=key;input.value=data.values[key]||'';input.maxLength=2000;input.style.width='100%';input.style.minHeight='55px';input.required=!['Long-term condition details','Other medical condition'].includes(key);label.append(input);fields.append(label);}$('profile-edit-status').textContent='Edit the details below and save.';}catch(e){$('profile-edit-status').textContent=e.message;}}$('profile-edit-close').onclick=()=>{$('profile-editor').hidden=true;editChildId=null;};$('profile-edit-form').onsubmit=async e=>{e.preventDefault();const button=e.currentTarget.querySelector('button');button.disabled=true;try{const values=Object.fromEntries(new FormData(e.currentTarget).entries());const result=await editApi('save',{values});$('profile-edit-status').textContent=result.changed.length?'Saved securely. Staff can view the latest information.':'No changes.';}catch(err){$('profile-edit-status').textContent=err.message;}finally{button.disabled=false;}};
   function profile() {
     const child = state.children.find(c => c.id === $('child-select').value);
     const box = $('child-profile');
@@ -675,6 +676,7 @@ async function updateApprovedUpcoming(today){
       'Update registration' : 'Complete registration', 'button');
     link.href = '/#register';
     link.onclick = () => sessionStorage.setItem('cgc-register-child', child.id);
+    if(child.registered_at){const edit=text(childActions,'button','Edit child details','secondary');edit.type='button';edit.onclick=()=>editChildDetails(child.id);}
     const leave = text(childActions,'button','Request to Leave Gymnastics','secondary');
     leave.type='button';
     leave.onclick=()=>{ $('leaving-child').value=child.id; parentSection('leaving'); $('leaving-panel').scrollIntoView(); };
