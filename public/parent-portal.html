@@ -502,7 +502,16 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     if(loadId!==familyCalendarLoadId)return;
     const unique=new Set();familyCalendarOffers=results.flat().sort((a,b)=>Number(b.status==='accepted')-Number(a.status==='accepted')).filter(o=>{const key=o.childId+':'+o.code;if(unique.has(key))return false;unique.add(key);return true});
     renderHomeCalendar();
+    renderHomeSmart();
     renderFamilyPaymentSummary();
+  }
+  const staffClassCatalogue={"tue-stay-and-play":"Stay and Play (Tuesday 9:30–10:15am)","tue-adult-child-structured":"Adult Child Structured (Tuesday 10:30–11:15am)","tue-home-education":"Home Education (Tuesday 11:30am–12:30pm)","tue-recreational-plus":"Recreational Plus (Tuesday 4–6pm)","tue-development-wag":"Development WAG (Tuesday 4–6:30pm)","tue-recreational-4-7":"Recreational Gymnastics (Tuesday 4:15–5:15pm)","tue-recreational-7-12":"Recreational Gymnastics (Tuesday 5:30–6:30pm)","tue-novice-wag-junior":"Novice WAG Junior (Tuesday 6:30–8:30pm)","tue-novice-wag-senior":"Novice WAG Senior (Tuesday 6:30–8:30pm)","wed-wag-1":"WAG 1 (Wednesday 4–8:30pm)","wed-wag-2":"WAG 2 (Wednesday 4–8pm)","wed-recreational-4-7":"Recreational Gymnastics (Wednesday 4:15–5:15pm)","wed-recreational-6-8":"Recreational Gymnastics (Wednesday 5:30–6:30pm)","wed-recreational-7-12":"Recreational Gymnastics (Wednesday 5:30–6:30pm)","thu-development-wag":"Development WAG (Thursday 4–6:30pm)","thu-recreational-4-7":"Recreational Gymnastics (Thursday 4:15–5:15pm)","thu-recreational-plus":"Recreational Plus (Thursday 5–7pm)","thu-recreational-7-12":"Recreational Gymnastics (Thursday 5:30–6:30pm)","thu-novice-wag-senior":"Novice WAG Senior (Thursday 6:30–8:30pm)","fri-wag-1":"WAG 1 (Friday 4–8:30pm)","fri-wag-2":"WAG 2 (Friday 4–8pm)","fri-recreational-7-12":"Recreational Gymnastics (Friday 5:30–6:30pm)","sat-recreational-4-7":"Recreational Gymnastics (Saturday 9–10am)","sat-recreational-7-12":"Recreational Gymnastics (Saturday 9–10am)","sat-recreational-plus":"Recreational Plus (Saturday 9–10am)","sat-recreational-6-12":"Recreational Gymnastics (Saturday 10–11am)","sat-wag-2":"WAG 2 (Saturday 10am–1pm)","sat-wag-1":"WAG 1 (Saturday 12–4pm)"};
+  const staffWeekdays={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
+  function recurringClassAssignments(){
+    const assignments=new Map();
+    for(const b of state?.bookings||[]){if(b.status!=='paid'||(b.cancelled_quantity||0)>=b.quantity||!staffClassCatalogue[b.class_id])continue;const key=b.child_id+':'+b.class_id;assignments.set(key,{childId:b.child_id,classId:b.class_id,name:staffClassCatalogue[b.class_id]});}
+    for(const e of state?.enrolments||[]){if(!['paid','active'].includes(e.status)||!staffClassCatalogue[e.selected_class_id])continue;const key=e.child_id+':'+e.selected_class_id;assignments.set(key,{childId:e.child_id,classId:e.selected_class_id,name:staffClassCatalogue[e.selected_class_id]});}
+    return [...assignments.values()];
   }
   function familyCalendarEvents(year,month){
     const filter=$('family-calendar-child')?.value||'all',children=state?.children||[];
@@ -514,6 +523,22 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       const child=children.find(c=>String(c.id)===String(b.child_id));
       events.push({date:b.session_date,childId:b.child_id,child:child?.full_name||'Child',name:b.class_name||'Gymnastics class',status:'paid'});
       paidKeys.add(b.child_id+':'+b.session_date);
+    }
+    // Staff Portal class IDs establish the recurring weekday. Only assigned/paid classes qualify.
+    const today=homeToday(),end=new Date(today+'T12:00:00Z');end.setUTCDate(end.getUTCDate()+364);
+    const endDate=end.toISOString().slice(0,10);
+    for(const assignment of recurringClassAssignments()){
+      if(!show(assignment.childId))continue;
+      const weekday=staffWeekdays[assignment.classId.split('-')[0]];
+      if(weekday===undefined)continue;
+      const child=children.find(c=>String(c.id)===String(assignment.childId));
+      const last=new Date(Date.UTC(year,month+1,0)).getUTCDate();
+      for(let day=1;day<=last;day++){
+        const date=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+        if(date<today||date>endDate||new Date(date+'T12:00:00Z').getUTCDay()!==weekday)continue;
+        if(events.some(e=>e.date===date&&String(e.childId)===String(assignment.childId)&&e.name===assignment.name))continue;
+        events.push({date,childId:assignment.childId,child:child?.full_name||'Child',name:assignment.name,status:'recurring'});
+      }
     }
     // Approved offers alone do not establish an assigned weekday or a dated booking.
     // Never fabricate calendar sessions from programme-wide example timetables.
@@ -559,12 +584,12 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     $('family-calendar-selected-label').textContent=new Date(familyCalendarSelected+'T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long'});
     eventsBox.replaceChildren();const selected=byDate.get(familyCalendarSelected)||[];
     if(!selected.length){const p=document.createElement('p');p.className='muted';p.textContent='No classes shown for this date.';eventsBox.append(p)}
-    for(const e of selected){const row=document.createElement('div');row.className='family-calendar-event';row.style.borderLeftColor=familyChildColour(e.childId);const name=document.createElement('strong');name.textContent=e.child+' · '+e.name;const status=document.createElement('small');status.textContent=e.status==='paid'?'Booked & paid':'Approved timetable day — not a paid booking';row.append(name,status);eventsBox.append(row)}
+    for(const e of selected){const row=document.createElement('div');row.className='family-calendar-event';row.style.borderLeftColor=familyChildColour(e.childId);const name=document.createElement('strong');name.textContent=e.child+' · '+e.name;const status=document.createElement('small');status.textContent=e.status==='paid'?'Booked & paid':'Recurring class (staff timetable) — check club closures';row.append(name,status);eventsBox.append(row)}
     unscheduled.replaceChildren();const unknown=familyCalendarOffers.filter(o=>filter.value==='all'||String(o.childId)===filter.value);
     if(unknown.length){const h=document.createElement('h3');h.textContent='Accepted programmes and approved offers — dates not yet confirmed';unscheduled.append(h);for(const o of unknown){const child=children.find(c=>String(c.id)===String(o.childId));const p=document.createElement('p');p.className='muted';p.textContent=(child?.full_name||'Child')+' · '+(familyNames[o.code]||o.code)+(o.status==='accepted'?' — Accepted; awaiting a verified class date':' — Offered; check Classes to accept and arrange a date');unscheduled.append(p)}}
   }
   $('family-calendar-child')?.addEventListener('change',renderHomeCalendar);
-  document.getElementById('home-calendar-prev')?.addEventListener('click',()=>{homeCalendarOffset=Math.max(-12,homeCalendarOffset-1);familyCalendarSelected=null;renderHomeCalendar()});
+  document.getElementById('home-calendar-prev')?.addEventListener('click',()=>{homeCalendarOffset=Math.max(0,homeCalendarOffset-1);familyCalendarSelected=null;renderHomeCalendar()});
   document.getElementById('home-calendar-next')?.addEventListener('click',()=>{homeCalendarOffset=Math.min(12,homeCalendarOffset+1);familyCalendarSelected=null;renderHomeCalendar()});
   window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event});
   document.getElementById('portal-install-button')?.addEventListener('click',async()=>{
