@@ -399,7 +399,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
   <div id="last-payment" class="price"></div>
   <p id="last-payment-date" class="muted"></p>
   <p id="last-payment-for" class="payment-purchase-detail"></p>
-  <h3>Months paid for</h3>
+  <h3>Next payment due</h3><div id="programme-next-payments" aria-live="polite"></div><h3>Months paid for</h3>
   <p class="muted">Successful programme payments unlock the following month’s approved classes. Your calendar shows only paid months.</p>
   <div id="programme-paid-months" aria-live="polite"></div>
   <p class="muted">For your next charge date or to manage a recurring subscription, contact the club. Individual session bookings are shown separately above.</p>
@@ -957,6 +957,20 @@ const editKeys=['Mobile number','Home address','Emergency contact number 1','Eme
     $('last-payment').textContent=last?money(last.amount_total,last.currency):'No payments yet';
     $('last-payment-date').textContent=last?new Date(last.paid_at).toLocaleDateString('en-GB')+(last.kind==='programme'?' · Programme payment recorded':last.livemode?'':' · Test payment'):'';
     $('last-payment-for').textContent=last?paymentDescription(last):'';
+    const nextBox=$('programme-next-payments');
+    if(nextBox){
+      nextBox.replaceChildren();
+      const subscriptions=state.programme_subscriptions||[];
+      if(!subscriptions.length)text(nextBox,'p','No scheduled recurring payment date is available.','muted');
+      for(const sub of subscriptions){
+        const row=text(nextBox,'div','','row');
+        const child=(state.children||[]).find(c=>String(c.id)===String(sub.child_id));
+        text(row,'strong',(child?.full_name||'Child')+' · '+(sub.programme_codes||[]).map(c=>familyNames[c]||c).join(', '));
+        const expected=sub.status==='active'&&sub.next_payment_at;
+        text(row,'p',expected?money(sub.amount_pence,'gbp')+' · Expected '+new Date(sub.next_payment_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'Subscription: '+sub.status+' · Next date not confirmed');
+        text(row,'small','Only a successful payment unlocks the next calendar month.');
+      }
+    }
     const paidMonths=$('programme-paid-months');
     if(paidMonths){
       paidMonths.replaceChildren();
