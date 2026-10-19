@@ -561,8 +561,6 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       paidKeys.add(b.child_id+':'+b.session_date);
     }
     // Only show weekly sessions in the explicitly evidenced paid month; never project a paid month forward.
-    const today=homeToday(),end=new Date(today+'T12:00:00Z');end.setUTCDate(end.getUTCDate()+364);
-    const endDate=end.toISOString().slice(0,10);
     for(const assignment of recurringClassAssignments()){
       if(!show(assignment.childId)||assignment.paidMonth!==year+'-'+String(month+1).padStart(2,'0'))continue;
       const weekday=staffWeekdays[assignment.classId.split('-')[0]];
@@ -571,7 +569,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       const last=new Date(Date.UTC(year,month+1,0)).getUTCDate();
       for(let day=1;day<=last;day++){
         const date=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-        if(date<today||date>endDate||new Date(date+'T12:00:00Z').getUTCDay()!==weekday)continue;
+        if(new Date(date+'T12:00:00Z').getUTCDay()!==weekday)continue;
         if(events.some(e=>e.date===date&&String(e.childId)===String(assignment.childId)&&e.name===assignment.name))continue;
         events.push({date,childId:assignment.childId,child:child?.full_name||'Child',name:assignment.name,status:'recurring'});
       }
