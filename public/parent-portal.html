@@ -336,7 +336,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 <div id="parent-overview" class="portal-view"><p>A place for every little milestone.</p></div><section class="panel portal-view" id="parent-children-view">
 <div class="app-page-heading"><span class="app-page-icon">♙</span><div><span class="app-page-kicker">YOUR FAMILY</span><h2>My Children</h2><p>Manage profiles, registration and class information.</p></div></div>
 <label for="child-select">Choose a child<select id="child-select"></select></label>
-<div id="child-profile"></div>
+<div id="child-profile"></div><section id="profile-editor" class="panel" hidden><h2>Edit child profile</h2><p>Save changes securely for authorised staff. A weekly staff summary records changed fields.</p><p id="profile-editor-status" role="status"></p><form id="profile-edit-form"><div id="profile-edit-fields"></div><button type="submit">Save profile changes</button><button type="button" class="secondary" id="profile-edit-cancel">Cancel</button></form></section>
 <details><summary>Add a child</summary>
   <form id="child-form" style="margin-top:16px">
     <label>Child’s full name<input name="name" autocomplete="off" required maxlength="120"></label>
@@ -347,7 +347,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 <p id="first-child" hidden>Add your child above to start their profile, then complete registration.</p>
 </section>
 
-<section id="profile-editor" class="panel portal-view" hidden><h2>Edit child profile</h2><p>Save changes securely for authorised staff. A weekly staff summary records changed fields.</p><p id="profile-editor-status" role="status"></p><form id="profile-edit-form"><div id="profile-edit-fields"></div><button type="submit">Save profile changes</button><button type="button" class="secondary" id="profile-edit-cancel">Cancel</button></form></section><section class="panel portal-view" id="repeat-month-panel">
+<section class="panel portal-view" id="repeat-month-panel">
 <h2>Repeat this month's classes</h2>
 <p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
 <button type="button" id="repeat-current-button" class="secondary">Repeat this month</button>
