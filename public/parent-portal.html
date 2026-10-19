@@ -258,11 +258,13 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 /* Next class is now covered by the live Family Calendar. Keep its data nodes for legacy render compatibility, but remove the duplicate home shortcut. */
 .mobile-home .home-compact-action[data-home-panel="next"],#home-next-panel{display:none!important}
 .family-payment-summary{background:#f5fafc;border:1px solid #dce8ed;border-radius:20px;padding:19px;margin:15px 0}.family-payment-summary-head h2{font-size:23px;color:#143b4f;margin:0 0 5px}.family-payment-summary-head p{color:#607785;font-size:14px;margin:0 0 15px}.family-payment-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.family-payment-summary-grid section{min-width:0;background:#fff;border:1px solid #e0e9ed;border-radius:14px;padding:15px}.family-payment-summary-grid h3{font-size:16px;color:#173e51;margin:0 0 11px}.family-payment-row{display:flex;flex-direction:column;gap:4px;border-top:1px solid #e8eef1;padding:10px 0}.family-payment-row strong{font-size:13px;color:#143b4f}.family-payment-row small{font-size:12px;color:#59727f}.family-payment-classes-link{background:#fff0e3!important;color:#b94c10!important;border-radius:10px;padding:10px 12px;font-weight:750;margin-top:10px}.family-payment-disclaimer{color:#627d89;font-size:12px;margin:14px 0 0}@media(max-width:700px){.family-payment-summary-grid{grid-template-columns:1fr}.family-payment-summary{padding:14px}}
+#portal-notifications{position:relative;white-space:nowrap}#portal-notification-count{display:inline-block;background:#b72222;color:#fff;border-radius:999px;padding:1px 7px;font-size:12px;font-weight:800}#portal-notification-count[hidden]{display:none}#portal-notification-panel{max-width:700px;margin:12px auto}#portal-notification-panel button{margin:6px 0}
 </style>
 </head>
 <body>
-<header class="portal-header"><a class="portal-brand" href="/" aria-label="Cornwall Gymnastics Centre home"><img src="/cgg-logo.png" alt="CGC logo" class="portal-logo"><span class="brand-copy"><strong>Cornwall Gymnastics Centre</strong><small>Parent Portal</small></span></a><button type="button" id="portal-account-shortcut" class="secondary" hidden>Account</button><button id="logout" class="secondary" hidden>Sign out</button></header>
+<header class="portal-header"><a class="portal-brand" href="/" aria-label="Cornwall Gymnastics Centre home"><img src="/cgg-logo.png" alt="CGC logo" class="portal-logo"><span class="brand-copy"><strong>Cornwall Gymnastics Centre</strong><small>Parent Portal</small></span></a><button type="button" id="portal-notifications" class="secondary" hidden aria-label="Notifications" aria-expanded="false">🔔 <span id="portal-notification-count" hidden></span></button><button type="button" id="portal-account-shortcut" class="secondary" hidden>Account</button><button id="logout" class="secondary" hidden>Sign out</button></header>
 <main>
+<section id="portal-notification-panel" class="panel" hidden aria-label="Notifications"><h2>Notifications</h2><div id="portal-notification-list"></div></section>
 <div id="message" role="status" aria-live="polite"></div>
 
 <section id="auth-panel" class="auth panel">
@@ -561,8 +563,11 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     if(/iPad|iPhone|iPod/.test(navigator.userAgent)){help.textContent='On iPhone: tap Share (square with an upward arrow), choose “Add to Home Screen”, then tap Add. If using another browser, open this page in Safari first.';return}
     help.textContent='Open your browser menu and choose “Add to Home screen” or “Install app”, if available. Automatic installation is not supported by this browser.';
   });
+  function refreshBell(){if(!state)return;const unread=(state.direct_messages||[]).filter(m=>!m.read_at),incomplete=(state.children||[]).filter(c=>!c.registered_at);const count=unread.length+incomplete.length;const bell=$('portal-notifications'),number=$('portal-notification-count');bell.hidden=false;number.hidden=!count;number.textContent=count>99?'99+':String(count);bell.setAttribute('aria-label',count?count+' notifications':'No new notifications');const box=$('portal-notification-list');box.replaceChildren();if(!count)text(box,'p','You are all caught up.');if(unread.length){const button=text(box,'button',unread.length+' unread private message'+(unread.length===1?'':'s'));button.type='button';button.onclick=()=>{parentSection('messages');$('portal-notification-panel').hidden=true;bell.setAttribute('aria-expanded','false');};}if(incomplete.length){const button=text(box,'button',incomplete.length+' child registration'+(incomplete.length===1?'':'s')+' to complete');button.type='button';button.onclick=()=>{parentSection('children');$('portal-notification-panel').hidden=true;bell.setAttribute('aria-expanded','false');};}}
+  $('portal-notifications').onclick=()=>{const panel=$('portal-notification-panel');panel.hidden=!panel.hidden;$('portal-notifications').setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)refreshBell();};
   function updateHomeNotificationBadges(){
     if(!state)return;
+    refreshBell();
     const unread=(state.direct_messages||[]).filter(m=>!m.read_at).length;
     const children=state.children||[];
     const incomplete=children.filter(c=>!c.registered_at).length;
