@@ -464,7 +464,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 
   const parentSections=[['overview','Overview',['parent-overview','account-status']],['messages','Private messages',['parent-direct']],['news','Club announcements',['parent-news']],['team','Message the team',['parent-team']],['children','Children',['parent-children-view','parent-checklist-view']],['programmes','Approved classes',[]],['bookings','Bookings & payments',['parent-bookings-view','repeat-month-panel']],['trials','Trial requests',['trial-requests','trial-status']],['leaving','Leaving requests',['leaving-panel','leaving-status']],['info','Stay connected',['parent-connected-view']]];
   let parentActive='overview',requestAcks=new Set();
-  let homeCalendarOffset=0,installPrompt=null;
+  let homeCalendarOffset=0,homeCalendarAutoOpened=false,installPrompt=null;
   function homeToday(){const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const v=k=>p.find(x=>x.type===k).value;return v('year')+'-'+v('month')+'-'+v('day')}
   function paidDatedBookings(){return (state?.bookings||[]).filter(b=>b.status==='paid'&&(b.cancelled_quantity||0)<b.quantity&&/^\d{4}-\d{2}-\d{2}$/.test(b.session_date||''))}
   function addHomeTodo(container,label,key){const row=document.createElement('div');row.className='home-todo-item';const span=document.createElement('span');span.textContent=label;const button=document.createElement('button');button.type='button';button.textContent='View →';button.dataset.mobileSection=key;row.append(span,button);container.append(row)}
@@ -503,6 +503,17 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     }));
     if(loadId!==familyCalendarLoadId)return;
     const unique=new Set();familyCalendarOffers=results.flat().sort((a,b)=>Number(b.status==='accepted')-Number(a.status==='accepted')).filter(o=>{const key=o.childId+':'+o.code;if(unique.has(key))return false;unique.add(key);return true});
+    // On first load, open the earliest upcoming paid month rather than an empty current month.
+    if(!homeCalendarAutoOpened){
+      homeCalendarAutoOpened=true;
+      const current=homeToday().slice(0,7);
+      const months=[...(state?.programme_paid_months||[]).map(p=>p.booking_month),...familyCalendarOffers.filter(o=>o.status==='accepted'&&o.paid).map(o=>o.paidMonth)].filter(m=>/^\\d{4}-\\d{2}$/.test(m||'')&&m>=current).sort();
+      if(months.length){
+        const [y,m]=current.split('-').map(Number),[py,pm]=months[0].split('-').map(Number);
+        homeCalendarOffset=Math.max(0,Math.min(12,(py-y)*12+pm-m));
+        familyCalendarSelected=null;
+      }
+    }
     renderHomeCalendar();
     renderHomeSmart();
     renderFamilyPaymentSummary();
