@@ -211,6 +211,17 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 .home-status-badge.clear{background:#208d4e}
 .bottom-nav-notification{position:absolute;right:calc(50% - 23px);top:4px;min-width:16px;height:16px;border:2px solid #fff;border-radius:99px;display:block}
 .mobile-bottom-nav button{position:relative}
+/* Home dashboard: actionable class overview and accessible booking calendar */
+.home-smart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.home-smart-card{min-width:0;background:#fff;border:1px solid #dce8ed;border-radius:20px;padding:20px;box-shadow:0 3px 12px #102d4208}
+.home-smart-title{display:flex;align-items:center;gap:10px;margin-bottom:14px}.home-smart-title h2{margin:0;font-size:20px;line-height:1.2;color:#12374b}.home-smart-glyph{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#fff0e3;color:#ed6a19;font-weight:800;font-size:20px}
+.home-smart-card .home-next-date{font-size:20px;font-weight:850;color:#102d42;margin:6px 0}.home-smart-card .home-next-meta{font-size:14px;color:#5b7280;margin:4px 0}.home-smart-card .home-next-status{font-size:12px;font-weight:750;color:#167348;margin:7px 0}
+.home-smart-link{margin-top:12px;padding:10px 13px;border-radius:10px;background:#e6f6fb!important;color:#14556c!important;font-weight:750;font-size:13px}
+.home-todo-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #e7edf1}.home-todo-item:last-child{border-bottom:0}.home-todo-item span{font-size:13px;line-height:1.35}.home-todo-item button{background:#fff0e3!important;color:#bd5517!important;border-radius:9px;font-size:12px;font-weight:750;padding:9px;flex:none}
+.home-calendar-card{margin:0 0 18px}.home-calendar-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.home-calendar-controls button{width:39px;height:39px;background:#e6f6fb!important;color:#13536a!important;border-radius:11px;font-size:25px}
+.home-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.home-calendar-grid>*{min-width:0;text-align:center}.home-calendar-grid .calendar-dayname{font-size:11px;font-weight:800;color:#657d89;padding:6px 0}.home-calendar-grid .calendar-day{min-height:44px;border:1px solid #e5edf1;border-radius:10px;padding:7px 2px;font-size:13px;background:#f9fcfd;color:#1b3b4b;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px}.home-calendar-grid .calendar-day.has-booking{background:#fff0e3;border-color:#f4a66e;color:#b94c10;font-weight:850}.home-calendar-grid .calendar-day.has-booking:after{content:"";width:5px;height:5px;border-radius:50%;background:#ed6a19}.home-calendar-grid .calendar-day.today{outline:2px solid #168fb0}.home-calendar-note{font-size:12px;color:#5b7280;margin:12px 0 0}
+.home-install-card{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin:18px 0;padding:18px;background:#e7f6fb;border:1px solid #cbe7f0;border-radius:17px}.home-install-card strong{font-size:16px;color:#143c50}.home-install-card p{font-size:13px;color:#557180;margin:5px 0 0}.home-install-card button{background:#f36a16;color:#fff;border-radius:12px;padding:12px 15px;font-weight:800}.home-install-card #portal-install-help{width:100%;font-size:13px;color:#163f53}.home-install-card #portal-install-help[hidden]{display:none!important}
+@media(max-width:700px){.home-smart-grid{grid-template-columns:1fr}.home-smart-card{padding:17px}.home-calendar-grid{gap:3px}.home-calendar-grid .calendar-day{min-height:39px;font-size:12px}.home-install-card button{width:100%}}
 </style>
 </head>
 <body>
@@ -260,7 +271,12 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 <button type="button" id="portal-back-dashboard" class="portal-back-dashboard" data-mobile-section="overview" hidden aria-label="Back to parent dashboard"><span aria-hidden="true">←</span> Back to dashboard</button>
 <section class="mobile-home" aria-label="Parent portal home">
   <div class="mobile-home-welcome"><span class="portal-eyebrow">CORNWALL GYMNASTICS</span><h1>Welcome to your<br><em>Parent Portal</em></h1><p>Your family's gymnastics journey, all in one place.</p></div>
-  <div class="mobile-home-tiles">
+  <div class="home-smart-grid">
+<section class="home-smart-card" aria-labelledby="home-next-title"><div class="home-smart-title"><span class="home-smart-glyph">▦</span><h2 id="home-next-title">Next class</h2></div><div id="home-next-class" aria-live="polite"><p class="muted">Loading your next class…</p></div><button type="button" class="home-smart-link" data-mobile-section="bookings">View bookings →</button></section>
+<section class="home-smart-card" aria-labelledby="home-todo-title"><div class="home-smart-title"><span class="home-smart-glyph">✓</span><h2 id="home-todo-title">Things to do</h2></div><div id="home-todo-items" aria-live="polite"><p class="muted">Checking your account…</p></div></section>
+</div>
+<section class="home-smart-card home-calendar-card" aria-labelledby="home-calendar-title"><div class="home-smart-title"><span class="home-smart-glyph">▤</span><h2 id="home-calendar-title">Class calendar</h2></div><div class="home-calendar-controls"><button type="button" id="home-calendar-prev" aria-label="Previous month">‹</button><strong id="home-calendar-month"></strong><button type="button" id="home-calendar-next" aria-label="Next month">›</button></div><div id="home-calendar-grid" class="home-calendar-grid"></div><p class="home-calendar-note">Orange dates are confirmed paid bookings. Approved offers without a confirmed session date are shown under Classes.</p></section>
+<div class="mobile-home-tiles">
     <button type="button" data-mobile-section="children"><span class="home-tile-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><strong>My Children</strong></button>
     <a href="/parent-programmes.html"><span class="home-tile-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 19 4-7 4 4 4-9 4 5"/><circle cx="16" cy="5" r="2"/><path d="M3 21h18"/></svg></span><strong>Classes</strong></a>
     <a href="/parent-programmes.html"><span class="home-tile-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><strong>My approved classes</strong></a>
@@ -268,6 +284,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     <button type="button" data-mobile-section="overview" data-mobile-scroll="upcoming-bookings-list"><span class="home-tile-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-12 4h2m3 0h2"/></svg></span><strong>Upcoming Sessions</strong></button>
     <button type="button" data-mobile-section="messages"><span class="home-tile-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></span><strong>Messages</strong></button>
   </div>
+<section class="home-install-card" aria-label="Add Parent Portal to your home screen"><div><strong>Keep CGC on your home screen</strong><p>Open the Parent Portal like an app, whenever you need it.</p></div><button type="button" id="portal-install-button">Add to Home Screen</button><div id="portal-install-help" hidden role="status"></div></section>
   <details class="mobile-home-more"><summary>More parent services <span aria-hidden="true">⌄</span></summary><div class="mobile-home-more-links"><button type="button" data-mobile-section="team">Message the team →</button><button type="button" data-mobile-section="trials">Trial requests →</button><button type="button" data-mobile-section="leaving">Leaving requests →</button><button type="button" data-mobile-section="info">Stay connected →</button></div></details>
   <button class="mobile-home-news" type="button" data-mobile-section="news"><span class="home-news-icon" aria-hidden="true"><svg class="home-tile-svg" viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 13v-2Z"/><path d="m7 14 2 6h3l-2-5M21 10a3 3 0 0 1 0 4"/></svg></span><span><strong>Latest from CGC</strong><small>Club announcements and important updates</small></span><span aria-hidden="true">›</span></button>
 </section>
@@ -388,6 +405,42 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 
   const parentSections=[['overview','Overview',['parent-overview','account-status']],['messages','Private messages',['parent-direct']],['news','Club announcements',['parent-news']],['team','Message the team',['parent-team']],['children','Children',['parent-children-view','parent-checklist-view']],['programmes','Approved classes',[]],['bookings','Bookings & payments',['parent-bookings-view','repeat-month-panel']],['trials','Trial requests',['trial-requests','trial-status']],['leaving','Leaving requests',['leaving-panel','leaving-status']],['info','Stay connected',['parent-connected-view']]];
   let parentActive='overview',requestAcks=new Set();
+  let homeCalendarOffset=0,installPrompt=null;
+  function homeToday(){const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const v=k=>p.find(x=>x.type===k).value;return v('year')+'-'+v('month')+'-'+v('day')}
+  function paidDatedBookings(){return (state?.bookings||[]).filter(b=>b.status==='paid'&&(b.cancelled_quantity||0)<b.quantity&&/^\d{4}-\d{2}-\d{2}$/.test(b.session_date||''))}
+  function addHomeTodo(container,label,key){const row=document.createElement('div');row.className='home-todo-item';const span=document.createElement('span');span.textContent=label;const button=document.createElement('button');button.type='button';button.textContent='View →';button.dataset.mobileSection=key;row.append(span,button);container.append(row)}
+  function renderHomeSmart(){
+    if(!state)return;
+    const next=$('home-next-class'),todo=$('home-todo-items');if(!next||!todo)return;
+    next.replaceChildren();todo.replaceChildren();
+    const paid=paidDatedBookings().filter(b=>b.session_date>=homeToday()).sort((a,b)=>a.session_date.localeCompare(b.session_date));
+    if(paid.length){const b=paid[0],child=(state.children||[]).find(c=>c.id===b.child_id);const date=new Date(b.session_date+'T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long'});const heading=document.createElement('p');heading.className='home-next-date';heading.textContent=date;const meta=document.createElement('p');meta.className='home-next-meta';meta.textContent=(child?.full_name?child.full_name+' · ':'')+(b.class_name||'Gymnastics class');const status=document.createElement('p');status.className='home-next-status';status.textContent='✓ Booked & paid';next.append(heading,meta,status)}
+    else{const p=document.createElement('p');p.className='home-next-meta';p.textContent='No upcoming dated paid bookings. Check Classes for approved offers and their timetable.';next.append(p)}
+    const children=state.children||[],incomplete=children.filter(c=>!c.registered_at).length,unread=(state.direct_messages||[]).filter(m=>!m.read_at).length;
+    if(!children.length)addHomeTodo(todo,'Add your first child','children');
+    else if(incomplete)addHomeTodo(todo,incomplete+' child registration'+(incomplete===1?'':'s')+' to complete','children');
+    if(unread)addHomeTodo(todo,unread+' unread private message'+(unread===1?'':'s'),'messages');
+    if(!todo.children.length){const p=document.createElement('p');p.className='home-next-status';p.textContent='✓ You’re all caught up with registration and messages.';todo.append(p)}
+    renderHomeCalendar();
+  }
+  function renderHomeCalendar(){
+    const grid=$('home-calendar-grid'),title=$('home-calendar-month');if(!grid||!title||!state)return;
+    const today=homeToday(),[y,m]=today.split('-').map(Number),first=new Date(Date.UTC(y,m-1+homeCalendarOffset,1));const year=first.getUTCFullYear(),month=first.getUTCMonth();title.textContent=first.toLocaleDateString('en-GB',{timeZone:'UTC',month:'long',year:'numeric'});
+    const booked=new Set(paidDatedBookings().map(b=>b.session_date));grid.replaceChildren();
+    for(const name of ['M','T','W','T','F','S','S']){const label=document.createElement('span');label.className='calendar-dayname';label.textContent=name;grid.append(label)}
+    const blank=(first.getUTCDay()+6)%7;for(let i=0;i<blank;i++){const empty=document.createElement('span');empty.setAttribute('aria-hidden','true');grid.append(empty)}
+    const count=new Date(Date.UTC(year,month+1,0)).getUTCDate();for(let day=1;day<=count;day++){const date=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');const cell=document.createElement('span');cell.className='calendar-day'+(booked.has(date)?' has-booking':'')+(date===today?' today':'');cell.textContent=String(day);cell.setAttribute('aria-label',date+(booked.has(date)?', booked and paid':''));grid.append(cell)}
+  }
+  document.getElementById('home-calendar-prev')?.addEventListener('click',()=>{homeCalendarOffset=Math.max(-12,homeCalendarOffset-1);renderHomeCalendar()});
+  document.getElementById('home-calendar-next')?.addEventListener('click',()=>{homeCalendarOffset=Math.min(12,homeCalendarOffset+1);renderHomeCalendar()});
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event});
+  document.getElementById('portal-install-button')?.addEventListener('click',async()=>{
+    const help=$('portal-install-help');help.hidden=false;
+    if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone){help.textContent='The portal is already open as a home-screen app.';return}
+    if(installPrompt){const prompt=installPrompt;installPrompt=null;await prompt.prompt();help.textContent='Follow your browser’s installation confirmation.';return}
+    if(/iPad|iPhone|iPod/.test(navigator.userAgent)){help.textContent='On iPhone: tap Share (square with an upward arrow), choose “Add to Home Screen”, then tap Add. If using another browser, open this page in Safari first.';return}
+    help.textContent='Open your browser menu and choose “Add to Home screen” or “Install app”, if available. Automatic installation is not supported by this browser.';
+  });
   function updateHomeNotificationBadges(){
     if(!state)return;
     const unread=(state.direct_messages||[]).filter(m=>!m.read_at).length;
@@ -649,7 +702,7 @@ async function updateApprovedUpcoming(today){
     $('welcome').textContent = 'Welcome, ' + state.profile.display_name + '.';
     renderUpcomingBookings();
     renderNextMonthPayment();
-    const directBox=$('parent-direct-list');directBox.replaceChildren();const directMessages=state.direct_messages||[];if(!directMessages.length){text(directBox,'p','No private messages yet.');}else{directMessages.forEach(item=>{const row=text(directBox,'article','','row');text(row,'h3',item.subject);text(row,'small',new Date(item.created_at).toLocaleString('en-GB'));text(row,'p',item.body);const label=text(row,'label','I have read this message');const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=!!item.read_at;checkbox.disabled=!!item.read_at;checkbox.onchange=async()=>{if(!checkbox.checked)return;checkbox.disabled=true;try{await portal.api('message-read',{message_id:item.id});item.read_at=new Date().toISOString();parentStatus('messages',directMessages.some(m=>!m.read_at));updateHomeNotificationBadges();}catch(error){checkbox.checked=false;checkbox.disabled=false;message(error.message);}};label.prepend(checkbox);});}
+    const directBox=$('parent-direct-list');directBox.replaceChildren();const directMessages=state.direct_messages||[];if(!directMessages.length){text(directBox,'p','No private messages yet.');}else{directMessages.forEach(item=>{const row=text(directBox,'article','','row');text(row,'h3',item.subject);text(row,'small',new Date(item.created_at).toLocaleString('en-GB'));text(row,'p',item.body);const label=text(row,'label','I have read this message');const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=!!item.read_at;checkbox.disabled=!!item.read_at;checkbox.onchange=async()=>{if(!checkbox.checked)return;checkbox.disabled=true;try{await portal.api('message-read',{message_id:item.id});item.read_at=new Date().toISOString();parentStatus('messages',directMessages.some(m=>!m.read_at));updateHomeNotificationBadges();renderHomeSmart();}catch(error){checkbox.checked=false;checkbox.disabled=false;message(error.message);}};label.prepend(checkbox);});}
     const newsBox = $('parent-news-list'); newsBox.replaceChildren(); const announcements=state.announcements||[]; if(!announcements.length){text(newsBox,'p','No club announcements yet.');}else{announcements.forEach(item=>{const row=text(newsBox,'article','','row');text(row,'h3',item.title);text(row,'small',new Date(item.created_at).toLocaleDateString('en-GB'));text(row,'p',item.body);});}
 
     const selected = $('child-select').value;
@@ -672,6 +725,7 @@ async function updateApprovedUpcoming(today){
     renderAccountStatus();
     parentNavigation();
     updateHomeNotificationBadges();
+    renderHomeSmart();
     $('leaving-child').replaceChildren();
     state.children.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.full_name;$('leaving-child').append(o);});
     loadLeaving().catch(e=>message(e.message));
