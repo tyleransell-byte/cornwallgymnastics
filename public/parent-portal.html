@@ -407,7 +407,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
   let parentActive='overview',requestAcks=new Set();
   let homeCalendarOffset=0,installPrompt=null;
   function homeToday(){const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const v=k=>p.find(x=>x.type===k).value;return v('year')+'-'+v('month')+'-'+v('day')}
-  function paidDatedBookings(){return (state?.bookings||[]).filter(b=>b.status==='paid'&&(b.cancelled_quantity||0)<b.quantity&&/^\\d{4}-\\d{2}-\\d{2}$/.test(b.session_date||''))}
+  function paidDatedBookings(){return (state?.bookings||[]).filter(b=>b.status==='paid'&&(b.cancelled_quantity||0)<b.quantity&&/^\d{4}-\d{2}-\d{2}$/.test(b.session_date||''))}
   function addHomeTodo(container,label,key){const row=document.createElement('div');row.className='home-todo-item';const span=document.createElement('span');span.textContent=label;const button=document.createElement('button');button.type='button';button.textContent='View →';button.dataset.mobileSection=key;row.append(span,button);container.append(row)}
   function renderHomeSmart(){
     if(!state)return;
