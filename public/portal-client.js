@@ -2,20 +2,32 @@
   const endpoint =
     'https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/parent-portal';
   const storage = 'cgc-parent-session';
+  const preference = 'cgc-parent-remember';
 
   function read() {
     try {
-      return JSON.parse(sessionStorage.getItem(storage) || 'null');
+      return JSON.parse((localStorage.getItem(preference) === 'yes' ? localStorage : sessionStorage).getItem(storage) || 'null');
     } catch {
       return null;
     }
   }
 
-  function save(value) {
+  function save(value, remember) {
     if (value) {
-      sessionStorage.setItem(storage, JSON.stringify(value));
+      const persistent = remember === undefined ? localStorage.getItem(preference) === 'yes' : !!remember;
+      sessionStorage.removeItem(storage);
+      localStorage.removeItem(storage);
+      if (persistent) {
+        localStorage.setItem(preference, 'yes');
+        localStorage.setItem(storage, JSON.stringify(value));
+      } else {
+        localStorage.removeItem(preference);
+        sessionStorage.setItem(storage, JSON.stringify(value));
+      }
     } else {
       sessionStorage.removeItem(storage);
+      localStorage.removeItem(storage);
+      localStorage.removeItem(preference);
     }
   }
 
