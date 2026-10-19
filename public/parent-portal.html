@@ -269,6 +269,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 #login-form > button:hover{background:#dd5b0c;border-color:#dd5b0c}
 #auth-panel > p{margin-bottom:8px}#auth-panel > .switches{margin-bottom:8px}#auth-panel > #login-form{margin-top:0}.mobile-home-welcome.exact-banner{display:block;min-height:0;padding:0;background:none;border:0;overflow:hidden}.mobile-home-welcome.exact-banner::after{display:none}.mobile-home-welcome.exact-banner img{display:block;width:100%;height:auto;border-radius:22px}
 .portal-header{display:flex;flex-wrap:nowrap;align-items:center;gap:12px}.portal-header .portal-brand{flex:1 1 auto;min-width:0}.portal-header-actions{display:flex;flex:0 0 auto;align-items:center;gap:8px;flex-wrap:nowrap}.portal-header-actions #portal-notifications,.portal-header-actions #portal-account-shortcut,.portal-header-actions #logout{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin:0;min-height:42px;padding:8px 12px;border:1px solid #f3c8a8;border-radius:13px;background:#fff2e7;color:#ba4b0d;font-size:13px;font-weight:750;white-space:nowrap}.portal-header-actions #portal-notifications[hidden],.portal-header-actions #portal-account-shortcut[hidden],.portal-header-actions #logout[hidden]{display:none!important}.portal-header-actions #portal-notifications:hover,.portal-header-actions #portal-account-shortcut:hover,.portal-header-actions #logout:hover{background:#ffe3ce}@media(max-width:600px){.portal-header{padding:10px 12px;gap:7px}.portal-header .portal-logo{width:35px;height:35px}.portal-header .portal-brand{gap:6px}.portal-header .brand-copy strong{font-size:clamp(11px,2.8vw,15px)}.portal-header .brand-copy small{font-size:11px}.portal-header-actions{gap:5px}.portal-header-actions #portal-notifications,.portal-header-actions #portal-account-shortcut,.portal-header-actions #logout{font-size:11px;min-height:35px;padding:6px 7px;border-radius:10px}#portal-notification-count{padding:1px 5px;font-size:10px}}
+.payment-purchase-detail{font-weight:700;color:#14354a;line-height:1.55;margin:10px 0 18px}
 </style>
 </head>
 <body>
@@ -386,6 +387,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
   <div class="app-page-heading"><span class="app-page-icon">▣</span><div><span class="app-page-kicker">PAYMENT HISTORY</span><h2>Payments</h2><p>Review your family’s payments.</p></div></div><p class="muted">Last family payment</p>
   <div id="last-payment" class="price"></div>
   <p id="last-payment-date" class="muted"></p>
+  <p id="last-payment-for" class="payment-purchase-detail"></p>
   <h3>Next payment</h3>
   <p>Check your programme subscription for the next billing date.</p>
   <p class="muted">Programme subscriptions and one-off bookings may have different payment schedules.</p>
@@ -560,6 +562,14 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     const programmes=(state?.programme_payments||[]).map(p=>({amount_total:p.monthly_total_pence,currency:'gbp',paid_at:p.paid_at,kind:'programme',programme_codes:p.programme_codes,child_id:p.child_id,payment_preference:p.payment_preference}));
     return [...regular,...programmes].sort((a,b)=>String(b.paid_at).localeCompare(String(a.paid_at)));
   }
+  function paymentDescription(p){
+    if(p.kind==='programme'){
+      const child=(state?.children||[]).find(c=>String(c.id)===String(p.child_id));
+      const names=(p.programme_codes||[]).map(c=>familyNames[c]||c);
+      return (child?.full_name||'Child')+' · '+(names.join(', ')||'Gymnastics programme')+' · '+(p.payment_preference==='recurring'?'Recurring subscription':'Programme payment');
+    }
+    return (p.items||[]).map(item=>(item.quantity||1)+' × '+(item.class||'Gymnastics class')).join(', ')||'Class booking';
+  }
   function renderFamilyPaymentSummary(){
     if(!state)return;
     const upcoming=$('family-payment-upcoming'),approved=$('family-payment-approved'),history=$('family-payment-history');if(!upcoming||!approved||!history)return;
@@ -572,7 +582,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     else familyCalendarOffers.forEach(o=>{const child=(state.children||[]).find(c=>String(c.id)===String(o.childId));const row=text(approved,'div','','family-payment-row');text(row,'strong',(child?.full_name||'Child')+' · '+(familyNames[o.code]||o.code));text(row,'small',o.status==='accepted'&&o.paid?'Paid and accepted programme · See recurring class days on calendar':o.status==='accepted'?'Accepted programme · Awaiting payment or timetable confirmation':'Approved offer · Awaiting acceptance and timetable')});
     const payments=combinedPaymentHistory();
     if(!payments.length)text(history,'p','No payments recorded.');
-    else payments.slice(0,4).forEach(p=>{const row=text(history,'div','','family-payment-row');text(row,'strong',money(p.amount_total,p.currency));text(row,'small',new Date(p.paid_at).toLocaleDateString('en-GB')+(p.kind==='programme'?' · Programme payment recorded':p.livemode?' · Paid':' · Test payment'))});
+    else payments.slice(0,4).forEach(p=>{const row=text(history,'div','','family-payment-row');text(row,'strong',money(p.amount_total,p.currency));text(row,'small',new Date(p.paid_at).toLocaleDateString('en-GB')+(p.kind==='programme'?' · Programme payment recorded':p.livemode?' · Paid':' · Test payment'));text(row,'p',paymentDescription(p),'muted')});
   }
   function renderHomeCalendar(){
     const grid=$('home-calendar-grid'),title=$('home-calendar-month'),filter=$('family-calendar-child'),legend=$('family-calendar-legend'),eventsBox=$('family-calendar-selected-events'),unscheduled=$('family-calendar-unscheduled');
@@ -920,15 +930,13 @@ const editKeys=['Mobile number','Home address','Emergency contact number 1','Eme
     const allPayments=combinedPaymentHistory(),last=allPayments[0];
     $('last-payment').textContent=last?money(last.amount_total,last.currency):'No payments yet';
     $('last-payment-date').textContent=last?new Date(last.paid_at).toLocaleDateString('en-GB')+(last.kind==='programme'?' · Programme payment recorded':last.livemode?'':' · Test payment'):'';
+    $('last-payment-for').textContent=last?paymentDescription(last):'';
     $('payments').replaceChildren();
     allPayments.forEach(p=>{
       const row=text($('payments'),'div','','row');
       text(row,'strong',money(p.amount_total,p.currency));
       text(row,'small',new Date(p.paid_at).toLocaleDateString('en-GB')+(p.kind==='programme'?' · Programme payment recorded':p.livemode?'':' · Test payment'));
-      if(p.kind==='programme'){
-        const child=(state.children||[]).find(c=>String(c.id)===String(p.child_id));
-        text(row,'p',(child?.full_name||'Child')+' · '+(p.programme_codes||[]).map(c=>familyNames[c]||c).join(', '),'muted');
-      }else (p.items||[]).forEach(item=>text(row,'p',item.quantity+' × '+item.class,'muted'));
+      text(row,'p',paymentDescription(p),'muted');
     });
   }
 
