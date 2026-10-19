@@ -498,7 +498,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       try{
         const r=await fetch('https://dbolgmmyssfnuohpnmde.supabase.co/functions/v1/programme-requests',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+session.access_token},body:JSON.stringify({action:'parent_list',child_id:child.id})});
         if(!r.ok)throw Error('Unavailable');const data=await r.json();
-        return (data.requests||[]).filter(o=>['offered','accepted'].includes(o.status)).flatMap(o=>(o.programme_codes||[]).map(code=>({childId:child.id,code,status:o.status,paid:!!o.paid_at,paidMonth:typeof o.paid_at==='string'?o.paid_at.slice(0,7):null})));
+        return (data.requests||[]).filter(o=>['offered','accepted'].includes(o.status)).flatMap(o=>(o.programme_codes||[]).map(code=>({requestId:o.id,childId:child.id,code,status:o.status,paid:!!o.paid_at,paidMonth:followingPaidMonth(o.paid_at)})));
       }catch{return []}
     }));
     if(loadId!==familyCalendarLoadId)return;
@@ -506,6 +506,11 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     renderHomeCalendar();
     renderHomeSmart();
     renderFamilyPaymentSummary();
+  }
+  function followingPaidMonth(paidAt){
+    if(typeof paidAt!=='string'||!/^\\d{4}-\\d{2}-\\d{2}/.test(paidAt))return null;
+    const [year,month]=paidAt.slice(0,7).split('-').map(Number);
+    return new Date(Date.UTC(year,month,1)).toISOString().slice(0,7);
   }
   const staffClassCatalogue={"tue-stay-and-play":"Stay and Play (Tuesday 9:30–10:15am)","tue-adult-child-structured":"Adult Child Structured (Tuesday 10:30–11:15am)","tue-home-education":"Home Education (Tuesday 11:30am–12:30pm)","tue-recreational-plus":"Recreational Plus (Tuesday 4–6pm)","tue-development-wag":"Development WAG (Tuesday 4–6:30pm)","tue-recreational-4-7":"Recreational Gymnastics (Tuesday 4:15–5:15pm)","tue-recreational-7-12":"Recreational Gymnastics (Tuesday 5:30–6:30pm)","tue-novice-wag-junior":"Novice WAG Junior (Tuesday 6:30–8:30pm)","tue-novice-wag-senior":"Novice WAG Senior (Tuesday 6:30–8:30pm)","wed-wag-1":"WAG 1 (Wednesday 4–8:30pm)","wed-wag-2":"WAG 2 (Wednesday 4–8pm)","wed-recreational-4-7":"Recreational Gymnastics (Wednesday 4:15–5:15pm)","wed-recreational-6-8":"Recreational Gymnastics (Wednesday 5:30–6:30pm)","wed-recreational-7-12":"Recreational Gymnastics (Wednesday 5:30–6:30pm)","thu-development-wag":"Development WAG (Thursday 4–6:30pm)","thu-recreational-4-7":"Recreational Gymnastics (Thursday 4:15–5:15pm)","thu-recreational-plus":"Recreational Plus (Thursday 5–7pm)","thu-recreational-7-12":"Recreational Gymnastics (Thursday 5:30–6:30pm)","thu-novice-wag-senior":"Novice WAG Senior (Thursday 6:30–8:30pm)","fri-wag-1":"WAG 1 (Friday 4–8:30pm)","fri-wag-2":"WAG 2 (Friday 4–8pm)","fri-recreational-7-12":"Recreational Gymnastics (Friday 5:30–6:30pm)","sat-recreational-4-7":"Recreational Gymnastics (Saturday 9–10am)","sat-recreational-7-12":"Recreational Gymnastics (Saturday 9–10am)","sat-recreational-plus":"Recreational Plus (Saturday 9–10am)","sat-recreational-6-12":"Recreational Gymnastics (Saturday 10–11am)","sat-wag-2":"WAG 2 (Saturday 10am–1pm)","sat-wag-1":"WAG 1 (Saturday 12–4pm)"};
   const staffWeekdays={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
@@ -540,11 +545,18 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
     }
     for(const e of state?.enrolments||[]){
       if(!['paid','active'].includes(e.status)||!classProgrammeCodes[e.selected_class_id])continue;
-      const month=/^\\d{4}-\\d{2}$/.test(e.booking_month||'')?e.booking_month:e.paid_at?.slice(0,7);
+      const month=/^\\d{4}-\\d{2}$/.test(e.booking_month||'')?e.booking_month:followingPaidMonth(e.paid_at);
       for(const id of programmeClassIds[classProgrammeCodes[e.selected_class_id]])add(e.child_id,id,month);
     }
+    for(const payment of state?.programme_paid_months||[]){
+      for(const code of payment.programme_codes||[]){
+        for(const id of programmeClassIds[code]||[])add(payment.child_id,id,payment.booking_month);
+      }
+    }
+    // Legacy initial payments are shown only if a paid-month ledger record has not yet been recorded.
+    const ledgerRequests=new Set((state?.programme_paid_months||[]).map(p=>String(p.request_id)));
     for(const offer of familyCalendarOffers){
-      if(offer.status!=='accepted'||!offer.paid)continue;
+      if(offer.status!=='accepted'||!offer.paid||ledgerRequests.has(String(offer.requestId)))continue;
       for(const id of programmeClassIds[offer.code]||[])add(offer.childId,id,offer.paidMonth);
     }
     return [...assignments.values()];
