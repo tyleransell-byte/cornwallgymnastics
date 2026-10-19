@@ -203,7 +203,15 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 .mobile-bottom-nav button .bottom-nav-icon{display:flex;align-items:center;justify-content:center;width:27px;height:27px;margin:0 auto 3px;color:#e86c20!important;-webkit-text-fill-color:#e86c20!important;font-size:0}
 .mobile-bottom-nav button .bottom-nav-icon svg{display:block;width:25px;height:25px;stroke:#e86c20!important;fill:none}
 .mobile-bottom-nav button[aria-current=page] .bottom-nav-icon svg{stroke:#e86c20!important}
-.upcoming-approved-session{border-left:4px solid #f36a16;padding-left:12px;background:#fff7ef}.upcoming-approved-session span{color:#82512e;font-size:13px}</style>
+.upcoming-approved-session{border-left:4px solid #f36a16;padding-left:12px;background:#fff7ef}.upcoming-approved-session span{color:#82512e;font-size:13px}/* Dashboard notification badges: red attention count, green confirmed clear, or none. */
+.mobile-home-tiles button,.mobile-home-tiles a{position:relative}
+.home-status-badge{position:absolute;right:12px;top:12px;display:flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;font-size:12px;font-weight:850;line-height:1;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:0 2px 7px #102d4218}
+.home-status-badge[hidden],.bottom-nav-notification[hidden]{display:none!important}
+.home-status-badge.attention,.bottom-nav-notification{background:#d72f32}
+.home-status-badge.clear{background:#208d4e}
+.bottom-nav-notification{position:absolute;right:calc(50% - 23px);top:4px;min-width:16px;height:16px;border:2px solid #fff;border-radius:99px;display:block}
+.mobile-bottom-nav button{position:relative}
+</style>
 </head>
 <body>
 <header class="portal-header"><a class="portal-brand" href="/" aria-label="Cornwall Gymnastics Centre home"><img src="/cgg-logo.png" alt="CGC logo" class="portal-logo"><span class="brand-copy"><strong>Cornwall Gymnastics Centre</strong><small>Parent Portal</small></span></a><button type="button" id="portal-account-shortcut" class="secondary" hidden>Account</button><button id="logout" class="secondary" hidden>Sign out</button></header>
@@ -380,6 +388,31 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 
   const parentSections=[['overview','Overview',['parent-overview','account-status']],['messages','Private messages',['parent-direct']],['news','Club announcements',['parent-news']],['team','Message the team',['parent-team']],['children','Children',['parent-children-view','parent-checklist-view']],['programmes','Approved classes',[]],['bookings','Bookings & payments',['parent-bookings-view','repeat-month-panel']],['trials','Trial requests',['trial-requests','trial-status']],['leaving','Leaving requests',['leaving-panel','leaving-status']],['info','Stay connected',['parent-connected-view']]];
   let parentActive='overview',requestAcks=new Set();
+  function updateHomeNotificationBadges(){
+    if(!state)return;
+    const unread=(state.direct_messages||[]).filter(m=>!m.read_at).length;
+    const children=state.children||[];
+    const incomplete=children.filter(c=>!c.registered_at).length;
+    const statuses={
+      children:{attention:incomplete,clear:children.length>0&&incomplete===0},
+      messages:{attention:unread,clear:unread===0},
+      bookings:{attention:0,clear:false},
+      programmes:{attention:0,clear:false},
+      overview:{attention:0,clear:false}
+    };
+    for(const [section,status] of Object.entries(statuses)){
+      const tile=document.querySelector('.mobile-home-tiles [data-mobile-section="'+section+'"]');
+      if(!tile)continue;
+      let badge=tile.querySelector('.home-status-badge');
+      if(!badge){badge=document.createElement('span');badge.className='home-status-badge';tile.append(badge);}
+      if(status.attention>0){badge.hidden=false;badge.className='home-status-badge attention';badge.textContent=status.attention>99?'99+':String(status.attention);badge.setAttribute('aria-label',status.attention+' item'+(status.attention===1?'':'s')+' needing attention');}
+      else if(status.clear){badge.hidden=false;badge.className='home-status-badge clear';badge.textContent='✓';badge.setAttribute('aria-label','Up to date');}
+      else{badge.hidden=true;badge.textContent='';badge.removeAttribute('aria-label');}
+    }
+    const tab=document.querySelector('#mobile-bottom-nav [data-mobile-section="messages"]');
+    if(tab){let dot=tab.querySelector('.bottom-nav-notification');if(!dot){dot=document.createElement('span');dot.className='bottom-nav-notification';dot.setAttribute('aria-hidden','true');tab.append(dot)}dot.hidden=unread===0;tab.setAttribute('aria-label',unread?('Messages, '+unread+' unread'):'Messages');}
+  }
+
   setInterval(()=>{if(parentActive==='team'&&!$('dashboard').hidden&&!document.hidden)loadTeamThreads().catch(()=>{});},15000);
   const requestKey=(type,id)=>type+':'+id;
   async function loadRequestAcks(){try{const result=await portal.api('request-acks');requestAcks=new Set(result.acknowledgements.map(a=>requestKey(a.request_type,a.request_id)));}catch(e){message(e.message);}}
@@ -616,7 +649,7 @@ async function updateApprovedUpcoming(today){
     $('welcome').textContent = 'Welcome, ' + state.profile.display_name + '.';
     renderUpcomingBookings();
     renderNextMonthPayment();
-    const directBox=$('parent-direct-list');directBox.replaceChildren();const directMessages=state.direct_messages||[];if(!directMessages.length){text(directBox,'p','No private messages yet.');}else{directMessages.forEach(item=>{const row=text(directBox,'article','','row');text(row,'h3',item.subject);text(row,'small',new Date(item.created_at).toLocaleString('en-GB'));text(row,'p',item.body);const label=text(row,'label','I have read this message');const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=!!item.read_at;checkbox.disabled=!!item.read_at;checkbox.onchange=async()=>{if(!checkbox.checked)return;checkbox.disabled=true;try{await portal.api('message-read',{message_id:item.id});item.read_at=new Date().toISOString();parentStatus('messages',directMessages.some(m=>!m.read_at));}catch(error){checkbox.checked=false;checkbox.disabled=false;message(error.message);}};label.prepend(checkbox);});}
+    const directBox=$('parent-direct-list');directBox.replaceChildren();const directMessages=state.direct_messages||[];if(!directMessages.length){text(directBox,'p','No private messages yet.');}else{directMessages.forEach(item=>{const row=text(directBox,'article','','row');text(row,'h3',item.subject);text(row,'small',new Date(item.created_at).toLocaleString('en-GB'));text(row,'p',item.body);const label=text(row,'label','I have read this message');const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=!!item.read_at;checkbox.disabled=!!item.read_at;checkbox.onchange=async()=>{if(!checkbox.checked)return;checkbox.disabled=true;try{await portal.api('message-read',{message_id:item.id});item.read_at=new Date().toISOString();parentStatus('messages',directMessages.some(m=>!m.read_at));updateHomeNotificationBadges();}catch(error){checkbox.checked=false;checkbox.disabled=false;message(error.message);}};label.prepend(checkbox);});}
     const newsBox = $('parent-news-list'); newsBox.replaceChildren(); const announcements=state.announcements||[]; if(!announcements.length){text(newsBox,'p','No club announcements yet.');}else{announcements.forEach(item=>{const row=text(newsBox,'article','','row');text(row,'h3',item.title);text(row,'small',new Date(item.created_at).toLocaleDateString('en-GB'));text(row,'p',item.body);});}
 
     const selected = $('child-select').value;
@@ -638,6 +671,7 @@ async function updateApprovedUpcoming(today){
     profile();
     renderAccountStatus();
     parentNavigation();
+    updateHomeNotificationBadges();
     $('leaving-child').replaceChildren();
     state.children.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.full_name;$('leaving-child').append(o);});
     loadLeaving().catch(e=>message(e.message));
