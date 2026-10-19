@@ -369,7 +369,14 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
 <p id="first-child" hidden>Add your child above to start their profile, then complete registration.</p>
 </section>
 
-<section class="panel portal-view" id="profile-editor" hidden><h2>Edit child details</h2><p>Changes save immediately for authorised staff.</p><p id="profile-edit-status"></p><form id="profile-edit-form"><div id="profile-edit-fields"></div><button>Save updates</button> <button type="button" id="profile-edit-close" class="secondary">Close</button></form></section><section class="panel portal-view" id="repeat-month-panel">
+<section class="panel portal-view" id="profile-editor" hidden><h2>Edit child details</h2><p>Changes save immediately for authorised staff.</p><p id="profile-edit-status"></p><form id="profile-edit-form"><div id="profile-edit-fields"></div><button>Save updates</button> <button type="button" id="profile-edit-close" class="secondary">Close</button></form></section><section class="panel portal-view" id="monthly-programme-payment-panel">
+<h2>Monthly class payments</h2>
+<p>Once your child has been approved for a programme, their monthly payment covers all the scheduled class days for that programme in the following month.</p>
+<p>Payments are made before the month begins. When a successful payment is recorded, the covered month's classes appear automatically in your family calendar. You do not need to book each day separately.</p>
+<p>For example, a WAG 1 payment in October unlocks all Wednesday, Friday and Saturday WAG 1 classes in November. Unpaid months are not booked.</p>
+<button type="button" data-mobile-section="programmes" class="secondary">View approved classes →</button>
+</section>
+<section class="panel portal-view" id="repeat-month-panel" hidden aria-hidden="true" style="display:none!important">
 <h2>Repeat this month's classes</h2>
 <p>Choose the same weekly classes for the new month, review the dates and pay securely. Nothing is booked until checkout succeeds.</p>
 <button type="button" id="repeat-current-button" class="secondary">Repeat this month</button>
@@ -474,7 +481,7 @@ input,select,textarea{border:1px solid #c9dce4;border-radius:12px}
       (now.getMonth() + 1 === m && now.getDate() < d)) ? 1 : 0);
   }
 
-  const parentSections=[['overview','Overview',['parent-overview','account-status']],['messages','Private messages',['parent-direct']],['news','Club announcements',['parent-news']],['team','Message the team',['parent-team']],['children','Children',['parent-children-view','parent-checklist-view']],['programmes','Approved classes',[]],['bookings','Bookings & payments',['parent-bookings-view','repeat-month-panel']],['trials','Trial requests',['trial-requests','trial-status']],['leaving','Leaving requests',['leaving-panel','leaving-status']],['info','Stay connected',['parent-connected-view']]];
+  const parentSections=[['overview','Overview',['parent-overview','account-status']],['messages','Private messages',['parent-direct']],['news','Club announcements',['parent-news']],['team','Message the team',['parent-team']],['children','Children',['parent-children-view','parent-checklist-view']],['programmes','Approved classes',[]],['bookings','Bookings & payments',['parent-bookings-view','monthly-programme-payment-panel']],['trials','Trial requests',['trial-requests','trial-status']],['leaving','Leaving requests',['leaving-panel','leaving-status']],['info','Stay connected',['parent-connected-view']]];
   let parentActive='overview',requestAcks=new Set();
   let homeCalendarOffset=0,homeCalendarAutoOpened=false,installPrompt=null;
   function homeToday(){const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const v=k=>p.find(x=>x.type===k).value;return v('year')+'-'+v('month')+'-'+v('day')}
